@@ -1,7 +1,7 @@
 #[allow(unused_macros)]
 macro_rules! run {
     ($day:ident, $part:ident) => {
-        let result = aoc2021::$day::$part(include_str!(concat!(
+        let result = aoc2022::$day::$part(include_str!(concat!(
             "../../input/",
             stringify!($day),
             ".txt"
@@ -40,15 +40,16 @@ pub fn main() {
                 let code = aoc2022::day24::part1_instructions_to_code(include_str!("../../input/day24.txt"));
                 println!("{}", code);
             },
-            day1
-            | day2
-            | day3
-            | day4
-            | day5
-            | day6
-            | day7
-            | day8
-            | day9
+            */,
+            day01
+            | day02
+            | day03
+            | day04
+            | day05
+            | day06
+            | day07
+            | day08
+            | day09
             | day10
             | day11
             | day12
@@ -65,8 +66,7 @@ pub fn main() {
             | day23
             | day24
             | day25
-            */
-            ,=> default
+            => default
         }
     }
 }
