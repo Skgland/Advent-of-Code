@@ -22,6 +22,7 @@ jobs:
           userid: 1745334                        # your user id, see setup on how to obtain
           session: ${{ secrets.AOC_SESSION }}    # secret containing session code, see setup on how to obtain
           year: 2022
+          file: 'year2022/README.md'
 
       #         Optional inputs:
       #
