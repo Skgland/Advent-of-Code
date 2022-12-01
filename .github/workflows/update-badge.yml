@@ -36,4 +36,4 @@ jobs:
         with:
           branch: update-badge-action
           commit_message: Update badges
-          file_pattern: year2022/README.md
+          file_pattern: year\d{4}/README.md
