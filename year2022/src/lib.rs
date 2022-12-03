@@ -1,4 +1,4 @@
-#![allow(unused_variables)]
+#![allow(unused_variables, unreachable_code)]
 
 pub mod day01;
 pub mod day02;
