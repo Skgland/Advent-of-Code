@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v3                # clones your repo
       
       - name: Create Branch
-        run: git checkout -B update-badge-action
+        run: git checkout -B main
 
       - uses: joblo2213/aoc-badges-action@v3
         with:
