@@ -43,7 +43,9 @@ jobs:
           branch: update-badge-action
           add-paths: |
             year20??/README.md
-      - uses: peter-evans/enable-pull-request-automerge@v2
+      - name: Enable Auto-Merge
+        uses: peter-evans/enable-pull-request-automerge@v2
+        if: steps.cpr.outputs.pull-request-number != 0
         with:
           token: ${{ secrets.PAT }}
           merge-method: rebase
