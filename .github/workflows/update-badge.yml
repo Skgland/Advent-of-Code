@@ -32,9 +32,19 @@ jobs:
       #         dayRegex: '(?<=https:\/\/img\.shields\.io\/badge\/day%20📅-)[0-9]+(?=-blue)'                   # Regular expression that finds the content of the day badge in your file.
       #         starsRegex: '(?<=https:\/\/img\.shields\.io\/badge\/stars%20⭐-)[0-9]+(?=-yellow)'             # Regular expression that finds the content of the stars badge in your file.
       #         daysCompletedRegex: '(?<=https:\/\/img\.shields\.io\/badge\/days%20completed-)[0-9]+(?=-red)'  # Regular expression that finds the content of the days completed badge iun your file.
-
-      - uses: stefanzweifel/git-auto-commit-action@v4     # Step that pushes these local changes back to your github repo
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v4
         with:
+          token: ${{ secrets.PAT }}
+          commit-message: Update badges
+          title: Update badge
+          delete-branch: true
           branch: update-badge-action
-          commit_message: Update badges
-          file_pattern: year20??/README.md
+          add-paths: |
+            year20??/README.md
+      - uses: peter-evans/enable-pull-request-automerge@v2
+        with:
+          token: ${{ secrets.PAT }}
+          merge-method: rebase
+          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
