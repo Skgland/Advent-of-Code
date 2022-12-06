@@ -1,35 +1,55 @@
-pub fn part1(input: &str) -> u32 {
-    todo!()
+use std::collections::BTreeSet;
+
+pub fn first_distinct_run(input: &str, run: usize) -> Option<usize> {
+    for (offset, window) in input.as_bytes().windows(run).enumerate() {
+        if window.len() == run {
+            if BTreeSet::from_iter(window.into_iter().copied()).len() == run {
+                return Some(offset + run);
+            }
+        }
+    }
+    return None;
 }
 
-pub fn part2(input: &str) -> u32 {
-    todo!()
+pub fn part1(input: &str) -> usize {
+    first_distinct_run(input, 4).expect("There should be a matching run")
 }
 
-#[ignore = "not yet implemented"]
+pub fn part2(input: &str) -> usize {
+    first_distinct_run(input, 14).expect("There should be a matching run")
+}
+
+#[cfg(test)]
+const EXAMPLES: &[(&str, usize, usize)] = &[
+    ("mjqjpqmgbljsphdztnvjfqwrcgsmlb", 7, 19),
+    ("bvwbjplbgvbhsrlpgdmjqwftvncz", 5, 23),
+    ("nppdvjthqldpwncqszvftbrmjlhg", 6, 23),
+    ("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg", 10, 29),
+    ("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw", 11, 26),
+];
+
 #[test]
 fn part1_example() {
-    let input = include_str!("../input/day06.example.txt");
-    assert_eq!(part1(input), todo!());
+    for (input, result_part1, _) in EXAMPLES {
+        assert_eq!(part1(input), *result_part1);
+    }
 }
 
-#[ignore = "not yet implemented"]
 #[test]
 fn part1_full() {
     let input = include_str!(concat!("../input/day06.txt"));
-    assert_eq!(part1(input), todo!());
+    assert_eq!(part1(input), 1909);
 }
 
-#[ignore = "not yet implemented"]
 #[test]
 fn part2_example() {
-    let input = include_str!("../input/day06.example.txt");
-    assert_eq!(part2(input), todo!());
+    for (input, _, result_part2) in EXAMPLES {
+        assert_eq!(part2(input), *result_part2);
+    }
 }
 
-#[ignore = "not yet implemented"]
 #[test]
 fn part2_full() {
     let input = include_str!(concat!("../input/day06.txt"));
-    assert_eq!(part2(input), todo!());
+    assert_eq!(part2(input), 3380);
 }
