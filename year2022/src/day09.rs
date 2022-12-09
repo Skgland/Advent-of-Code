@@ -1,35 +1,106 @@
-pub fn part1(input: &str) -> u32 {
-    todo!()
+use std::collections::HashSet;
+
+#[derive(Clone, Copy, Debug)]
+enum Direction {
+    Left,
+    Right,
+    Up,
+    Down,
 }
 
-pub fn part2(input: &str) -> u32 {
-    todo!()
+struct State {
+    positions: Vec<(isize, isize)>,
 }
 
-#[ignore = "not yet implemented"]
+impl State {
+    pub(crate) fn apply(&mut self, dir: Direction) {
+        let head = self.positions.get_mut(0).unwrap();
+
+        match dir {
+            Direction::Left => head.0 -= 1,
+            Direction::Right => head.0 += 1,
+            Direction::Up => head.1 += 1,
+            Direction::Down => head.1 -= 1,
+        };
+
+        for idx in 0..self.positions.len() - 1 {
+            let pair = &mut self.positions[idx..][..2];
+            let x_dif = pair[0].0 - pair[1].0;
+            let y_dif = pair[0].1 - pair[1].1;
+            if x_dif.abs() > 1 || y_dif.abs() > 1 {
+                pair[1].0 += x_dif.signum();
+                pair[1].1 += y_dif.signum();
+            }
+        }
+    }
+
+    pub(crate) fn tail_position(&self) -> (isize, isize) {
+        *self.positions.last().unwrap()
+    }
+}
+
+fn parse(input: &str) -> impl Iterator<Item = (Direction, usize)> + '_ {
+    input.lines().map(|elem| {
+        use Direction::*;
+        let (dir, dist) = elem.split_once(' ').unwrap();
+        (
+            match dir {
+                "L" => Left,
+                "R" => Right,
+                "U" => Up,
+                "D" => Down,
+                _ => panic!(),
+            },
+            dist.parse().unwrap(),
+        )
+    })
+}
+
+fn both(input: &str, knots: usize) -> usize {
+    let mut state = State {
+        positions: vec![(0, 0); knots],
+    };
+    let mut visited = HashSet::new();
+    visited.insert(state.tail_position());
+
+    for (dir, count) in parse(input) {
+        for _ in 0..count {
+            state.apply(dir);
+            visited.insert(state.tail_position());
+        }
+    }
+
+    visited.len()
+}
+
+pub fn part1(input: &str) -> usize {
+    both(input, 2)
+}
+
+pub fn part2(input: &str) -> usize {
+    both(input, 10)
+}
+
 #[test]
 fn part1_example() {
     let input = include_str!("../input/day09.example.txt");
-    assert_eq!(part1(input), todo!());
+    assert_eq!(part1(input), 13);
 }
 
-#[ignore = "not yet implemented"]
 #[test]
 fn part1_full() {
     let input = include_str!(concat!("../input/day09.txt"));
-    assert_eq!(part1(input), todo!());
+    assert_eq!(part1(input), 6337);
 }
 
-#[ignore = "not yet implemented"]
 #[test]
 fn part2_example() {
     let input = include_str!("../input/day09.example.txt");
-    assert_eq!(part2(input), todo!());
+    assert_eq!(part2(input), 1);
 }
 
-#[ignore = "not yet implemented"]
 #[test]
 fn part2_full() {
     let input = include_str!(concat!("../input/day09.txt"));
-    assert_eq!(part2(input), todo!());
+    assert_eq!(part2(input), 2455);
 }
