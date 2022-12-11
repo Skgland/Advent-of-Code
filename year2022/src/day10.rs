@@ -53,7 +53,7 @@ pub fn part1(input: &str) -> isize {
 pub fn part2(input: &str) -> String {
     let mut result = String::new();
     run(input, |cycle, register| {
-        let c = if ((cycle-1) % 40).abs_diff(register) <= 1 {
+        let c = if ((cycle - 1) % 40).abs_diff(register) <= 1 {
             "#"
         } else {
             "."
@@ -62,7 +62,7 @@ pub fn part2(input: &str) -> String {
         if cycle % 40 == 0 {
             result += "\n";
         }
-        if cycle %240 == 0 {
+        if cycle % 240 == 0 {
             result += "\n";
         }
     });
@@ -101,11 +101,14 @@ fn part2_example() {
 #[test]
 fn part2_full() {
     let input = include_str!(concat!("../input/day10.txt"));
-    assert_eq!(part2(input), "\
+    assert_eq!(
+        part2(input),
+        "\
 ###..#..#.#....#..#...##..##..####..##..
 #..#.#..#.#....#..#....#.#..#....#.#..#.
 #..#.####.#....####....#.#......#..#..#.
 ###..#..#.#....#..#....#.#.##..#...####.
 #....#..#.#....#..#.#..#.#..#.#....#..#.
-#....#..#.####.#..#..##...###.####.#..#.\n\n");
+#....#..#.####.#..#..##...###.####.#..#.\n\n"
+    );
 }
