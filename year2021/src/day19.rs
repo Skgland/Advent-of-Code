@@ -255,6 +255,7 @@ fn part1_example() {
     assert_eq!(part1(input), 79);
 }
 
+#[ignore = "takes too long"]
 #[test]
 fn part1_full() {
     let input = include_str!(concat!("../input/day19.txt"));
@@ -267,6 +268,7 @@ fn part2_example() {
     assert_eq!(part2(input), 3621);
 }
 
+#[ignore = "takes too long"]
 #[test]
 fn part2_full() {
     let input = include_str!(concat!("../input/day19.txt"));
