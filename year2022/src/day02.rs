@@ -39,7 +39,7 @@ impl RPS {
 
     fn result_reward(&self, other: &RPS) -> u32 {
         match self {
-            RPS::RockLose => other.wins_agains().shape_reward() + 0,
+            RPS::RockLose => other.wins_agains().shape_reward(),
             RPS::PaperDraw => other.shape_reward() + 3,
             RPS::SissorWin => other.loses_to().shape_reward() + 6,
         }
