@@ -1,13 +1,11 @@
 use std::collections::BTreeSet;
 
 fn calculate_priority(item: u8) -> u8 {
-    let priority = if (b'a'..=b'z').contains(&item) {
+    if (b'a'..=b'z').contains(&item) {
         item - b'a' + 1
     } else {
         item - b'A' + 27
-    };
-    // println!("{} ({})", priority, item as char);
-    priority
+    }
 }
 
 fn parse_into_split_backpacks(
@@ -15,8 +13,8 @@ fn parse_into_split_backpacks(
 ) -> impl Iterator<Item = (BTreeSet<u8>, BTreeSet<u8>)> + '_ {
     input.lines().map(|line| {
         let (start, end) = line.split_at(line.len() / 2);
-        let start_set: BTreeSet<_> = start.as_bytes().into_iter().copied().collect();
-        let end_set: BTreeSet<_> = end.as_bytes().into_iter().copied().collect();
+        let start_set: BTreeSet<_> = start.as_bytes().iter().copied().collect();
+        let end_set: BTreeSet<_> = end.as_bytes().iter().copied().collect();
         (start_set, end_set)
     })
 }
@@ -24,7 +22,7 @@ fn parse_into_split_backpacks(
 fn parse_into_backpacks(input: &str) -> impl Iterator<Item = BTreeSet<u8>> + '_ {
     input
         .lines()
-        .map(|line| line.as_bytes().into_iter().copied().collect())
+        .map(|line| line.as_bytes().iter().copied().collect())
 }
 
 pub fn part1(input: &str) -> u32 {
@@ -44,7 +42,7 @@ pub fn part2(input: &str) -> u32 {
         .chunks(3)
         .map(|chunck| {
             chunck
-                .into_iter()
+                .iter()
                 .cloned()
                 .reduce(|l, r| l.intersection(&r).copied().collect())
                 .unwrap()

@@ -2,13 +2,11 @@ use std::collections::BTreeSet;
 
 pub fn first_distinct_run(input: &str, run: usize) -> Option<usize> {
     for (offset, window) in input.as_bytes().windows(run).enumerate() {
-        if window.len() == run {
-            if BTreeSet::from_iter(window.into_iter().copied()).len() == run {
-                return Some(offset + run);
-            }
+        if window.len() == run && BTreeSet::from_iter(window.iter().copied()).len() == run {
+            return Some(offset + run);
         }
     }
-    return None;
+    None
 }
 
 pub fn part1(input: &str) -> usize {
