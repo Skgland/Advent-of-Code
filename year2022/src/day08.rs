@@ -20,9 +20,9 @@ fn scenic_score(input: &[Vec<u8>], x: usize, y: usize) -> usize {
             break;
         }
     }
-    for x in x + 1..input.len() {
+    for column in &input[x + 1..input.len()] {
         rxs += 1;
-        if input[x][y] >= height {
+        if column[y] >= height {
             break;
         }
     }

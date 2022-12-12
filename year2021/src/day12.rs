@@ -5,7 +5,7 @@ pub struct Graph<'a> {
 }
 
 fn parse_input(input: &str) -> Graph<'_> {
-    let edges = input.lines().flat_map(|elem| elem.split_once("-")).fold(
+    let edges = input.lines().flat_map(|elem| elem.split_once('-')).fold(
         HashMap::new(),
         |mut map: HashMap<_, Vec<_>>, elem| {
             map.entry(elem.0).or_default().push(elem.1);

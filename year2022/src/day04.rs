@@ -22,17 +22,17 @@ fn intersect(l: &RangeInclusive<u32>, r: &RangeInclusive<u32>) -> bool {
 
 fn both(
     input: &str,
-    filter: &dyn for<'a> Fn(&'a (RangeInclusive<u32>, RangeInclusive<u32>)) -> bool,
+    filter: impl Fn(&(RangeInclusive<u32>, RangeInclusive<u32>)) -> bool,
 ) -> usize {
     parse(input).filter(filter).count()
 }
 
 pub fn part1(input: &str) -> usize {
-    both(input, &|(l, r)| subset(l, r) || subset(r, l))
+    both(input, |(l, r)| subset(l, r) || subset(r, l))
 }
 
 pub fn part2(input: &str) -> usize {
-    both(input, &|(l, r)| intersect(l, r))
+    both(input, |(l, r)| intersect(l, r))
 }
 
 #[test]

@@ -1,9 +1,9 @@
 fn both(input: &str, top: usize) -> u32 {
-    let mut calories = input.lines().map(|line| line.parse::<u32>());
+    let calories = input.lines().map(|line| line.parse::<u32>());
     let mut current = 0;
     let mut elfs = vec![];
 
-    while let Some(val) = calories.next() {
+    for val in calories {
         if let Ok(val) = val {
             current += val;
         } else {
@@ -16,7 +16,7 @@ fn both(input: &str, top: usize) -> u32 {
     elfs.sort();
     elfs.reverse();
 
-    dbg!(&elfs[..top]).into_iter().sum()
+    dbg!(&elfs[..top]).iter().sum()
 }
 
 pub fn part1(input: &str) -> u32 {

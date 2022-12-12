@@ -28,7 +28,7 @@ fn parse_input(input: &str) -> Input {
         })
         .collect();
 
-    let folds: Vec<_> = lines.flat_map(|line| line.strip_prefix("fold along ")).flat_map(|fold|fold.split_once("=")).map(|fold|match fold.0 {
+    let folds: Vec<_> = lines.flat_map(|line| line.strip_prefix("fold along ")).flat_map(|fold|fold.split_once('=')).map(|fold|match fold.0 {
         "x" => Fold::X,
         "y"=> Fold::Y,
         _ => panic!("invalid fold")
