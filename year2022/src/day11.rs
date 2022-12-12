@@ -77,13 +77,13 @@ fn parse(input: &str) -> Vec<Monkey> {
         .collect()
 }
 
-pub fn part1(input: &str) -> u32 {
-    let mut monkeys = parse(input)
+fn both(monkeys: Vec<Monkey>, iteration: usize, reduction: impl Fn(usize) -> usize) -> u64 {
+    let mut monkeys = monkeys
         .into_iter()
         .map(|monkey| RefCell::new((monkey, 0)))
         .collect::<Vec<_>>();
 
-    for round in 0..20 {
+    for round in 0..iteration {
         for entry in monkeys.iter() {
             let mut pair = entry.borrow_mut();
             let (monkey, inspections) = pair.deref_mut();
@@ -93,7 +93,8 @@ pub fn part1(input: &str) -> u32 {
 
             for item in std::mem::take(&mut monkey.items) {
                 *inspections += 1;
-                let new = monkey.op.apply(item) / 3;
+                let new = monkey.op.apply(item);
+                let new = reduction(new);
                 if new % monkey.test == 0 {
                     success_monkey.items.push(new);
                 } else {
@@ -122,7 +123,7 @@ pub fn part1(input: &str) -> u32 {
         .product()
 }
 
-fn print_state(round: usize, monkeys: &[RefCell<(Monkey, u32)>]) {
+fn print_state(round: usize, monkeys: &[RefCell<(Monkey, u64)>]) {
     println!("Round {}", round);
     for (idx, monkey) in monkeys.iter().enumerate() {
         println!("Monkey {}: {:?}", idx, monkey.borrow().0.items)
@@ -130,51 +131,15 @@ fn print_state(round: usize, monkeys: &[RefCell<(Monkey, u32)>]) {
     println!()
 }
 
+pub fn part1(input: &str) -> u64 {
+    let monkeys = parse(input);
+    both(monkeys, 20, |x| x / 3)
+}
+
 pub fn part2(input: &str) -> u64 {
     let monkeys = parse(input);
-
-    let modulo: usize = monkeys.iter().map(|monkey| monkey.test).product();
-
-    let mut monkeys = monkeys
-        .into_iter()
-        .map(|monkey| RefCell::new((monkey, 0)))
-        .collect::<Vec<_>>();
-
-    for round in 0..10_000 {
-        for entry in monkeys.iter() {
-            let mut pair = entry.borrow_mut();
-            let (monkey, inspections) = pair.deref_mut();
-
-            let success_monkey = &mut monkeys.get(monkey.success).unwrap().borrow_mut().0;
-            let fail_monkey = &mut monkeys.get(monkey.fail).unwrap().borrow_mut().0;
-
-            for item in std::mem::take(&mut monkey.items) {
-                *inspections += 1;
-                let new = monkey.op.apply(item) % modulo;
-                if new % monkey.test == 0 {
-                    success_monkey.items.push(new);
-                } else {
-                    fail_monkey.items.push(new);
-                }
-            }
-        }
-    }
-
-    monkeys.sort_by_key(|elem| elem.borrow().1);
-
-    let counts = monkeys
-        .iter()
-        .map(|elem| elem.borrow().1)
-        .collect::<Vec<_>>();
-
-    println!("{:?}", counts);
-
-    monkeys
-        .into_iter()
-        .rev()
-        .take(2)
-        .map(|cell| cell.borrow().1)
-        .product()
+    let lcm: usize = monkeys.iter().map(|monkey| monkey.test).product();
+    both(monkeys, 10_000, |x| x % lcm)
 }
 
 #[test]
