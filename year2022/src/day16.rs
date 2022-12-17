@@ -75,16 +75,11 @@ pub fn part1(input: &str) -> usize {
                         .or_insert(new_relieve);
                 }
             }
-            valves_by_name
-                .get(pos)
-                .unwrap()
-                .connections
-                .iter()
-                .for_each(|neighbor| {
-                    next.entry((valves_open, *neighbor))
-                        .and_modify(|old| *old = new_relieve.max(*old))
-                        .or_insert(new_relieve);
-                });
+            for neighbor in valves_by_name.get(pos).unwrap().connections.iter() {
+                next.entry((valves_open, *neighbor))
+                    .and_modify(|old| *old = new_relieve.max(*old))
+                    .or_insert(new_relieve);
+            }
         }
 
         println!("Step {:2} size: {:6}", step, next.len());
@@ -153,52 +148,44 @@ pub fn part2(input: &str) -> usize {
                 }
             }
 
-            valves_by_name
-                .get(pos_me)
-                .unwrap()
-                .connections
-                .iter()
-                .for_each(|neighbor_me| {
-                    // have the elephant open their valve if they can
-                    if let Some(elephant_valve) = elephant_valve {
-                        if valves_open & (1 << elephant_valve.0) == 0 {
+            for neighbor_me in valves_by_name.get(pos_me).unwrap().connections.iter() {
+                // have the elephant open their valve if they can
+                if let Some(elephant_valve) = elephant_valve {
+                    if valves_open & (1 << elephant_valve.0) == 0 {
+                        // elephant opens valve and I move
+                        next.entry((
+                            valves_open | (1 << elephant_valve.0),
+                            neighbor_me,
+                            pos_elephant,
+                        ))
+                        .and_modify(|old| *old = new_relieve.max(*old))
+                        .or_insert(new_relieve);
+                    }
+                }
+
+                for neighbor_elephant in
+                    valves_by_name.get(pos_elephant).unwrap().connections.iter()
+                {
+                    // neither open valve, both move
+                    next.entry((valves_open, *neighbor_me, *neighbor_elephant))
+                        .and_modify(|old| *old = new_relieve.max(*old))
+                        .or_insert(new_relieve);
+
+                    // I open my valve if I can
+                    if let Some(my_valve) = my_valve {
+                        if valves_open & (1 << my_valve.0) == 0 {
                             // elephant opens valve and I move
                             next.entry((
-                                valves_open | (1 << elephant_valve.0),
-                                neighbor_me,
-                                pos_elephant,
+                                valves_open | (1 << my_valve.0),
+                                pos_me,
+                                neighbor_elephant,
                             ))
                             .and_modify(|old| *old = new_relieve.max(*old))
                             .or_insert(new_relieve);
                         }
                     }
-
-                    valves_by_name
-                        .get(pos_elephant)
-                        .unwrap()
-                        .connections
-                        .iter()
-                        .for_each(|neighbor_elephant| {
-                            // neither open valve, both move
-                            next.entry((valves_open, *neighbor_me, *neighbor_elephant))
-                                .and_modify(|old| *old = new_relieve.max(*old))
-                                .or_insert(new_relieve);
-
-                            // I open my valve if I can
-                            if let Some(my_valve) = my_valve {
-                                if valves_open & (1 << my_valve.0) == 0 {
-                                    // elephant opens valve and I move
-                                    next.entry((
-                                        valves_open | (1 << my_valve.0),
-                                        pos_me,
-                                        neighbor_elephant,
-                                    ))
-                                    .and_modify(|old| *old = new_relieve.max(*old))
-                                    .or_insert(new_relieve);
-                                }
-                            }
-                        });
-                });
+                }
+            }
         }
         println!("Step {:2} pre-pruning size: {:6}", step, next.len());
         if next.len() < 50_000 {
