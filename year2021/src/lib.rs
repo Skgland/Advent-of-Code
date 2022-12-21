@@ -1,3 +1,5 @@
+#![allow(clippy::bool_to_int_with_if)]
+
 pub mod day1;
 pub mod day10;
 pub mod day11;
