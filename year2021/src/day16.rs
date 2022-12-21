@@ -57,7 +57,7 @@ pub fn parse_packet_kind(bit_stream: &mut impl Iterator<Item = bool>) -> PacketK
             None => panic!("Out of bits while reading length type ID"),
             Some(false) => {
                 let length = parse_number(bit_stream, 15);
-                let mut data = bit_stream.take(length as usize).peekable();
+                let mut data = bit_stream.take(length).peekable();
                 while data.peek().is_some() {
                     let mut box_iter: Box<dyn Iterator<Item = bool>> = Box::new(&mut data);
                     arguments.push(parse_packet(&mut box_iter))

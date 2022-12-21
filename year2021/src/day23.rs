@@ -369,12 +369,7 @@ pub fn possible_moves<const N: usize>(state: &State<N>) -> Vec<Move> {
         .collect()
 }
 
-pub fn simulate<const N: usize>(
-    state: &State<N>,
-    depth: usize,
-    state_cost: usize,
-    minimum: &mut Option<usize>,
-) {
+pub fn simulate<const N: usize>(state: &State<N>, state_cost: usize, minimum: &mut Option<usize>) {
     for movement in possible_moves(state) {
         let mut new_state = state.clone();
         let move_cost = new_state.apply_move(&movement);
@@ -391,7 +386,7 @@ pub fn simulate<const N: usize>(
             // no other moves can be more efficient than getting to the final state
             break;
         } else {
-            simulate(&new_state, depth + 1, current_cost, minimum);
+            simulate(&new_state, current_cost, minimum);
         }
     }
 }
@@ -400,7 +395,7 @@ pub fn part1(input: &str) -> usize {
     let input = parse_input(input);
     let init_state = State::from(input);
     let mut min = None;
-    simulate(&init_state, 1, 0, &mut min);
+    simulate(&init_state, 0, &mut min);
     min.unwrap()
 }
 
@@ -421,33 +416,33 @@ pub fn part2(input: &str) -> usize {
     let init_state = State::from(input);
 
     let mut min = None;
-    simulate(&init_state, 1, 0, &mut min);
+    simulate(&init_state, 0, &mut min);
     min.unwrap()
 }
 
 #[test]
-#[ignore]
+#[ignore = "extremely slow"]
 fn part1_example() {
     let input = include_str!(concat!("../input/day23.example.txt"));
     assert_eq!(part1(input), 12521);
 }
 
 #[test]
-#[ignore]
+#[ignore = "extremely slow"]
 fn part1_full() {
     let input = include_str!(concat!("../input/day23.txt"));
     assert_eq!(part1(input), 18195);
 }
 
 #[test]
-#[ignore]
+#[ignore = "extremely slow"]
 fn part2_example() {
     let input = include_str!("../input/day23.example.txt");
     assert_eq!(part2(input), 44169);
 }
 
 #[test]
-#[ignore]
+#[ignore = "extremely slow"]
 fn part2_full() {
     // #############
     // #...........#

@@ -23,7 +23,7 @@ fn main() {
     let mut mod_file = std::fs::OpenOptions::new()
         .write(true)
         .create_new(true)
-        .open(&format!("src/day{}.rs", day))
+        .open(format!("src/day{}.rs", day))
         .unwrap();
 
     let bin_file_path = "src/bin/run.rs";
@@ -39,13 +39,13 @@ fn main() {
     let _example_input = std::fs::OpenOptions::new()
         .write(true)
         .create_new(true)
-        .open(&format!("input/day{}.example.txt", day))
+        .open(format!("input/day{}.example.txt", day))
         .unwrap();
 
     let _input = std::fs::OpenOptions::new()
         .write(true)
         .create_new(true)
-        .open(&format!("input/day{}.txt", day))
+        .open(format!("input/day{}.txt", day))
         .unwrap();
 
     writeln!(lib_file, "pub mod day{};", day).unwrap();
