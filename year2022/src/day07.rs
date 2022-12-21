@@ -39,8 +39,8 @@ impl<'a> Dir<'a> {
 
     fn recursive_size(&self) -> usize {
         self.content
-            .iter()
-            .map(|(_, elem)| match elem {
+            .values()
+            .map(|elem| match elem {
                 DirOrFile::Dir(dir) => dir.recursive_size(),
                 DirOrFile::File(size) => *size,
             })

@@ -81,7 +81,7 @@ impl State {
                 material,
             });
         } else {
-            let mut new_states = Kind::ALL
+            let new_states = Kind::ALL
                 .into_iter()
                 .filter(|&kind| {
                     // its a geod bot or
