@@ -1,8 +1,10 @@
+#[allow(clippy::upper_case_acronyms)]
 enum RPS {
     RockLose,
     PaperDraw,
     SissorWin,
 }
+
 impl RPS {
     fn shape_reward(&self) -> u32 {
         match self {
