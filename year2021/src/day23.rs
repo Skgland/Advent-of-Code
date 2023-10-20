@@ -354,8 +354,7 @@ pub fn possible_moves<const N: usize>(state: &State<N>) -> Vec<Move> {
         .flat_map(move |hallway_spot| {
             CRABS.into_iter().flat_map(move |crab| {
                 let hallway_spot = hallway_spot.clone();
-                (0..N)
-                    .map(move |room_idx| (RoomSpot(crab.clone(), room_idx), hallway_spot.clone()))
+                (0..N).map(move |room_idx| (RoomSpot(crab.clone(), room_idx), hallway_spot.clone()))
             })
         })
         .flat_map(|(room_spot, hallway_spot)| {
