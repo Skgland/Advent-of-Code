@@ -1,6 +1,7 @@
 use std::collections::BTreeSet;
 
 fn calculate_priority(item: u8) -> u8 {
+    #[allow(clippy::manual_is_ascii_check)]
     if (b'a'..=b'z').contains(&item) {
         item - b'a' + 1
     } else {

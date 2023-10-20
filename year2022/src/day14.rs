@@ -25,9 +25,8 @@ fn parse(input: &str) -> Input {
 
                     let min_depth = start.1.min(end.1);
                     let max_depth = start.1.max(end.1);
-                    (min_x..=max_x).into_iter().flat_map(move |x| {
+                    (min_x..=max_x).flat_map(move |x| {
                         (min_depth..=max_depth)
-                            .into_iter()
                             .map(move |depth| (x, depth))
                     })
                 })

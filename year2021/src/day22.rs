@@ -108,7 +108,6 @@ impl FromStr for Cuboid {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let ranges = s
             .splitn(3, ',')
-            .into_iter()
             .flat_map(|elem| elem.split_once('='))
             .flat_map(|(_name, range)| range.split_once(".."))
             .map(|(start, end)| Ok((start.parse()?, end.parse()?)))
