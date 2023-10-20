@@ -5,7 +5,7 @@ on:
     branches: [ master, main ]
     paths-ignore:
         - "year*"
-        - "!year2021"
+        - "!year2022"
   pull_request:
     branches: [ master, main ]
 
