@@ -41,8 +41,8 @@ pub fn part2(input: &str) -> u32 {
     parse_into_backpacks(input)
         .collect::<Vec<_>>()
         .chunks(3)
-        .map(|chunck| {
-            chunck
+        .map(|chunk| {
+            chunk
                 .iter()
                 .cloned()
                 .reduce(|l, r| l.intersection(&r).copied().collect())
