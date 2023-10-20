@@ -57,7 +57,6 @@ pub fn reaching_x_velocities(target: Target, steps: i32) -> Vec<i32> {
     let max_x = *target.x.end();
 
     (min_x..=max_x)
-        .into_iter()
         .filter(|initial_x| {
             target
                 .x
@@ -71,7 +70,6 @@ pub fn possible_vectors(target: Target) -> HashSet<(i32, i32)> {
     let min_y = 0.min(*target.y.start());
     let max_y = target.y.start().abs().max(target.y.end().abs());
     (min_y..=max_y)
-        .into_iter()
         .flat_map(|y_velocity| {
             let step_range = y_in_target_range(target.clone(), y_velocity);
             step_range.into_iter().map(move |step| (y_velocity, step))
