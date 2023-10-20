@@ -23,7 +23,7 @@ fn main() {
     let mut mod_file = std::fs::OpenOptions::new()
         .write(true)
         .create_new(true)
-        .open(format!("src/day{}.rs", day))
+        .open(format!("src/day{:02}.rs", day))
         .unwrap();
 
     let bin_file_path = "src/bin/run.rs";
@@ -39,21 +39,21 @@ fn main() {
     let _example_input = std::fs::OpenOptions::new()
         .write(true)
         .create_new(true)
-        .open(format!("input/day{}.example.txt", day))
+        .open(format!("input/day{:02}.example.txt", day))
         .unwrap();
 
     let _input = std::fs::OpenOptions::new()
         .write(true)
         .create_new(true)
-        .open(format!("input/day{}.txt", day))
+        .open(format!("input/day{:02}.txt", day))
         .unwrap();
 
-    writeln!(lib_file, "pub mod day{};", day).unwrap();
+    writeln!(lib_file, "pub mod day{:02};", day).unwrap();
     write!(
         mod_file,
         "{}",
-        include_str!("../../template/lib-mod.rs")
-            .replace("dayX", &format!("day{}", day))
+        include_str!("../template/lib-mod.rs")
+            .replace("dayX", &format!("day{:02}", day))
             .replace("partX", "part1")
     )
     .unwrap();
@@ -63,7 +63,7 @@ fn main() {
         "{}",
         bin_old.replace(
             "=> default\n",
-            &format!("| day{}\n            => default\n", day)
+            &format!("| day{:02}\n            => default\n", day)
         )
     )
     .unwrap();
