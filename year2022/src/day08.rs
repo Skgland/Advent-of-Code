@@ -14,7 +14,7 @@ fn scenic_score(input: &[Vec<u8>], x: usize, y: usize) -> usize {
     let mut rys = 0;
     let height = input[x][y];
 
-    for x in (0..x).into_iter().rev() {
+    for x in (0..x).rev() {
         lxs += 1;
         if input[x][y] >= height {
             break;
@@ -26,7 +26,7 @@ fn scenic_score(input: &[Vec<u8>], x: usize, y: usize) -> usize {
             break;
         }
     }
-    for y in (0..y).into_iter().rev() {
+    for y in (0..y).rev() {
         lys += 1;
         if input[x][y] >= height {
             break;

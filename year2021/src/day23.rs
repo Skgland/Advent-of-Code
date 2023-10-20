@@ -335,7 +335,7 @@ fn parse_input(input: &str) -> Input<2> {
     if let [Some(tops), Some(bottoms)] = rooms {
         let rooms = tops
             .into_iter()
-            .zip(bottoms.into_iter())
+            .zip(bottoms)
             .map(|(a, b)| [a, b])
             .collect::<Vec<_>>();
         let rooms = rooms.try_into().unwrap();
@@ -355,7 +355,6 @@ pub fn possible_moves<const N: usize>(state: &State<N>) -> Vec<Move> {
             CRABS.into_iter().flat_map(move |crab| {
                 let hallway_spot = hallway_spot.clone();
                 (0..N)
-                    .into_iter()
                     .map(move |room_idx| (RoomSpot(crab.clone(), room_idx), hallway_spot.clone()))
             })
         })
