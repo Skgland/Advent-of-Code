@@ -10,7 +10,7 @@ macro_rules! run {
 }
 
 macro_rules! run_arms {
-    ( match ($day:ident, $part:ident) => {  $(pat $pat:pat => $expr:block)*$(,)? $( $id:ident)|* => default }) => {
+    ( match ($day:ident, $part:ident) => {  $(pat $pat:pat => $expr:block),* $(,)? $(|)? $($id:ident)|* => default }) => {
         match ($day.as_deref(), $part.as_deref()) {
             $($pat => $expr)*
             $((Some(stringify!($id)), Some("1")) => {
