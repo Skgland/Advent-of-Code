@@ -38,6 +38,7 @@ pub fn main() {
     run_arms! {
         match (day, part) => {
             | day01
+            | day02
             => default
         }
     }
