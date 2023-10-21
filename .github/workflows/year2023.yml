@@ -4,8 +4,8 @@ on:
   push:
     branches: [ master, main ]
     paths-ignore:
-        - "year*"
-        - "!year2023"
+        - "year*/"
+        - "!year2023/**"
   pull_request:
     branches: [ master, main ]
 
