@@ -4,6 +4,14 @@ on:
     - cron: '6 5 1-26 12 *'                      # from the 1. December till 26. December every day at 5:06am (avoid load at full hours)
 
   workflow_dispatch:                             # allow to manually start the workflow
+    inputs:
+      year:
+        type: number
+        required: true
+        default: 2023
+
+env:
+    year: ${{ github.event_name == 'schedule' && '2023' || github.event.inputs.year }}
 
   # push:                                          # (disabled) run on push, be carefull with this setting
   # as the workflow should only be triggered at a rate lower than
@@ -21,8 +29,8 @@ jobs:
         with:
           userid: 1745334                        # your user id, see setup on how to obtain
           session: ${{ secrets.AOC_SESSION }}    # secret containing session code, see setup on how to obtain
-          year: 2023
-          file: 'year2023/README.md'
+          year: ${{env.year}}
+          file: 'year${{env.year}}/README.md'
 
       #         Optional inputs:
       #
@@ -43,7 +51,7 @@ jobs:
           add-paths: |
             year20??/README.md
       - name: Enable Auto-Merge
-        uses: peter-evans/enable-pull-request-automerge@v2
+        uses: peter-evans/enable-pull-request-automerge@v3
         if: steps.cpr.outputs.pull-request-operation == 'created'
         with:
           merge-method: rebase
