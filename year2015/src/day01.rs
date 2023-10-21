@@ -7,26 +7,31 @@ fn parse_input(input: &str) -> impl Iterator<Item = Direction> + '_ {
     input.bytes().flat_map(|c| match c {
         b'(' => Some(Direction::Up),
         b')' => Some(Direction::Down),
-        _ => None
+        _ => None,
     })
 }
 
 pub fn part1(input: &str) -> i32 {
-    parse_input(input).map(|elem| match elem {
-        Direction::Up => 1,
-        Direction::Down => -1,
-    }).sum()
+    parse_input(input)
+        .map(|elem| match elem {
+            Direction::Up => 1,
+            Direction::Down => -1,
+        })
+        .sum()
 }
 
 pub fn part2(input: &str) -> usize {
     let mut acc = 0;
-    for (idx, dir ) in     parse_input(input).map(|elem| match elem {
-        Direction::Up => 1,
-        Direction::Down => -1,
-    }).enumerate() {
+    for (idx, dir) in parse_input(input)
+        .map(|elem| match elem {
+            Direction::Up => 1,
+            Direction::Down => -1,
+        })
+        .enumerate()
+    {
         acc += dir;
         if acc < 0 {
-            return idx+1
+            return idx + 1;
         }
     }
     0
@@ -85,7 +90,6 @@ fn part1_example5b() {
     let input = include_str!(concat!("../input/day01.example5b.txt"));
     assert_eq!(part1(input), -3);
 }
-
 
 #[test]
 fn part1_full() {
