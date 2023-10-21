@@ -1,0 +1,16 @@
+name: AoC 2015
+
+on:
+  push:
+    branches: [ master, main ]
+    paths-ignore:
+        - "year*/"
+        - "!year2015/**"
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  rust:
+    uses: ./.github/workflows/rust.yml
+    with:
+      year: 2015
