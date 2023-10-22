@@ -24,7 +24,6 @@ impl Square {
     }
 
     fn without(&self, other: &Self) -> Vec<Square> {
-        // no overlap just return as is
         if let Some(overlap) = self.overlap(other) {
             let pre_y = Square {
                 x: self.x.clone(),
@@ -55,6 +54,7 @@ impl Square {
             squares.retain(|square| !square.is_empty());
             squares
         } else {
+            // no overlap just return as is
             vec![Square {
                 x: self.x.clone(),
                 y: self.y.clone(),
@@ -95,7 +95,6 @@ fn parse_input(input: &str) -> impl Iterator<Item = (Action, Square)> + '_ {
     })
 }
 
-// TODO optimize this
 pub fn part1(input: &str) -> usize {
     let iter = parse_input(input);
     let mut lights = vec![];
@@ -179,7 +178,8 @@ pub fn part2(input: &str) -> usize {
             });
 
         lights = unchanged
-            .chain(updated.chain(new))
+            .chain(updated)
+            .chain(new)
             .filter(|(square, intensity)| (!square.is_empty()) && (*intensity > 0))
             .collect();
     }
