@@ -139,19 +139,24 @@ pub fn part2(input: &str) -> usize {
     let mut lights: Vec<(Square, usize)> = vec![];
 
     for (action, square) in iter {
-
-        let unchanged = lights
-            .iter()
-            .flat_map(|&(ref current, intensity)| {
-                current.without(&square).into_iter().map(move |square| (square, intensity))
-            });
+        let unchanged = lights.iter().flat_map(|&(ref current, intensity)| {
+            current
+                .without(&square)
+                .into_iter()
+                .map(move |square| (square, intensity))
+        });
 
         let updated = lights.iter().flat_map(|&(ref current, intensity)| {
-            current.overlap(&square).map(move |square| (square, match action {
-                Action::On => intensity + 1,
-                Action::Off => intensity.saturating_sub(1),
-                Action::Toggle => intensity + 2,
-            }))
+            current.overlap(&square).map(move |square| {
+                (
+                    square,
+                    match action {
+                        Action::On => intensity + 1,
+                        Action::Off => intensity.saturating_sub(1),
+                        Action::Toggle => intensity + 2,
+                    },
+                )
+            })
         });
 
         let new = lights
@@ -160,16 +165,29 @@ pub fn part2(input: &str) -> usize {
                 acc.iter()
                     .flat_map(|square| square.without(current))
                     .collect()
-            }).into_iter().map(|square| (square, match action {
-                Action::On =>  1,
-                Action::Off => 0,
-                Action::Toggle => 2,
-            }));
+            })
+            .into_iter()
+            .map(|square| {
+                (
+                    square,
+                    match action {
+                        Action::On => 1,
+                        Action::Off => 0,
+                        Action::Toggle => 2,
+                    },
+                )
+            });
 
-        lights = unchanged.chain(updated.chain(new)).filter(|(square, intensity)| (!square.is_empty()) && (*intensity > 0)).collect();
+        lights = unchanged
+            .chain(updated.chain(new))
+            .filter(|(square, intensity)| (!square.is_empty()) && (*intensity > 0))
+            .collect();
     }
 
-    lights.iter().map(|(square, intensity)| square.size()*intensity).sum()
+    lights
+        .iter()
+        .map(|(square, intensity)| square.size() * intensity)
+        .sum()
 }
 
 #[test]

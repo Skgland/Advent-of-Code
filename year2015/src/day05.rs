@@ -8,7 +8,9 @@ fn p1_is_nice(word: &str) -> bool {
         .as_bytes()
         .windows(2)
         .any(|window| matches!(window, [a, b] if a == b));
-    let crit3 = !["ab", "cd", "pq", "xy"].iter().any(|bad| word.contains(bad));
+    let crit3 = !["ab", "cd", "pq", "xy"]
+        .iter()
+        .any(|bad| word.contains(bad));
     crit1 && crit2 && crit3
 }
 
@@ -16,16 +18,15 @@ pub fn part1(input: &str) -> usize {
     parse_input(input).filter(|word| p1_is_nice(word)).count()
 }
 
-
 fn p2_is_nice(word: &str) -> bool {
     let mut crit1 = false;
 
-    for start in 0..word.len()-2 {
-         let (pair, rest) = &word[start..].split_at(2);
-         if rest.contains(pair) {
+    for start in 0..word.len() - 2 {
+        let (pair, rest) = &word[start..].split_at(2);
+        if rest.contains(pair) {
             crit1 = true;
             break;
-         }
+        }
     }
 
     let crit2 = word
