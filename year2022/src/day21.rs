@@ -1,4 +1,4 @@
-use std::{collections::HashMap, ops::Deref, rc::Rc};
+use std::{collections::HashMap, rc::Rc};
 
 type Variable = str;
 pub enum Expression<'a> {
@@ -65,7 +65,7 @@ impl State {
                     match (l.as_ref(), r.as_ref()) {
                         (State::Constant(val), State::BinOp(l, r, op))
                         | (State::BinOp(l, r, op), State::Constant(val)) => {
-                            match (l.as_ref().deref(), r.as_ref().deref()) {
+                            match (l.as_ref(), r.as_ref()) {
                                 (State::Constant(val2), _) => match op {
                                     Op::Add => {
                                         State::Eq(Rc::new(State::Constant(val - val2)), r.clone())
