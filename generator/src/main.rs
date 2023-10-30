@@ -1,19 +1,23 @@
 use std::io::Write;
 
-fn main() {
-    let day_param = if let Some(first_param) = std::env::args().nth(1) {
-        first_param
-    } else {
-        eprint!("Not enough arguments!\nPlease provide number for the day to generate!");
-        return;
-    };
+use clap::Parser;
 
-    let day = if let Ok(day) = day_param.parse::<u8>() {
-        day
-    } else {
-        eprint!("Failed to parse u8!\nPlease provide number for the day to generate!");
-        return;
-    };
+#[derive(Parser, Debug)]
+#[command(version, about)]
+struct CliArgs {
+    year: u16,
+    day: u8,
+}
+
+fn main() {
+
+    let args = CliArgs::parse();
+
+    generate(args.day, args.year);
+}
+
+
+fn generate(day: u8, year: u16) {
 
     let mut lib_file = std::fs::OpenOptions::new()
         .append(true)
@@ -26,9 +30,9 @@ fn main() {
         .open(format!("src/day{:02}.rs", day))
         .unwrap();
 
-    let bin_file_path = "src/bin/run.rs";
+    let bin_file_path = format!("src/bin/run{year}.rs");
 
-    let bin_old = std::fs::read_to_string(bin_file_path).unwrap();
+    let bin_old = std::fs::read_to_string(&bin_file_path).unwrap();
 
     let mut run_bin = std::fs::OpenOptions::new()
         .write(true)
