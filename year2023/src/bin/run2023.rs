@@ -1,3 +1,4 @@
+#[allow(unused_macros)]
 macro_rules! run {
     ($day:ident, $part:ident) => {
         let result = aoc2023::$day::$part(include_str!(concat!(
