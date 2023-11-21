@@ -10,15 +10,12 @@ struct CliArgs {
 }
 
 fn main() {
-
     let args = CliArgs::parse();
 
     generate(args.day, args.year);
 }
 
-
 fn generate(day: u8, year: u16) {
-
     let mut lib_file = std::fs::OpenOptions::new()
         .append(true)
         .open("src/lib.rs")
