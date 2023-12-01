@@ -34,24 +34,24 @@ pub fn part2(input: &str) -> usize {
 
 #[test]
 fn part1_example() {
-    let input = include_str!("../input/day6.example.txt");
+    let input = include_str!("../input/day06.example.txt");
     assert_eq!(part1(input), 5934);
 }
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!("../input/day6.txt"));
+    let input = include_str!(concat!("../input/day06.txt"));
     assert_eq!(part1(input), 349549);
 }
 
 #[test]
 fn part2_example() {
-    let input = include_str!("../input/day6.example.txt");
+    let input = include_str!("../input/day06.example.txt");
     assert_eq!(part2(input), 26984457539);
 }
 
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!("../input/day6.txt"));
+    let input = include_str!(concat!("../input/day06.txt"));
     assert_eq!(part2(input), 1589590444365);
 }

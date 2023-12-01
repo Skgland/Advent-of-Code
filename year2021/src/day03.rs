@@ -6,7 +6,7 @@ fn parse_input(input: &str) -> impl Iterator<Item = &[u8]> + '_ {
 
 /// Produces a bit mask with the lower n bits set
 ///```rust
-/// # use aoc2021::day3::mask;
+/// # use aoc2021::day03::mask;
 /// assert_eq!(mask(5), 0b11111);
 ///```
 pub const fn mask(bits: usize) -> u32 {
@@ -93,24 +93,24 @@ pub fn part2(input: &str) -> u32 {
 
 #[test]
 fn part1_example() {
-    let input = include_str!("../input/day3.example.txt");
+    let input = include_str!("../input/day03.example.txt");
     assert_eq!(part1(input), 22 * 9);
 }
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!("../input/day3.txt"));
+    let input = include_str!(concat!("../input/day03.txt"));
     assert_eq!(part1(input), 3242606);
 }
 
 #[test]
 fn part2_example() {
-    let input = include_str!("../input/day3.example.txt");
+    let input = include_str!("../input/day03.example.txt");
     assert_eq!(part2(input), 23 * 10);
 }
 
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!("../input/day3.txt"));
+    let input = include_str!(concat!("../input/day03.txt"));
     assert_eq!(part2(input), 4856080);
 }

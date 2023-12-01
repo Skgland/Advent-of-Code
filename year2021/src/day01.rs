@@ -35,24 +35,24 @@ pub fn part2(input: &str) -> u32 {
 
 #[test]
 fn part1_example() {
-    let input = include_str!(concat!("../input/day1.example.txt"));
+    let input = include_str!(concat!("../input/day01.example.txt"));
     assert_eq!(part1(input), 7);
 }
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!("../input/day1.txt"));
+    let input = include_str!(concat!("../input/day01.txt"));
     assert_eq!(part1(input), 1292);
 }
 
 #[test]
 fn part2_example() {
-    let input = include_str!("../input/day1.example.txt");
+    let input = include_str!("../input/day01.example.txt");
     assert_eq!(part2(input), 5);
 }
 
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!("../input/day1.txt"));
+    let input = include_str!(concat!("../input/day01.txt"));
     assert_eq!(part2(input), 1262);
 }
