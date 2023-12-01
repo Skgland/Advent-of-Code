@@ -47,19 +47,21 @@ fn find_numbers(elem: &str) -> (u32, u32) {
     let first = PATTERNS
         .iter()
         .flat_map(|&(num, pat)| elem.find(pat).map(|idx| (idx, num)))
-        .min_by_key(|(idx, _)| *idx).unwrap().1;
+        .min_by_key(|(idx, _)| *idx)
+        .unwrap()
+        .1;
     let last = PATTERNS
         .iter()
-        .flat_map(|&(num, pat)| {
-            elem.rfind(pat).map(|idx| (idx, num))
-        })
-        .max_by_key(|(idx, _)| *idx).unwrap().1;
+        .flat_map(|&(num, pat)| elem.rfind(pat).map(|idx| (idx, num)))
+        .max_by_key(|(idx, _)| *idx)
+        .unwrap()
+        .1;
     (first, last)
 }
 
 #[test]
 fn problem_case() {
-    assert_eq!(find_numbers("fpfqp7three7"), (7,7))
+    assert_eq!(find_numbers("fpfqp7three7"), (7, 7))
 }
 
 #[test]
@@ -77,7 +79,7 @@ fn part1_full() {
 #[test]
 fn part2_example() {
     let input = include_str!("../input/day01.example2.txt");
-    assert_eq!(part2(input), 29+83+13+24+42+14+76);
+    assert_eq!(part2(input), 29 + 83 + 13 + 24 + 42 + 14 + 76);
 }
 
 #[test]
