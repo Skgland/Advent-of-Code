@@ -40,6 +40,7 @@ pub fn main() {
         match (day, part) => {
             | day01
             | day02
+            | day03
             => default
         }
     }
