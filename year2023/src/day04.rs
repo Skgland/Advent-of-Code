@@ -43,24 +43,19 @@ pub fn part1(input: &str) -> u32 {
 }
 
 pub fn part2(input: &str) -> u32 {
-    let mut multipliers = VecDeque::new();
-    let mut sum = 0;
-
-    for card in parse_input(input) {
-        let multiplier = multipliers.pop_front().unwrap_or(1);
-        dbg!(multiplier);
-        sum += multiplier;
-        let matches = card.matches();
-        if multipliers.len() < matches {
-            multipliers.resize(matches, 1);
-        }
-        for entry in &mut multipliers.make_contiguous()[0..matches] {
-            *entry += multiplier;
-        }
-        dbg!(&multipliers);
-    }
-
-    sum
+    parse_input(input)
+        .map(|card| card.matches())
+        .scan(VecDeque::new(), |multipliers, matches| {
+            let multiplier = multipliers.pop_front().unwrap_or(1);
+            if multipliers.len() < matches {
+                multipliers.resize(matches, 1);
+            }
+            for entry in &mut multipliers.make_contiguous()[0..matches] {
+                *entry += multiplier;
+            }
+            Some(multiplier)
+        })
+        .sum()
 }
 
 #[test]
