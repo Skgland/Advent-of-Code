@@ -1,4 +1,4 @@
-use std::{collections::{HashMap, btree_map::Values}, ops::RangeInclusive};
+use std::{collections::HashMap, ops::RangeInclusive};
 
 #[derive(Debug)]
 struct Mapping {
@@ -18,7 +18,6 @@ impl Mapping {
                 (Some(val.start() - self.source_range.start() + self.dest_start ..= self.dest_start + self.source_range.clone().count()), [Some(self.source_range.end()+1..=*val.end()), None])
             },
             (false, true) => {
-                dbg!(&self, &val);
                 (Some(self.dest_start ..= val.end() - self.source_range.start() + self.dest_start), [Some(*val.start()..=self.source_range.start()-1), None])
             },
             (false, false) => {
@@ -61,8 +60,6 @@ impl Mappings {
 
         result.append(&mut todo_next);
 
-        result.sort_by_key(|elem|*elem.start());
-
         result.into_iter()
     }
 }
@@ -75,7 +72,7 @@ struct Almanac {
 }
 
 impl Almanac {
-    fn lookup(&self, target: &str, ranges: bool) -> impl Iterator<Item = usize> {
+    fn lookup(&self, target: &str, ranges: bool) -> impl Iterator<Item = RangeInclusive<usize>> {
         let mut current_name = "seed";
 
         let mut current_values: Vec<RangeInclusive<usize>> = if !ranges {
@@ -90,17 +87,13 @@ impl Almanac {
         while current_name != target {
             let mapping = &self.maps_by_src[current_name];
             current_name = &mapping.dest;
-            dbg!(current_values.len());
             current_values = current_values
                 .into_iter()
                 .flat_map(|val| mapping.map(val))
                 .collect();
-
-            current_values.sort_by_key(|elem| *elem.start());
-
         }
 
-        current_values.into_iter().flatten()
+        current_values.into_iter()
     }
 }
 
@@ -166,11 +159,11 @@ fn parse_input(input: &str) -> Almanac {
 }
 
 pub fn part1(input: &str) -> usize {
-    parse_input(input).lookup("location", false).min().unwrap()
+    parse_input(input).lookup("location", false).map(|range|*range.start()).min().unwrap()
 }
 
 pub fn part2(input: &str) -> usize {
-    parse_input(input).lookup("location", true).min().unwrap()
+    parse_input(input).lookup("location", true).map(|range|*range.start()).min().unwrap()
 }
 
 #[test]
