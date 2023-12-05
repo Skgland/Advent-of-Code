@@ -7,30 +7,52 @@ struct Mapping {
 }
 
 impl Mapping {
-
-    fn map(&self, val: RangeInclusive<usize>) -> (Option<RangeInclusive<usize>>, [Option<RangeInclusive<usize>>; 2]) {
-
-        match (self.source_range.contains(val.start()), self.source_range.contains(val.end())) {
-            (true, true) =>  {
-                (Some(val.start() - self.source_range.start() + self.dest_start..= val.end() - self.source_range.start() + self.dest_start), [None, None])
-            },
-            (true, false) => {
-                (Some(val.start() - self.source_range.start() + self.dest_start ..= self.dest_start + self.source_range.clone().count()), [Some(self.source_range.end()+1..=*val.end()), None])
-            },
-            (false, true) => {
-                (Some(self.dest_start ..= val.end() - self.source_range.start() + self.dest_start), [Some(*val.start()..=self.source_range.start()-1), None])
-            },
+    fn map(
+        &self,
+        val: RangeInclusive<usize>,
+    ) -> (
+        Option<RangeInclusive<usize>>,
+        [Option<RangeInclusive<usize>>; 2],
+    ) {
+        match (
+            self.source_range.contains(val.start()),
+            self.source_range.contains(val.end()),
+        ) {
+            (true, true) => (
+                Some(
+                    val.start() - self.source_range.start() + self.dest_start
+                        ..=val.end() - self.source_range.start() + self.dest_start,
+                ),
+                [None, None],
+            ),
+            (true, false) => (
+                Some(
+                    val.start() - self.source_range.start() + self.dest_start
+                        ..=self.dest_start + self.source_range.clone().count(),
+                ),
+                [Some(self.source_range.end() + 1..=*val.end()), None],
+            ),
+            (false, true) => (
+                Some(self.dest_start..=val.end() - self.source_range.start() + self.dest_start),
+                [Some(*val.start()..=self.source_range.start() - 1), None],
+            ),
             (false, false) => {
-                if self.source_range.start() <= val.end() && self.source_range.end() >= val.start(){
+                if self.source_range.start() <= val.end() && self.source_range.end() >= val.start()
+                {
                     // val completely covers mapping
-                    (Some(self.dest_start..=self.source_range.clone().count()), [Some(*val.start()..=self.source_range.start()-1), Some(self.source_range.end()+1..=*val.end())])
+                    (
+                        Some(self.dest_start..=self.source_range.clone().count()),
+                        [
+                            Some(*val.start()..=self.source_range.start() - 1),
+                            Some(self.source_range.end() + 1..=*val.end()),
+                        ],
+                    )
                 } else {
                     // no overlap
                     (None, [Some(val), None])
                 }
-            },
+            }
         }
-
     }
 }
 
@@ -45,25 +67,28 @@ impl Mappings {
         &self,
         range: RangeInclusive<usize>,
     ) -> impl Iterator<Item = RangeInclusive<usize>> + '_ {
-
         let mut todo_next = vec![range];
         let mut result = vec![];
 
-            for mapping in &self.mappings {
-                for range in std::mem::take(&mut todo_next) {
-                    let (mapped, unmapped) =  mapping.map(range);
+        for mapping in &self.mappings {
+            for range in std::mem::take(&mut todo_next) {
+                let (mapped, unmapped) = mapping.map(range);
 
-                    todo_next.extend(unmapped.into_iter().flatten().filter(|elem|!elem.is_empty()));
-                    result.extend(mapped.into_iter());
-                }
+                todo_next.extend(
+                    unmapped
+                        .into_iter()
+                        .flatten()
+                        .filter(|elem| !elem.is_empty()),
+                );
+                result.extend(mapped.into_iter());
             }
+        }
 
         result.append(&mut todo_next);
 
         result.into_iter()
     }
 }
-
 
 #[derive(Debug)]
 struct Almanac {
@@ -159,11 +184,19 @@ fn parse_input(input: &str) -> Almanac {
 }
 
 pub fn part1(input: &str) -> usize {
-    parse_input(input).lookup("location", false).map(|range|*range.start()).min().unwrap()
+    parse_input(input)
+        .lookup("location", false)
+        .map(|range| *range.start())
+        .min()
+        .unwrap()
 }
 
 pub fn part2(input: &str) -> usize {
-    parse_input(input).lookup("location", true).map(|range|*range.start()).min().unwrap()
+    parse_input(input)
+        .lookup("location", true)
+        .map(|range| *range.start())
+        .min()
+        .unwrap()
 }
 
 #[test]
