@@ -1,4 +1,4 @@
-use std::{str::FromStr, collections::BTreeMap};
+use std::{collections::BTreeMap, str::FromStr};
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
 enum Card {
@@ -73,7 +73,6 @@ fn hand_category_order() {
 #[derive(Debug, PartialEq, Eq, Clone)]
 struct Hand([Card; 5]);
 
-
 impl PartialOrd for Hand {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
         Some(self.cmp(other))
@@ -85,9 +84,15 @@ impl Hand {
         let mut cards = self.0.clone();
         cards.sort();
 
-        let card_counts : BTreeMap<_,_> = cards
+        let card_counts: BTreeMap<_, _> = cards
             .iter()
-            .map(|elem| (elem.clone(), cards.iter().filter(|&elem2| elem == elem2).count())).collect();
+            .map(|elem| {
+                (
+                    elem.clone(),
+                    cards.iter().filter(|&elem2| elem == elem2).count(),
+                )
+            })
+            .collect();
 
         match card_counts.iter().map(|elem| elem.1).max() {
             Some(1) => HandCategory::HighCard,
@@ -99,7 +104,7 @@ impl Hand {
                 } else {
                     HandCategory::OnePair
                 }
-            },
+            }
             Some(3) => {
                 if card_counts.len() == 2 {
                     HandCategory::FullHouse
@@ -114,7 +119,6 @@ impl Hand {
 
 impl Ord for Hand {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-
         let category = self.category().cmp(&other.category());
 
         if category.is_ne() {
@@ -139,30 +143,50 @@ impl AlternativeHand {
                 HandCategory::OnePair => HandCategory::Kind3,
                 HandCategory::TwoPair => HandCategory::FullHouse,
                 HandCategory::Kind3 => HandCategory::Kind4,
-                HandCategory::FullHouse => unreachable!("Only possible with 2 or 3 Joker, but we have 1"),
+                HandCategory::FullHouse => {
+                    unreachable!("Only possible with 2 or 3 Joker, but we have 1")
+                }
                 HandCategory::Kind4 => HandCategory::Kind5,
                 HandCategory::Kind5 => unreachable!("Only possible with 5 Joker, but we have 1"),
             },
-            2 => match standard{
-                HandCategory::HighCard => unreachable!("Only possible with 0 or 1 Joker, but we have 2"),
+            2 => match standard {
+                HandCategory::HighCard => {
+                    unreachable!("Only possible with 0 or 1 Joker, but we have 2")
+                }
                 HandCategory::OnePair => HandCategory::Kind3,
                 HandCategory::TwoPair => HandCategory::Kind4,
-                HandCategory::Kind3 => unreachable!("Only possible with 1 or 3 Joker, but we have 2"),
+                HandCategory::Kind3 => {
+                    unreachable!("Only possible with 1 or 3 Joker, but we have 2")
+                }
                 HandCategory::FullHouse => HandCategory::Kind5,
-                HandCategory::Kind4 => unreachable!("Only possible with 1 or 4 Joker, but we have 2"),
-                HandCategory::Kind5 => unreachable!("Only possible with 0 or 5 Joker, but we have 2"),
-            }
+                HandCategory::Kind4 => {
+                    unreachable!("Only possible with 1 or 4 Joker, but we have 2")
+                }
+                HandCategory::Kind5 => {
+                    unreachable!("Only possible with 0 or 5 Joker, but we have 2")
+                }
+            },
             3 => match standard {
-                HandCategory::HighCard => unreachable!("Only possible with 0 or 1 Joker, but we have 3"),
-                HandCategory::OnePair => unreachable!("Only possible with 0-2 Joker, but we have 3"),
-                HandCategory::TwoPair => unreachable!("Only possible with 0-2 Joker, but we have 3"),
+                HandCategory::HighCard => {
+                    unreachable!("Only possible with 0 or 1 Joker, but we have 3")
+                }
+                HandCategory::OnePair => {
+                    unreachable!("Only possible with 0-2 Joker, but we have 3")
+                }
+                HandCategory::TwoPair => {
+                    unreachable!("Only possible with 0-2 Joker, but we have 3")
+                }
                 HandCategory::Kind3 => HandCategory::Kind4,
                 HandCategory::FullHouse => HandCategory::Kind5,
-                HandCategory::Kind4 => unreachable!("Only possible with 1 or 4 Joker, but we have 3"),
-                HandCategory::Kind5 => unreachable!("Only possible with 0 or 5 Joker, but we have 3"),
-            }
-            4  => HandCategory::Kind5,
-            _ => unreachable!("A hand has 5 cards")
+                HandCategory::Kind4 => {
+                    unreachable!("Only possible with 1 or 4 Joker, but we have 3")
+                }
+                HandCategory::Kind5 => {
+                    unreachable!("Only possible with 0 or 5 Joker, but we have 3")
+                }
+            },
+            4 => HandCategory::Kind5,
+            _ => unreachable!("A hand has 5 cards"),
         }
     }
 }
@@ -175,7 +199,6 @@ impl PartialOrd for AlternativeHand {
 
 impl Ord for AlternativeHand {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-
         let category = self.category().cmp(&other.category());
 
         if category.is_ne() {
@@ -183,37 +206,50 @@ impl Ord for AlternativeHand {
         } else {
             fn re_map_cards(old: Card) -> Card {
                 match old {
-                    Card::Num2 =>  Card::Num3,
-                    Card::Num3 =>  Card::Num4,
-                    Card::Num4 =>  Card::Num5,
-                    Card::Num5 =>  Card::Num6,
-                    Card::Num6 =>  Card::Num7,
-                    Card::Num7 =>  Card::Num8,
-                    Card::Num8 =>  Card::Num9,
-                    Card::Num9 =>  Card::Tapir,
+                    Card::Num2 => Card::Num3,
+                    Card::Num3 => Card::Num4,
+                    Card::Num4 => Card::Num5,
+                    Card::Num5 => Card::Num6,
+                    Card::Num6 => Card::Num7,
+                    Card::Num7 => Card::Num8,
+                    Card::Num8 => Card::Num9,
+                    Card::Num9 => Card::Tapir,
                     Card::Tapir => Card::Joker,
                     Card::Joker => Card::Num2,
                     Card::Queen => Card::Queen,
                     Card::King => Card::King,
-                    Card::Ace => Card::Ace ,
+                    Card::Ace => Card::Ace,
                 }
             }
-            self.0.clone().map(re_map_cards).cmp(&other.0.clone().map(re_map_cards))
+            self.0
+                .clone()
+                .map(re_map_cards)
+                .cmp(&other.0.clone().map(re_map_cards))
         }
     }
 }
 
-
 #[test]
 fn hand_comparison() {
     let example_a = Hand([Card::King, Card::King, Card::Num6, Card::Num7, Card::Num7]);
-    let example_b = Hand([Card::King,Card::Tapir,Card::Joker, Card::Joker, Card::Tapir]);
+    let example_b = Hand([
+        Card::King,
+        Card::Tapir,
+        Card::Joker,
+        Card::Joker,
+        Card::Tapir,
+    ]);
     assert!(example_a.cmp(&example_b).is_ge());
 
-    let example_a = Hand([Card::Queen, Card::Queen, Card::Queen, Card::Joker, Card::Ace]);
-    let example_b = Hand([Card::Tapir,Card::Num5,Card::Num5, Card::Joker, Card::Num5]);
+    let example_a = Hand([
+        Card::Queen,
+        Card::Queen,
+        Card::Queen,
+        Card::Joker,
+        Card::Ace,
+    ]);
+    let example_b = Hand([Card::Tapir, Card::Num5, Card::Num5, Card::Joker, Card::Num5]);
     assert!(example_a.cmp(&example_b).is_ge());
-
 }
 
 struct Bet {
@@ -262,7 +298,6 @@ pub fn part2(input: &str) -> usize {
         .map(|(idx, bet)| (idx + 1) * bet.amount as usize)
         .sum()
 }
-
 
 #[test]
 #[allow(clippy::identity_op)]
