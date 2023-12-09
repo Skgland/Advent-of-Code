@@ -11,11 +11,10 @@ fn next_element(seq: &[i32]) -> i32 {
 
     loop {
         end_stack.push(*prev_row.last().unwrap());
-        let tmp = prev_row
+        row = prev_row
             .windows(2)
             .map(|items| items[1] - items[0])
             .collect::<Vec<_>>();
-        row = tmp;
         prev_row = &row.as_slice();
 
         if prev_row.iter().all(|&elem| elem == 0) {
