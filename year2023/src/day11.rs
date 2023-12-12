@@ -109,5 +109,5 @@ fn part2_example2() {
 #[test]
 fn part2_full() {
     let input = include_str!(concat!("../input/day11.txt"));
-    assert_eq!(part2(input), 1262);
+    assert_eq!(part2(input), 632003913611);
 }
