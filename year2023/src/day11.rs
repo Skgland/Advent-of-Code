@@ -1,30 +1,46 @@
-
-
 struct Galaxy {
     row: usize,
     column: usize,
 }
 
 fn parse_input(input: &str) -> Vec<Galaxy> {
-    input.lines().enumerate().flat_map(|(row_idx, row)| {
-       row.chars().enumerate().filter_map(move |(column_idx, char)| matches!(char, '#').then_some(Galaxy {row:row_idx, column: column_idx}))
-   }).collect()
+    input
+        .lines()
+        .enumerate()
+        .flat_map(|(row_idx, row)| {
+            row.chars()
+                .enumerate()
+                .filter_map(move |(column_idx, char)| {
+                    matches!(char, '#').then_some(Galaxy {
+                        row: row_idx,
+                        column: column_idx,
+                    })
+                })
+        })
+        .collect()
 }
 
 fn expand(galaxies: &mut Vec<Galaxy>, multiplier: usize) {
     let max_row = galaxies.iter().map(|galaxy| galaxy.row).max().unwrap();
-    let empty_rows = (0..max_row).filter(|&row| galaxies.iter().all(|galaxy| row != galaxy.row)).collect::<Vec<_>>();
+    let empty_rows = (0..max_row)
+        .filter(|&row| galaxies.iter().all(|galaxy| row != galaxy.row))
+        .collect::<Vec<_>>();
     let max_column = galaxies.iter().map(|galaxy| galaxy.column).max().unwrap();
-    let empty_column = (0..max_column).filter(|&column| galaxies.iter().all(|galaxy| column != galaxy.column)).collect::<Vec<_>>();
+    let empty_column = (0..max_column)
+        .filter(|&column| galaxies.iter().all(|galaxy| column != galaxy.column))
+        .collect::<Vec<_>>();
     for galaxy in galaxies {
-        galaxy.column += empty_column.iter().filter(|&&column| column < galaxy.column).count() * (multiplier - 1);
+        galaxy.column += empty_column
+            .iter()
+            .filter(|&&column| column < galaxy.column)
+            .count()
+            * (multiplier - 1);
         galaxy.row += empty_rows.iter().filter(|&&row| row < galaxy.row).count() * (multiplier - 1);
     }
 }
 
 fn distances(galaxies: &[Galaxy]) -> usize {
-
-    let mut remaining_first  = galaxies;
+    let mut remaining_first = galaxies;
 
     let mut sum = 0;
 
@@ -50,7 +66,6 @@ pub fn part1(input: &str) -> usize {
     expand(&mut galaxies, 2);
     distances(&galaxies)
 }
-
 
 pub fn part2(input: &str) -> usize {
     let mut galaxies = parse_input(input);

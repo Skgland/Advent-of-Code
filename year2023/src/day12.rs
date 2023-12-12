@@ -13,41 +13,60 @@ struct Row {
 }
 
 impl Row {
-
     fn unfold(&mut self) {
         self.list.insert(0, SpringCondition::Unknown);
-        self.list = std::iter::repeat(std::mem::take(&mut self.list)).take(5).flatten().collect();
+        self.list = std::iter::repeat(std::mem::take(&mut self.list))
+            .take(5)
+            .flatten()
+            .collect();
         self.list.remove(0);
 
-        self.contiguous_bad = std::iter::repeat(std::mem::take(&mut self.contiguous_bad)).take(5).flatten().collect()
+        self.contiguous_bad = std::iter::repeat(std::mem::take(&mut self.contiguous_bad))
+            .take(5)
+            .flatten()
+            .collect()
     }
 
     fn valid_permutations(&self) -> usize {
-
         let mut suffix_cache = HashMap::new();
 
-        fn solve_suffix(mut list: &[SpringCondition], cont: &[u8], cache: &mut HashMap<(usize, usize), usize>) -> usize {
+        fn solve_suffix(
+            mut list: &[SpringCondition],
+            cont: &[u8],
+            cache: &mut HashMap<(usize, usize), usize>,
+        ) -> usize {
             match cont {
-                [] => if list.iter().all(|elem| matches!(elem, SpringCondition::Good | SpringCondition::Unknown)) { 1 } else {
-                    // no streak left but still bad springs left
-                    0
+                [] => {
+                    if list.iter().all(|elem| {
+                        matches!(elem, SpringCondition::Good | SpringCondition::Unknown)
+                    }) {
+                        1
+                    } else {
+                        // no streak left but still bad springs left
+                        0
+                    }
                 }
-                &[next_streak, ref remaining_streaks@..] => {
+                &[next_streak, ref remaining_streaks @ ..] => {
                     // skip leading good springs
-                    while let [SpringCondition::Good, rem@..] = list {
+                    while let [SpringCondition::Good, rem @ ..] = list {
                         list = rem
                     }
                     match list {
                         [SpringCondition::Bad, ..] => {
                             solve_bad_suffix(next_streak as usize, remaining_streaks, list, cache)
-                        },
-                        [SpringCondition::Unknown, remaining_list@..] => {
+                        }
+                        [SpringCondition::Unknown, remaining_list @ ..] => {
                             let key = (list.len(), cont.len());
                             if let Some(&value) = cache.get(&key) {
                                 value
                             } else {
                                 let good = solve_suffix(remaining_list, cont, cache);
-                                let bad = solve_bad_suffix(next_streak as usize, remaining_streaks, list, cache);
+                                let bad = solve_bad_suffix(
+                                    next_streak as usize,
+                                    remaining_streaks,
+                                    list,
+                                    cache,
+                                );
                                 let value = good + bad;
                                 cache.insert(key, value);
                                 value
@@ -63,34 +82,41 @@ impl Row {
         }
 
         // assume the next bad streak is starting now
-        fn solve_bad_suffix(streak: usize, remaining_streaks: &[u8], list: &[SpringCondition], cache: &mut HashMap<(usize, usize), usize>) -> usize{
+        fn solve_bad_suffix(
+            streak: usize,
+            remaining_streaks: &[u8],
+            list: &[SpringCondition],
+            cache: &mut HashMap<(usize, usize), usize>,
+        ) -> usize {
             if list.len() < streak {
                 // too few springs remaining
                 return 0;
             }
 
-            if list[..streak].iter().any(|elem| matches!(elem, SpringCondition::Good)) {
+            if list[..streak]
+                .iter()
+                .any(|elem| matches!(elem, SpringCondition::Good))
+            {
                 // interrupted streak
                 return 0;
             }
 
             match list.get(streak..) {
-                Some([SpringCondition::Good| SpringCondition::Unknown,remaining_list@..]) => {
+                Some([SpringCondition::Good | SpringCondition::Unknown, remaining_list @ ..]) => {
                     solve_suffix(remaining_list, remaining_streaks, cache)
-                },
-                Some([SpringCondition::Bad,..]) => {
+                }
+                Some([SpringCondition::Bad, ..]) => {
                     // streak too long
                     0
                 }
-                Some([])|None => {
+                Some([]) | None => {
                     if remaining_streaks.is_empty() {
                         1
                     } else {
                         0
                     }
-                },
+                }
             }
-
         }
 
         solve_suffix(&self.list, &self.contiguous_bad, &mut suffix_cache)
@@ -172,8 +198,12 @@ pub fn part1(input: &str) -> usize {
 }
 
 pub fn part2(input: &str) -> usize {
-    parse_input(input).map(|mut row| {row.unfold();row.valid_permutations()}).sum()
-
+    parse_input(input)
+        .map(|mut row| {
+            row.unfold();
+            row.valid_permutations()
+        })
+        .sum()
 }
 
 #[test]
