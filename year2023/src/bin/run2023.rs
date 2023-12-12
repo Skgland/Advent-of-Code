@@ -49,6 +49,7 @@ pub fn main() {
             | day09
             | day10
             | day12
+            | day11
             => default
         }
     }
