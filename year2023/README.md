@@ -1,4 +1,4 @@
 Advent of Code 2023
 ===================
 
-![](https://img.shields.io/badge/stars%20⭐-20-yellow) ![](https://img.shields.io/badge/days%20completed-10-red)
+![](https://img.shields.io/badge/stars%20⭐-24-yellow) ![](https://img.shields.io/badge/days%20completed-12-red)
