@@ -126,17 +126,12 @@ impl MirrorMaze {
     }
 
     fn shot_beam(&self, beam: Beam) -> usize {
-        let mut energized = HashSet::new();
-
         let mut cache = HashSet::new();
         cache.insert(beam.clone());
 
         let mut beams = vec![beam];
 
         while !beams.is_empty() {
-            beams.iter().for_each(|beam| {
-                energized.insert((beam.row, beam.column));
-            });
             beams = beams
                 .into_iter()
                 .flat_map(|beam| self.handle_beam(&beam))
@@ -144,7 +139,11 @@ impl MirrorMaze {
                 .collect();
         }
 
-        energized.len()
+        cache
+            .into_iter()
+            .map(|beam| (beam.row, beam.column))
+            .collect::<HashSet<_>>()
+            .len()
     }
 
     fn starts(&self) -> impl Iterator<Item = Beam> + '_ {
