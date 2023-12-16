@@ -73,7 +73,7 @@ pub fn part1(input: &str) -> u32 {
 }
 
 pub fn part2(input: &str) -> usize {
-    let mut iter = parse_input2(input);
+    let iter = parse_input2(input);
     let mut boxes: [VecDeque<(&str, u8)>; 256] = [(); 256].map(|_| VecDeque::new());
 
     for inst in iter {
