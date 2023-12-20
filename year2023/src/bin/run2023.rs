@@ -11,7 +11,7 @@ macro_rules! run {
 }
 
 macro_rules! run_arms {
-    ( match ($day:ident, $part:ident) => {  $(pat $pat:pat => $expr:block),* $(,)? $(|)? $($id:ident)|* => default }) => {
+    ( match ($day:ident, $part:ident) => {  $(pat $pat:pat => $expr:block),* $(,)? | $($id:ident)|* => default }) => {
         match ($day.as_deref(), $part.as_deref()) {
             $($pat => $expr)*
             $((Some(stringify!($id)), Some("1")) => {
@@ -38,6 +38,9 @@ pub fn main() {
 
     run_arms! {
         match (day, part) => {
+            pat (Some("day20"), Some("graph")) =>{
+                aoc2023::day20::print_graph()
+            },
             | day01
             | day02
             | day03
@@ -57,6 +60,7 @@ pub fn main() {
             | day17
             | day18
             | day19
+            | day20
             => default
         }
     }
