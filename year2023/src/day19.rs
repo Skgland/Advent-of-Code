@@ -40,6 +40,7 @@ impl<'w> Workflow<'w> {
         &self.otherwise
     }
 
+    #[allow(clippy::type_complexity)]
     fn bulk_process(
         &self,
         items: Item<std::ops::RangeInclusive<u32>>,
