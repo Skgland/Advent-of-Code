@@ -1,4 +1,8 @@
-use std::collections::HashSet;
+use std::{
+    collections::{HashMap, HashSet},
+    future::IntoFuture,
+    net::IpAddr,
+};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 struct Position {
@@ -74,7 +78,6 @@ impl Input {
         let mut other_parity_count = 0;
 
         for idx in 1..=steps {
-
             std::mem::swap(&mut current_parity_count, &mut other_parity_count);
 
             let reached_from_new: HashSet<_> = other_parity
@@ -99,6 +102,34 @@ impl Input {
         current_parity_count
     }
 
+    fn distances(&self, steps: usize) -> HashMap<Position, usize> {
+        let mut result = HashMap::from([(self.start, 0)]);
+
+        let mut current_parity = HashSet::new();
+        let mut other_parity = HashSet::from([self.start]);
+
+        for idx in 1..=steps {
+            let reached_from_new: HashSet<_> = other_parity
+                .iter()
+                .flat_map(|elem| elem.neighbors())
+                .filter(|&pos| self.contains(pos))
+                .collect();
+
+            current_parity = reached_from_new
+                .difference(&current_parity)
+                .copied()
+                .collect();
+
+            for pos in current_parity.iter() {
+                result.insert(*pos, idx);
+            }
+
+            std::mem::swap(&mut other_parity, &mut current_parity);
+        }
+
+        result
+    }
+
     fn contains(&self, mut pos: Position) -> bool {
         pos.row = pos.row.rem_euclid(self.height);
         pos.column = pos.column.rem_euclid(self.width);
@@ -112,8 +143,44 @@ pub fn part1(input: &str) -> usize {
 }
 
 pub fn part2(input: &str) -> usize {
+    // based on <https://github.com/villuna/aoc23/wiki/A-Geometric-solution-to-advent-of-code-2023,-day-21>
+
     let input = parse_input(input);
-    input.reachable_in_exactly(26501365)
+    const STEPS: isize = 26501365;
+
+    assert_eq!(input.width, input.height);
+    assert!(input.width % 2 == 1);
+    assert_eq!(input.start.row, input.start.column);
+    assert_eq!(input.width / 2, input.start.column);
+    assert_eq!((STEPS - input.start.column) % input.width, 0);
+
+    let radius = ((STEPS - input.start.column) / input.width) as usize;
+
+    assert!(radius % 2 == 0);
+
+    let distances = Input {
+        start: input.start,
+        // expand size because we don't want to wrap around
+        width: input.width * 3,
+        height: input.height * 3,
+        garden_plots: input.garden_plots.clone(),
+    }
+    .distances(input.height as usize * 2 + 1);
+
+    let full_odd = distances.values().filter(|&&dist| dist % 2 == 1).count();
+    let full_even = distances.values().filter(|&&dist| dist % 2 == 0).count();
+
+    let odd_corners = distances
+        .values()
+        .filter(|&&dist| dist % 2 == 1 && dist > 65)
+        .count();
+    let even_corners = distances
+        .values()
+        .filter(|&&dist| dist % 2 == 0 && dist > 65)
+        .count();
+
+    (radius + 1).pow(2) * full_odd + radius.pow(2) * full_even - (radius + 1) * odd_corners
+        + radius * even_corners
 }
 
 #[test]
@@ -130,6 +197,7 @@ fn part1_full() {
 }
 
 #[test]
+#[ignore = "slow"]
 fn part2_example() {
     let input = include_str!(concat!("../input/day21.example.txt"));
     let input = parse_input(input);
@@ -141,7 +209,7 @@ fn part2_example() {
         (100, 6536),
         (500, 167004),
         (1000, 668697),
-        (5000, 16733044)
+        (5000, 16733044),
     ];
 
     for (steps, reachable) in examples {
@@ -153,5 +221,5 @@ fn part2_example() {
 #[test]
 fn part2_full() {
     let input = include_str!(concat!("../input/day21.txt"));
-    assert_eq!(part2(input), 1262);
+    assert_eq!(part2(input), 610321885082978);
 }
