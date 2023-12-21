@@ -68,33 +68,35 @@ fn parse_input(input: &str) -> Input {
 impl Input {
     fn reachable_in_exactly(&self, steps: usize) -> usize {
         let mut current_parity = HashSet::new();
-        let mut other_parity = HashSet::new();
-        let mut new = HashSet::from([self.start]);
+        let mut other_parity = HashSet::from([self.start]);
 
-        let report = if steps > 1000 {steps/100} else {steps +1};
+        let mut current_parity_count = 1;
+        let mut other_parity_count = 0;
 
         for idx in 1..=steps {
-            if idx % report == 0 {
-                println!("Step {idx}: {}", new.len());
-            }
-            let reached_from_new: HashSet<_> = new
-                .into_iter()
+
+            std::mem::swap(&mut current_parity_count, &mut other_parity_count);
+
+            let reached_from_new: HashSet<_> = other_parity
+                .iter()
                 .flat_map(|elem| elem.neighbors())
                 .filter(|&pos| self.contains(pos))
                 .collect();
-            new = reached_from_new
-                .difference(&other_parity)
+            current_parity = reached_from_new
+                .difference(&current_parity)
                 .copied()
                 .collect();
-            other_parity.extend(new.iter().copied());
+
+            current_parity_count += current_parity.len();
+
             std::mem::swap(&mut other_parity, &mut current_parity);
 
-            if new.is_empty() && idx % 2 == steps % 2 {
+            if other_parity.is_empty() && idx % 2 == steps % 2 {
                 break;
             }
         }
 
-        current_parity.len()
+        current_parity_count
     }
 
     fn contains(&self, mut pos: Position) -> bool {
