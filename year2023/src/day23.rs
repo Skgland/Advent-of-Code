@@ -159,7 +159,7 @@ impl<'m> Iterator for PathEnumerator<'m> {
                 } else {
                     let next = nexts.pop();
                     if let Some(next) = next {
-                        if self.path.iter().all(|(elem,_)| elem != &next) {
+                        if self.path.iter().all(|(elem, _)| elem != &next) {
                             let neighbors = self
                                 .map
                                 .path
