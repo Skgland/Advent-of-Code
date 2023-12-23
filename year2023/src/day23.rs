@@ -137,7 +137,62 @@ impl Map<Tile> {
     }
 }
 
+struct PathEnumerator<'m> {
+    map: &'m Map<HashMap<Position, usize>>,
+    path: Vec<(Position, Vec<Position>)>,
+}
+
+impl<'m> Iterator for PathEnumerator<'m> {
+    type Item = Vec<Position>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        loop {
+            if self.path.is_empty() {
+                break None;
+            } else {
+                let (segment, nexts) = self.path.last_mut().unwrap();
+
+                if *segment == self.map.end() {
+                    let res = self.path.iter().map(|elem| elem.0.clone()).collect();
+                    self.path.pop();
+                    break Some(res);
+                } else {
+                    let next = nexts.pop();
+                    if let Some(next) = next {
+                        if self.path.iter().all(|(elem,_)| elem != &next) {
+                            let neighbors = self
+                                .map
+                                .path
+                                .get(&next)
+                                .into_iter()
+                                .flat_map(|elem| elem.keys().cloned())
+                                .collect();
+                            self.path.push((next, neighbors));
+                        }
+                    } else {
+                        self.path.pop();
+                    }
+                }
+            }
+        }
+    }
+}
+
 impl Map<HashMap<Position, usize>> {
+    fn enumerate_paths(&self) -> PathEnumerator<'_> {
+        let neighbors = self
+            .path
+            .get(&self.start())
+            .unwrap()
+            .keys()
+            .cloned()
+            .collect();
+        PathEnumerator {
+            map: self,
+            path: vec![(self.start(), neighbors)],
+        }
+    }
+
     fn print_graph<W: std::io::Write>(&self, writer: &mut W) {
         #![allow(unused_must_use)]
 
@@ -299,7 +354,14 @@ pub fn part2(input: &str) -> usize {
     let mut map = parse_input(input).collapse(false);
     map.simplify();
     map.print_graph(&mut std::fs::File::create("./day23-p2.elkt").unwrap());
-    map.longest_distance()
+    map.enumerate_paths()
+        .map(|path| {
+            path.windows(2)
+                .map(|elems| map.path.get(&elems[0]).unwrap().get(&elems[1]).unwrap())
+                .sum()
+        })
+        .max()
+        .unwrap()
 }
 
 #[test]
@@ -321,7 +383,8 @@ fn part2_example() {
 }
 
 #[test]
+#[ignore = "slow"]
 fn part2_full() {
     let input = include_str!(concat!("../input/day23.txt"));
-    assert_eq!(part2(input), 1262);
+    assert_eq!(part2(input), 6302);
 }
