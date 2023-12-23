@@ -1,8 +1,4 @@
-use std::{
-    collections::{HashMap, HashSet},
-    future::IntoFuture,
-    net::IpAddr,
-};
+use std::collections::{HashMap, HashSet};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 struct Position {
