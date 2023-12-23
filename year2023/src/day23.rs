@@ -65,17 +65,32 @@ struct Map<T> {
     height: usize,
 }
 
+impl<T> Map<T> {
+    fn start(&self) -> Position {
+        Position { row: 0, column: 1 }
+    }
+
+    fn end(&self) -> Position {
+        Position {
+            row: self.height - 1,
+            column: self.width - 2,
+        }
+    }
+}
+
 impl Map<Tile> {
     fn collapse(&self, slippery: bool) -> Map<HashMap<Position, usize>> {
         let mut map = HashMap::new();
 
         // each edge begins either at the start or at a slope
-        let starts: VecDeque<_> = [Position { row: 0, column: 1 }]
+        let starts: VecDeque<_> = [self.start()]
             .into_iter()
             .chain(
                 self.path
                     .iter()
-                    .filter(|(pos, tile)| !matches!(tile, Tile::FlatPath)|| pos.neighbors(self, slippery).len() > 2)
+                    .filter(|(pos, tile)| {
+                        !matches!(tile, Tile::FlatPath) || pos.neighbors(self, slippery).len() > 2
+                    })
                     .map(|(pos, _)| pos)
                     .cloned(),
             )
@@ -90,10 +105,8 @@ impl Map<Tile> {
             while let Some((pos, visited)) = todo.pop_front() {
                 let neighbors = pos.neighbors(self, slippery);
                 for next in &neighbors {
-
                     // valid tile and not yet visited
                     if self.path.contains_key(next) && !visited.contains(next) {
-
                         // slope or goal or crossing
                         if next.row + 1 == self.height
                             || self
@@ -154,58 +167,94 @@ impl Map<HashMap<Position, usize>> {
     }
 
     fn longest_distance(&self) -> usize {
-        let mut reachable_in = HashMap::from([(
-            Position { row: 0, column: 1 },
-            HashMap::from([(BTreeSet::new(), 0)]),
-        )]);
+        let mut cache: HashMap<_, Option<usize>> = HashMap::new();
 
-        let mut todo: BTreeSet<_> = reachable_in.keys().cloned().collect();
+        let target_key = (self.start(), BTreeSet::from([self.start()]), self.end());
 
-        while let Some(cur) = todo.pop_first() {
-            let distances: HashMap<BTreeSet<_>, usize> = reachable_in
-                .get(&cur)
-                .expect("Should have already been reached!")
-                .clone();
+        let mut todo = Vec::from([target_key.clone()]);
 
-            for (next, delta) in self.path.get(&cur).into_iter().flatten() {
-                for (cur_via, distance) in &distances {
-                    if cur_via.contains(next) {
-                        continue;
+        'outer: while let Some(ref key @ (ref start, ref not_visiting, ref end)) = todo.pop() {
+            let mut max = None;
+            for (neighbor, delta) in self.path.get(start).unwrap() {
+                if not_visiting.contains(neighbor) {
+                    continue;
+                } else if neighbor == end {
+                    max = Some(max.take().map_or(*delta, |elem: usize| elem.max(*delta)));
+                    continue;
+                }
+
+                let mut new_not_visiting = not_visiting.clone();
+                new_not_visiting.insert(neighbor.clone());
+
+                if let Some(cache) =
+                    cache.get(&(neighbor.clone(), new_not_visiting.clone(), end.clone()))
+                {
+                    if let Some(&cache) = cache.as_ref() {
+                        max = Some(
+                            max.take()
+                                .map_or(cache + delta, |elem: usize| elem.max(cache + delta)),
+                        );
                     }
-                    let mut next_via = cur_via.clone();
-                    next_via.insert(cur.clone());
+                } else {
+                    todo.push(key.clone());
+                    todo.push((neighbor.clone(), new_not_visiting, end.clone()));
+                    continue 'outer;
+                }
+            }
 
-                    let new_distance = distance + delta;
-                    reachable_in
-                        .entry(next.clone())
-                        .or_default()
-                        .entry(next_via)
-                        .and_modify(|old| {
-                            if *old < new_distance {
-                                *old = new_distance;
-                                todo.insert(next.clone());
-                            }
-                        })
-                        .or_insert_with(|| {
-                            todo.insert(next.clone());
-                            new_distance
-                        });
+            cache
+                .entry(key.clone())
+                .and_modify(|old: &mut Option<usize>| {
+                    *old = match (old.take(), max) {
+                        (None, None) => None,
+                        (None, Some(v)) | (Some(v), None) => Some(v),
+                        (Some(a), Some(b)) => Some(a.max(b)),
+                    }
+                })
+                .or_insert(max);
+        }
+
+        cache.get(&target_key).unwrap().unwrap()
+    }
+
+    fn simplify(&mut self) {
+        let nodes: Vec<_> = self.path.keys().cloned().collect();
+        for n1 in nodes {
+            let neighbors: Vec<_> = self
+                .path
+                .get(&n1)
+                .into_iter()
+                .flatten()
+                .map(|(key, val)| (key.clone(), *val))
+                .collect();
+            for (n2, d1) in neighbors {
+                let neighbors_neighbors: Vec<_> = self
+                    .path
+                    .get(&n2)
+                    .into_iter()
+                    .flatten()
+                    .map(|(key, val)| (key.clone(), *val))
+                    .collect();
+                if neighbors_neighbors.len() <= 2 {
+                    for (n3, d2) in neighbors_neighbors {
+                        if n1 == n3 {
+                            continue;
+                        }
+
+                        self.path.remove(&n2);
+
+                        let node1 = self.path.get_mut(&n1).unwrap();
+                        node1.remove(&n2);
+                        node1.insert(n3.clone(), d1 + d2);
+
+                        if let Some(node3) = self.path.get_mut(&n3) {
+                            node3.remove(&n2);
+                            node3.insert(n1.clone(), d1 + d2);
+                        }
+                    }
                 }
             }
         }
-
-        let distances_to_goal = reachable_in
-            .get(&Position {
-                row: self.height - 1,
-                column: self.width - 2,
-            })
-            .unwrap();
-        let (longest_path, length) = distances_to_goal
-            .iter()
-            .max_by_key(|(_, value)| **value)
-            .unwrap();
-        dbg!(longest_path);
-        *length
     }
 }
 
@@ -247,7 +296,8 @@ pub fn part1(input: &str) -> usize {
 }
 
 pub fn part2(input: &str) -> usize {
-    let map = parse_input(input).collapse(false);
+    let mut map = parse_input(input).collapse(false);
+    map.simplify();
     map.print_graph(&mut std::fs::File::create("./day23-p2.elkt").unwrap());
     map.longest_distance()
 }
