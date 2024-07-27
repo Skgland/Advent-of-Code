@@ -44,7 +44,7 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v5
         with:
-          token: ${{ secrets.PAT }}
+          token: ${{ secrets.UPDATE_BADGE_PAT }}
           commit-message: Update badges
           title: Update badge
           delete-branch: true
@@ -55,6 +55,6 @@ jobs:
         uses: peter-evans/enable-pull-request-automerge@v3
         if: steps.cpr.outputs.pull-request-operation == 'created'
         with:
-          token: ${{ secrets.PAT }}
+          token: ${{ secrets.UPDATE_BADGE_PAT }}
           merge-method: rebase
           pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
