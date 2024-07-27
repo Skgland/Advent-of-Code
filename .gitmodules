@@ -1,0 +1,3 @@
+[submodule "inputs/personal"]
+	path = inputs/personal
+	url = git@github.com:Skgland/Advent-of-Code-Personal-Inputs.git
