@@ -1,2 +1,3 @@
 target/
 year2023/*.elkt
+year2023/.z3-trace
