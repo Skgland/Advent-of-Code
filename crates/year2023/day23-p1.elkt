@@ -1,0 +1,282 @@
+algorithm: org.eclipse.elk.stress
+org.eclipse.elk.stress.desiredEdgeLength: 150
+node P88_5
+node P89_6
+edge P88_5 -> P89_6 { label "2"}
+node P90_5
+edge P88_5 -> P90_5 { label "2"}
+node P109_106
+node P109_108
+edge P109_106 -> P109_108 { label "2"}
+node P110_107
+edge P109_106 -> P110_107 { label "2"}
+node P29_40
+node P37_66
+edge P29_40 -> P37_66 { label "186"}
+node P137_84
+node P137_86
+edge P137_84 -> P137_86 { label "2"}
+node P76_89
+node P110_87
+edge P76_89 -> P110_87 { label "188"}
+node P61_32
+node P65_62
+edge P61_32 -> P65_62 { label "206"}
+node P12_59
+node P36_67
+edge P12_59 -> P36_67 { label "148"}
+node P61_30
+node P62_31
+edge P61_30 -> P62_31 { label "2"}
+edge P61_30 -> P61_32 { label "2"}
+node P37_68
+node P33_78
+edge P37_68 -> P33_78 { label "62"}
+node P66_63
+node P82_63
+edge P66_63 -> P82_63 { label "36"}
+node P81_108
+node P77_130
+edge P81_108 -> P77_130 { label "142"}
+node P135_66
+node P135_68
+edge P135_66 -> P135_68 { label "2"}
+node P83_64
+node P75_88
+edge P83_64 -> P75_88 { label "180"}
+node P78_131
+edge P77_130 -> P78_131 { label "2"}
+node P112_135
+node P124_133
+edge P112_135 -> P124_133 { label "78"}
+node P11_60
+node P19_84
+edge P11_60 -> P19_84 { label "220"}
+node P19_86
+node P13_108
+edge P19_86 -> P13_108 { label "268"}
+node P59_110
+node P59_112
+edge P59_110 -> P59_112 { label "2"}
+node P60_111
+edge P59_110 -> P60_111 { label "2"}
+node P84_63
+node P98_65
+edge P84_63 -> P98_65 { label "72"}
+node P40_17
+node P42_17
+edge P40_17 -> P42_17 { label "2"}
+node P41_18
+edge P40_17 -> P41_18 { label "2"}
+node P84_31
+edge P62_31 -> P84_31 { label "130"}
+node P32_79
+node P34_79
+edge P32_79 -> P34_79 { label "2"}
+node P33_80
+edge P32_79 -> P33_80 { label "2"}
+node P15_28
+node P16_29
+edge P15_28 -> P16_29 { label "2"}
+node P15_30
+edge P15_28 -> P15_30 { label "2"}
+node P111_88
+edge P110_87 -> P111_88 { label "2"}
+node P112_87
+edge P110_87 -> P112_87 { label "2"}
+node P85_30
+edge P89_6 -> P85_30 { label "168"}
+node P99_66
+node P111_86
+edge P99_66 -> P111_86 { label "160"}
+node P20_85
+edge P20_85 -> P32_79 { label "38"}
+node P125_132
+node P126_133
+edge P125_132 -> P126_133 { label "2"}
+node P134_67
+edge P134_67 -> P135_68 { label "2"}
+node P104_19
+edge P90_5 -> P104_19 { label "220"}
+node P133_110
+edge P133_110 -> P125_132 { label "178"}
+node P111_134
+edge P109_108 -> P111_134 { label "188"}
+node P86_31
+node P110_37
+edge P86_31 -> P110_37 { label "162"}
+edge P135_68 -> P137_84 { label "62"}
+node P85_32
+edge P84_31 -> P85_32 { label "2"}
+edge P84_31 -> P86_31 { label "2"}
+node P40_125
+node P52_135
+edge P40_125 -> P52_135 { label "118"}
+node P99_64
+node P100_65
+edge P99_64 -> P100_65 { label "2"}
+edge P99_64 -> P99_66 { label "2"}
+node P132_109
+edge P110_107 -> P132_109 { label "92"}
+node P80_107
+edge P80_107 -> P81_108 { label "2"}
+node P82_107
+edge P80_107 -> P82_107 { label "2"}
+node P6_5
+edge P6_5 -> P40_17 { label "306"}
+edge P132_109 -> P133_110 { label "2"}
+edge P111_86 -> P112_87 { label "2"}
+edge P111_86 -> P111_88 { label "2"}
+node P13_110
+node P38_125
+edge P13_110 -> P38_125 { label "440"}
+node P133_108
+edge P133_108 -> P133_110 { label "2"}
+node P65_64
+node P57_84
+edge P65_64 -> P57_84 { label "140"}
+node P39_100
+node P40_101
+edge P39_100 -> P40_101 { label "2"}
+node P39_102
+edge P39_100 -> P39_102 { label "2"}
+edge P33_78 -> P34_79 { label "2"}
+edge P33_78 -> P33_80 { label "2"}
+node P56_85
+edge P34_79 -> P56_85 { label "132"}
+node P56_9
+node P57_10
+edge P56_9 -> P57_10 { label "2"}
+node P58_9
+edge P56_9 -> P58_9 { label "2"}
+node P14_109
+edge P13_108 -> P14_109 { label "2"}
+edge P13_108 -> P13_110 { label "2"}
+edge P60_111 -> P80_107 { label "104"}
+node P64_63
+edge P64_63 -> P65_64 { label "2"}
+edge P64_63 -> P66_63 { label "2"}
+edge P124_133 -> P126_133 { label "2"}
+node P39_124
+edge P39_124 -> P40_125 { label "2"}
+node P54_135
+node P76_131
+edge P54_135 -> P76_131 { label "178"}
+node P29_38
+edge P41_18 -> P29_38 { label "100"}
+node P75_90
+node P81_106
+edge P75_90 -> P81_106 { label "86"}
+node P28_39
+edge P28_39 -> P29_40 { label "2"}
+node P30_39
+edge P28_39 -> P30_39 { label "2"}
+edge P75_88 -> P75_90 { label "2"}
+edge P75_88 -> P76_89 { label "2"}
+node P105_20
+node P111_36
+edge P105_20 -> P111_36 { label "82"}
+node P136_37
+node P137_38
+edge P136_37 -> P137_38 { label "2"}
+edge P16_29 -> P28_39 { label "146"}
+edge P85_30 -> P85_32 { label "2"}
+edge P85_30 -> P86_31 { label "2"}
+node P112_37
+edge P112_37 -> P136_37 { label "192"}
+node P108_107
+edge P82_107 -> P108_107 { label "166"}
+edge P104_19 -> P105_20 { label "2"}
+node P106_19
+edge P104_19 -> P106_19 { label "2"}
+edge P57_10 -> P61_30 { label "108"}
+node P60_31
+edge P30_39 -> P60_31 { label "190"}
+node P5_6
+edge P5_6 -> P15_28 { label "184"}
+node P11_58
+edge P15_30 -> P11_58 { label "220"}
+node P58_85
+node P74_89
+edge P58_85 -> P74_89 { label "88"}
+edge P74_89 -> P76_89 { label "2"}
+edge P74_89 -> P75_90 { label "2"}
+edge P33_80 -> P39_100 { label "138"}
+node P83_62
+edge P85_32 -> P83_62 { label "188"}
+edge P137_86 -> P133_108 { label "170"}
+edge P137_38 -> P135_66 { label "170"}
+edge P65_62 -> P65_64 { label "2"}
+edge P65_62 -> P66_63 { label "2"}
+node P38_101
+edge P14_109 -> P38_101 { label "132"}
+edge P11_58 -> P11_60 { label "2"}
+edge P11_58 -> P12_59 { label "2"}
+edge P81_106 -> P81_108 { label "2"}
+edge P81_106 -> P82_107 { label "2"}
+node P38_67
+edge P36_67 -> P38_67 { label "2"}
+edge P36_67 -> P37_68 { label "2"}
+node P111_38
+edge P111_36 -> P111_38 { label "2"}
+edge P111_36 -> P112_37 { label "2"}
+edge P19_84 -> P20_85 { label "2"}
+edge P19_84 -> P19_86 { label "2"}
+edge P38_101 -> P39_102 { label "2"}
+edge P38_101 -> P40_101 { label "2"}
+edge P38_67 -> P64_63 { label "150"}
+node P4_5
+edge P4_5 -> P5_6 { label "2"}
+edge P4_5 -> P6_5 { label "2"}
+edge P111_134 -> P112_135 { label "2"}
+node P137_36
+edge P106_19 -> P137_36 { label "380"}
+edge P39_102 -> P39_124 { label "110"}
+edge P60_31 -> P62_31 { label "2"}
+edge P60_31 -> P61_32 { label "2"}
+node P110_135
+edge P78_131 -> P110_135 { label "212"}
+edge P110_37 -> P112_37 { label "2"}
+edge P110_37 -> P111_38 { label "2"}
+edge P76_131 -> P78_131 { label "2"}
+node P140_139
+edge P126_133 -> P140_139 { label "76"}
+edge P137_36 -> P137_38 { label "2"}
+edge P52_135 -> P54_135 { label "2"}
+edge P100_65 -> P134_67 { label "300"}
+node P58_111
+edge P58_111 -> P59_112 { label "2"}
+edge P58_111 -> P60_111 { label "2"}
+node P57_86
+edge P57_84 -> P57_86 { label "2"}
+edge P57_84 -> P58_85 { label "2"}
+edge P83_62 -> P83_64 { label "2"}
+edge P83_62 -> P84_63 { label "2"}
+edge P111_38 -> P99_64 { label "170"}
+edge P58_9 -> P88_5 { label "170"}
+edge P29_38 -> P29_40 { label "2"}
+edge P29_38 -> P30_39 { label "2"}
+edge P82_63 -> P83_64 { label "2"}
+edge P82_63 -> P84_63 { label "2"}
+edge P98_65 -> P99_66 { label "2"}
+edge P98_65 -> P100_65 { label "2"}
+node P53_134
+edge P59_112 -> P53_134 { label "128"}
+edge P111_88 -> P109_106 { label "104"}
+node P136_85
+edge P112_87 -> P136_85 { label "170"}
+edge P53_134 -> P54_135 { label "2"}
+edge P110_135 -> P112_135 { label "2"}
+edge P136_85 -> P137_86 { label "2"}
+edge P37_66 -> P38_67 { label "2"}
+edge P37_66 -> P37_68 { label "2"}
+edge P40_101 -> P58_111 { label "104"}
+node P0_1
+edge P0_1 -> P4_5 { label "20"}
+edge P57_86 -> P59_110 { label "110"}
+edge P38_125 -> P40_125 { label "2"}
+edge P42_17 -> P56_9 { label "138"}
+edge P108_107 -> P110_107 { label "2"}
+edge P108_107 -> P109_108 { label "2"}
+edge P56_85 -> P57_86 { label "2"}
+edge P56_85 -> P58_85 { label "2"}

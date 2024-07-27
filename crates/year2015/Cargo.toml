@@ -1,0 +1,11 @@
+[package]
+name = "aoc2015"
+version.workspace = true
+edition.workspace = true
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+md-5 = "0.10.6"
+serde_json = "1.0.108"
+helper = { workspace = true }

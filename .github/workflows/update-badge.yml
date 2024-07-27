@@ -30,7 +30,7 @@ jobs:
           userid: 1745334                        # your user id, see setup on how to obtain
           session: ${{ secrets.AOC_SESSION }}    # secret containing session code, see setup on how to obtain
           year: ${{env.year}}
-          file: 'year${{env.year}}/README.md'
+          file: 'crates/year${{env.year}}/README.md'
 
       #         Optional inputs:
       #
@@ -50,7 +50,7 @@ jobs:
           delete-branch: true
           branch: update-badge-action
           add-paths: |
-            year20??/README.md
+            year20${{env.year}}/README.md
       - name: Enable Auto-Merge
         uses: peter-evans/enable-pull-request-automerge@v3
         if: steps.cpr.outputs.pull-request-operation == 'created'

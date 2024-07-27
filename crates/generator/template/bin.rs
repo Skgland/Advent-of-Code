@@ -1,0 +1,1 @@
+::aocXX::run! {dayX, partX}

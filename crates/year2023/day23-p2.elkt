@@ -1,0 +1,34 @@
+algorithm: org.eclipse.elk.stress
+org.eclipse.elk.stress.desiredEdgeLength: 150
+node P13_5
+node P13_13
+edge P13_5 -> P13_13 { label "12"}
+node P5_3
+edge P13_5 -> P5_3 { label "22"}
+node P19_13
+edge P13_5 -> P19_13 { label "38"}
+node P19_19
+edge P19_19 -> P19_13 { label "10"}
+node P22_21
+edge P19_19 -> P22_21 { label "5"}
+node P11_21
+edge P19_19 -> P11_21 { label "10"}
+edge P5_3 -> P13_5 { label "22"}
+node P0_1
+edge P5_3 -> P0_1 { label "15"}
+node P3_11
+edge P5_3 -> P3_11 { label "22"}
+edge P0_1 -> P5_3 { label "15"}
+edge P19_13 -> P19_19 { label "10"}
+edge P19_13 -> P13_5 { label "38"}
+edge P19_13 -> P13_13 { label "10"}
+edge P11_21 -> P3_11 { label "30"}
+edge P11_21 -> P13_13 { label "18"}
+edge P11_21 -> P19_19 { label "10"}
+edge P13_13 -> P19_13 { label "10"}
+edge P13_13 -> P13_5 { label "12"}
+edge P13_13 -> P3_11 { label "24"}
+edge P13_13 -> P11_21 { label "18"}
+edge P3_11 -> P13_13 { label "24"}
+edge P3_11 -> P5_3 { label "22"}
+edge P3_11 -> P11_21 { label "30"}
