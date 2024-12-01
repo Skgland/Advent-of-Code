@@ -72,7 +72,7 @@ pub fn part2(input: &str) -> i64 {
                     -velocity + dx.abs() + dy.abs(),
                     velocity - dx.abs() - dy.abs(),
                 ] {
-                    if let Some(value) = check_velocity(dx, dy, dz, &hail) {
+                    if let Some(value) = check_velocity([dx, dy, dz], &hail) {
                         return value;
                     }
                 }
@@ -82,12 +82,11 @@ pub fn part2(input: &str) -> i64 {
     panic!("Failed to find a solution");
 }
 
-fn check_velocity(dx: i64, dy: i64, dz: i64, hail: &[Hail]) -> Option<i64> {
-    println!("Checking {:?}", [dx, dy, dz]);
-    if let Some(pos) = xyz_collision(&hail[0].adjust([dx, dy, dz]), &hail[1].adjust([dx, dy, dz])) {
-        println!("Verifying {:?}", pos);
+fn check_velocity(delta: [i64; 3], hail: &[Hail]) -> Option<i64> {
+    if let Some(pos) = xyz_collision(&hail[0].adjust(delta), &hail[1].adjust(delta)) {
+        println!("Verifying {pos:?} @ {delta:?}");
         for hail in &hail[2..] {
-            if !passes_trough(pos, &hail.adjust([dx, dy, dz])) {
+            if !passes_trough(pos, &hail.adjust(delta)) {
                 return None;
             }
         }
@@ -100,43 +99,36 @@ fn check_velocity(dx: i64, dy: i64, dz: i64, hail: &[Hail]) -> Option<i64> {
 fn passes_trough(pos: [i64; 3], hail: &Hail) -> bool {
     if pos == hail.pos {
         return true;
-    } else if hail.vel.into_iter().all(|c| c == 0) {
-        return false;
+    }
+
+    for i in 0..=2 {
+        if hail.vel[i] == 0 && hail.pos[i] != pos[i] {
+            return false;
+        }
     }
 
     if hail.vel[0] == 0 {
-        if hail.pos[0] != pos[0] {
-            return false;
-        }
-
         if hail.vel[1] == 0 {
-            if hail.pos[1] != pos[1] {
-                return false;
-            }
-
             // tz = sz + dz * t | - sz
             // tz - sz = dz * t | / dz
             // (tz - sz) / dz = t
-            let t = (pos[2] - hail.pos[2]) / hail.vel[2];
-            let y = hail.pos[1] + t * hail.vel[1];
-            let z = hail.pos[2] + t * hail.vel[2];
+            let y = hail.pos[1] + (pos[2] - hail.pos[2]) * hail.vel[1] / hail.vel[2];
+            let z = hail.pos[2] + (pos[2] - hail.pos[2]) * hail.vel[2] / hail.vel[2];
             return y == pos[1] && z == pos[2];
         }
         // ty = sy + dy * t | - sy
         // ty - sy = dy * t | / dy
         // (ty - sy) / dy = t
-        let t = (pos[1] - hail.pos[1]) / hail.vel[1];
-        let y = hail.pos[1] + t * hail.vel[1];
-        let z = hail.pos[2] + t * hail.vel[2];
+        let y = hail.pos[1] + (pos[1] - hail.pos[1]) * hail.vel[1] / hail.vel[1];
+        let z = hail.pos[2] + (pos[1] - hail.pos[1]) * hail.vel[2] / hail.vel[1];
         return y == pos[1] && z == pos[2];
     }
 
     // tx = sx + dx * t |-sx
     // tx - sx = dx * t | / dx
     // (tx - sx) / dx = t
-    let t = (pos[0] - hail.pos[0]) / hail.vel[0];
-    let y = hail.pos[1] + t * hail.vel[1];
-    let z = hail.pos[2] + t * hail.vel[2];
+    let y = hail.pos[1] + (pos[0] - hail.pos[0]) * hail.vel[1] / hail.vel[0];
+    let z = hail.pos[2] + (pos[0] - hail.pos[0]) * hail.vel[2] / hail.vel[0];
     y == pos[1] && z == pos[2]
 }
 
@@ -230,10 +222,10 @@ fn xyz_collision(head: &Hail, other: &Hail) -> Option<[i64; 3]> {
         let y = head.pos[1] as f64 + (head.vel[1] as i128 * t1_num as i128) as f64 / t1_den as f64;
         let z = head.pos[2] as f64 + (head.vel[2] as i128 * t1_num as i128) as f64 / t1_den as f64;
         let oz =
-            other.pos[2] as f64 + (other.vel[2] as i128 * t1_num as i128) as f64 / t1_den as f64;
+            other.pos[2] as f64 + (other.vel[2] as i128 * t2_num as i128) as f64 / t2_den as f64;
 
         if z != oz {
-            dbg!(z, oz);
+            // dbg!(x, y, z, oz);
             return None;
         }
 
@@ -440,7 +432,7 @@ fn part2_example2() {
     ));
     let hail = parse_input(&input).collect::<Vec<_>>();
 
-    assert!(check_velocity(-3, 1, 2, &hail).is_some())
+    assert!(check_velocity([-3, 1, 2], &hail).is_some())
 }
 
 #[test]
@@ -450,5 +442,5 @@ fn part2_full() {
         env!("CARGO_MANIFEST_DIR"),
         "/../../inputs/personal/year2023/day24.txt"
     ));
-    assert_eq!(part2(input), 1262);
+    assert_eq!(part2(input), 856642398547748);
 }
