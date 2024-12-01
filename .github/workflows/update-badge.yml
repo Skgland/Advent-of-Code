@@ -14,7 +14,7 @@ permissions:
   pull-requests: write
 
 env:
-    year: ${{ github.event_name == 'schedule' && '2023' || github.event.inputs.year }}
+    year: ${{ github.event_name == 'schedule' && '2024' || github.event.inputs.year }}
 
   # push:                                          # (disabled) run on push, be carefull with this setting
   # as the workflow should only be triggered at a rate lower than
