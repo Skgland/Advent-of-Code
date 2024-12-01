@@ -23,7 +23,7 @@ jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3                # clones your repo
+      - uses: actions/checkout@v4                # clones your repo
 
       - name: Create Branch
         run: git checkout -B main
@@ -45,7 +45,7 @@ jobs:
       #         daysCompletedRegex: '(?<=https:\/\/img\.shields\.io\/badge\/days%20completed-)[0-9]+(?=-red)'  # Regular expression that finds the content of the days completed badge iun your file.
       - name: Create Pull Request
         id: cpr
-        uses: peter-evans/create-pull-request@v5
+        uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.UPDATE_BADGE_PAT }}
           commit-message: Update badges
