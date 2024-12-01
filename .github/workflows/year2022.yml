@@ -4,8 +4,10 @@ on:
   push:
     branches: [ master, main ]
     paths-ignore:
-        - "crates/year*/**"
-        - "!crates/year2022/**"
+      - "crates/year*/**"
+      - "inputs/*/year*/**"
+      - "!crates/year2022/**"
+      - "!inputs/*/year2022/**"
   pull_request:
     branches: [ master, main ]
 
