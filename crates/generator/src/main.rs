@@ -18,16 +18,16 @@ fn main() {
 fn generate(day: u8, year: u16) {
     let mut lib_file = std::fs::OpenOptions::new()
         .append(true)
-        .open("src/lib.rs")
+        .open(format!("crates/year{year}/src/lib.rs"))
         .unwrap();
 
     let mut mod_file = std::fs::OpenOptions::new()
         .write(true)
         .create_new(true)
-        .open(format!("src/day{:02}.rs", day))
+        .open(format!("crates/year{year}/src/day{:02}.rs", day))
         .unwrap();
 
-    let bin_file_path = format!("src/bin/run{year}.rs");
+    let bin_file_path = format!("crates/year{year}/src/bin/run{year}.rs");
 
     let bin_old = std::fs::read_to_string(&bin_file_path).unwrap();
 
@@ -40,13 +40,16 @@ fn generate(day: u8, year: u16) {
     let _example_input = std::fs::OpenOptions::new()
         .write(true)
         .create_new(true)
-        .open(format!("input/day{:02}.example.txt", day))
+        .open(format!(
+            "inputs/example/year{year}/day{:02}.example.txt",
+            day
+        ))
         .unwrap();
 
     let _input = std::fs::OpenOptions::new()
         .write(true)
         .create_new(true)
-        .open(format!("input/day{:02}.txt", day))
+        .open(format!("inputs/personal/year{year}/day{:02}.txt", day))
         .unwrap();
 
     writeln!(lib_file, "pub mod day{:02};", day).unwrap();
