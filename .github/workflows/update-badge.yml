@@ -8,7 +8,7 @@ on:
       year:
         type: number
         required: true
-        default: 2023
+        default: 2024
 permissions: 
   contents: write
   pull-requests: write
@@ -53,7 +53,7 @@ jobs:
           delete-branch: true
           branch: update-badge-action
           add-paths: |
-            year20${{env.year}}/README.md
+            year${{env.year}}/README.md
       - name: Enable Auto-Merge
         if: steps.cpr.outputs.pull-request-operation == 'created'
         run: gh pr merge --rebase --auto "${{ steps.cpr.outputs.pull-request-number }}"

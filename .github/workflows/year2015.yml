@@ -5,7 +5,9 @@ on:
     branches: [ master, main ]
     paths-ignore:
         - "crates/year*/**"
+        - "inputs/*/year*/**"
         - "!crates/year2015/**"
+        - "!inputs/*/year2015/**"
   pull_request:
     branches: [ master, main ]
 
