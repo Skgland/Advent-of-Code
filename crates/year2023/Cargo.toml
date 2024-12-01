@@ -7,3 +7,4 @@ edition.workspace = true
 
 [dependencies]
 helper = { workspace = true }
+# z3 = {version = "0.12.1", features = ["static-link-z3"]}
