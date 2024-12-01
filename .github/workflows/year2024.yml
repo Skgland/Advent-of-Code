@@ -1,0 +1,17 @@
+name: AoC 2023
+
+on:
+  push:
+    branches: [ master, main ]
+    paths-ignore:
+        - "crates/year*/**"
+        - "!crates/year2024/**"
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  rust:
+    uses: ./.github/workflows/rust.yml
+    secrets: inherit
+    with:
+      year: 2024

@@ -9,6 +9,9 @@ on:
         type: number
         required: true
         default: 2023
+permissions: 
+  contents: write
+  pull-requests: write
 
 env:
     year: ${{ github.event_name == 'schedule' && '2023' || github.event.inputs.year }}
@@ -52,9 +55,7 @@ jobs:
           add-paths: |
             year20${{env.year}}/README.md
       - name: Enable Auto-Merge
-        uses: peter-evans/enable-pull-request-automerge@v3
         if: steps.cpr.outputs.pull-request-operation == 'created'
-        with:
-          token: ${{ secrets.UPDATE_BADGE_PAT }}
-          merge-method: rebase
-          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
+        run: gh pr merge --rebase --auto "${{ steps.cpr.outputs.pull-request-number }}"
+        env:
+          GH_TOKEN: ${{ secrets.UPDATE_BADGE_PAT }}
