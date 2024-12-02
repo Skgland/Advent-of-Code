@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 fn parse_input(input: &str) -> (Vec<u64>, Vec<u64>) {
-    let input: Vec<_> = input
+    input
         .lines()
         .map(|line| {
             let (l, r) = line.split_once(' ').unwrap();
@@ -9,11 +9,7 @@ fn parse_input(input: &str) -> (Vec<u64>, Vec<u64>) {
             let r = r.trim().parse::<u64>().unwrap();
             (l, r)
         })
-        .collect();
-
-    let l: Vec<_> = input.iter().map(|(l, _)| *l).collect();
-    let r: Vec<_> = input.iter().map(|(_, r)| *r).collect();
-    (l, r)
+        .unzip()
 }
 
 pub fn part1(input: &str) -> u64 {
