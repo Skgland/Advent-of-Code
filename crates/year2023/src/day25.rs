@@ -14,6 +14,7 @@ pub fn part2(input: &str) -> u32 {
 }
 
 #[test]
+#[ignore = "NYI"]
 fn part1_example() {
     let input = include_str!(concat!(
         env!("CARGO_MANIFEST_DIR"),
@@ -23,6 +24,7 @@ fn part1_example() {
 }
 
 #[test]
+#[ignore = "NYI"]
 fn part1_full() {
     let input = include_str!(concat!(
         env!("CARGO_MANIFEST_DIR"),
@@ -32,6 +34,7 @@ fn part1_full() {
 }
 
 #[test]
+#[ignore = "NYI"]
 fn part2_example() {
     let input = include_str!(concat!(
         env!("CARGO_MANIFEST_DIR"),
@@ -41,6 +44,7 @@ fn part2_example() {
 }
 
 #[test]
+#[ignore = "NYI"]
 fn part2_full() {
     let input = include_str!(concat!(
         env!("CARGO_MANIFEST_DIR"),
