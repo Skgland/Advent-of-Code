@@ -38,24 +38,6 @@ macro_rules! run {
     };
 }
 
-pub trait OptionExtension {
-    type Some;
-    fn is_none_or<F: FnOnce(&Self::Some) -> bool>(&self, fun: F) -> bool;
-}
-
-impl<T> OptionExtension for Option<T> {
-    type Some = T;
-
-    fn is_none_or<F: FnOnce(&<Self as OptionExtension>::Some) -> bool>(&self, fun: F) -> bool {
-        {
-            match self {
-                None => true,
-                Some(val) => fun(val),
-            }
-        }
-    }
-}
-
 pub trait Zero {
     const ZERO: Self;
 }
