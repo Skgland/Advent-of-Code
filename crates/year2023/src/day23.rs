@@ -1,4 +1,4 @@
-use std::collections::{BTreeSet, HashMap, HashSet, VecDeque};
+use std::collections::{BTreeMap, BTreeSet, HashSet, VecDeque};
 
 #[derive(Debug, Hash, PartialEq, Eq, Clone, PartialOrd, Ord)]
 struct Position {
@@ -60,7 +60,7 @@ enum Tile {
 
 #[derive(Debug)]
 struct Map<T> {
-    path: HashMap<Position, T>,
+    path: BTreeMap<Position, T>,
     width: usize,
     height: usize,
 }
@@ -79,8 +79,8 @@ impl<T> Map<T> {
 }
 
 impl Map<Tile> {
-    fn collapse(&self, slippery: bool) -> Map<HashMap<Position, usize>> {
-        let mut map = HashMap::new();
+    fn collapse(&self, slippery: bool) -> Map<BTreeMap<Position, usize>> {
+        let mut map = BTreeMap::new();
 
         // each edge begins either at the start or at a slope
         let starts: VecDeque<_> = [self.start()]
@@ -98,7 +98,7 @@ impl Map<Tile> {
 
         for start in starts {
             // find the longest path to each end for this start
-            let destinations: &mut HashMap<_, usize> = map.entry(start.clone()).or_default();
+            let destinations: &mut BTreeMap<_, usize> = map.entry(start.clone()).or_default();
 
             let mut todo = VecDeque::from([(start.clone(), HashSet::from([start.clone()]))]);
 
@@ -138,7 +138,7 @@ impl Map<Tile> {
 }
 
 struct PathEnumerator<'m> {
-    map: &'m Map<HashMap<Position, usize>>,
+    map: &'m Map<BTreeMap<Position, usize>>,
     path: Vec<(Position, Vec<Position>)>,
 }
 
@@ -178,7 +178,7 @@ impl<'m> Iterator for PathEnumerator<'m> {
     }
 }
 
-impl Map<HashMap<Position, usize>> {
+impl Map<BTreeMap<Position, usize>> {
     fn enumerate_paths(&self) -> PathEnumerator<'_> {
         let neighbors = self
             .path
@@ -222,7 +222,7 @@ impl Map<HashMap<Position, usize>> {
     }
 
     fn longest_distance(&self) -> usize {
-        let mut cache: HashMap<_, Option<usize>> = HashMap::new();
+        let mut cache: BTreeMap<_, Option<usize>> = BTreeMap::new();
 
         let target_key = (self.start(), BTreeSet::from([self.start()]), self.end());
 

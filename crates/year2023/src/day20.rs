@@ -1,4 +1,4 @@
-use std::collections::{HashMap, HashSet, VecDeque};
+use std::collections::{BTreeMap, HashSet, VecDeque};
 
 #[derive(Debug, Clone, Copy)]
 enum Pulse {
@@ -47,7 +47,7 @@ impl<'m> Module<'m> {
 }
 enum ModuleKind<'m> {
     FlipFlop { state: Pulse },
-    Conjunction { inputs: HashMap<&'m str, Pulse> },
+    Conjunction { inputs: BTreeMap<&'m str, Pulse> },
     Broadcaster,
     Target { received_low: bool },
 }
@@ -89,7 +89,7 @@ struct QueuedPulse<'m> {
 }
 
 struct State<'m> {
-    modules: HashMap<&'m str, Module<'m>>,
+    modules: BTreeMap<&'m str, Module<'m>>,
 }
 
 impl State<'_> {
@@ -119,7 +119,7 @@ impl State<'_> {
 }
 
 fn parse_input(input: &str) -> State {
-    let mut modules: HashMap<_, _> = input
+    let mut modules: BTreeMap<_, _> = input
         .lines()
         .filter_map(|line| {
             let (module, dest) = line.split_once(" -> ")?;
@@ -127,7 +127,7 @@ fn parse_input(input: &str) -> State {
             let (kind, src) = if let Some(module) = module.strip_prefix('&') {
                 (
                     ModuleKind::Conjunction {
-                        inputs: HashMap::default(),
+                        inputs: BTreeMap::default(),
                     },
                     module,
                 )
@@ -149,8 +149,8 @@ fn parse_input(input: &str) -> State {
         .collect();
 
     let deps = modules.iter().fold(
-        HashMap::new(),
-        |mut state: HashMap<&str, HashMap<&str, Pulse>>, (&src, module)| {
+        BTreeMap::new(),
+        |mut state: BTreeMap<&str, BTreeMap<&str, Pulse>>, (&src, module)| {
             for &dest in &module.dest {
                 state.entry(dest).or_default().insert(src, Pulse::Low);
             }
@@ -287,7 +287,7 @@ pub fn print_graph() {
     let mut nodes_out = String::new();
     let mut edges_out = String::new();
 
-    let mut done = HashSet::from(["broadcaster"]);
+    let mut done: HashSet<&str> = HashSet::from(["broadcaster"]);
 
     let mut todo = VecDeque::from(["broadcaster"]);
 
