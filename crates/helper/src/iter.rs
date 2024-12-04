@@ -71,12 +71,12 @@ where
 
 pub fn search_grid<const N: usize, T>(
     grid: &Vec<Vec<T>>,
-    is_needle: impl Fn(&[&T; N]) -> bool,
+    is_needle: &impl Fn(&[&T; N]) -> bool,
 ) -> usize {
-    fn count_matches<'a, const N: usize, T>(
+    fn count_matches<'a, const N: usize, T: 'a>(
         iter: impl Iterator<Item = impl Iterator<Item = &'a T>>,
-        is_needle: impl Fn(&[&T; N]) -> bool,
-    ) -> _ {
+        is_needle: &impl Fn(&[&T; N]) -> bool,
+    ) -> usize {
         iter.map(|line| {
             line.array_windows::<N>()
                 .filter(|window| is_needle(window))

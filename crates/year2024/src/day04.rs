@@ -1,4 +1,4 @@
-use helper::iter::{diag_bl_tr_iter, search_grid};
+use helper::iter::search_grid;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum XMAS {
@@ -27,7 +27,7 @@ fn parse_input(input: &str) -> Vec<Vec<XMAS>> {
 
 pub fn part1(input: &str) -> usize {
     use XMAS::*;
-    search_grid(&parse_input(input), |c| {
+    search_grid(&parse_input(input), &|c| {
         matches!(c, [X, M, A, S] | [S, A, M, X])
     })
 }
@@ -56,7 +56,7 @@ pub fn part2(input: &str) -> usize {
 
 #[test]
 fn part1_example_sanity() {
-    use helper::iter::{vertical_iter, IteratorExtension as _};
+    use helper::iter::{diag_bl_tr_iter, vertical_iter, IteratorExtension as _};
     use XMAS::*;
     let input = include_str!(concat!(
         env!("CARGO_MANIFEST_DIR"),
