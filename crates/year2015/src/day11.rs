@@ -1,4 +1,4 @@
-use std::{convert::Infallible, fmt::Display, str::FromStr};
+use std::{fmt::Display, str::FromStr};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 enum Base26 {
@@ -99,7 +99,7 @@ impl Password {
 }
 
 impl FromStr for Password {
-    type Err = Infallible;
+    type Err = Vec<Base26>;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let parts = s
@@ -115,8 +115,7 @@ impl FromStr for Password {
                 _ => None,
             })
             .collect::<Vec<_>>()
-            .try_into()
-            .unwrap();
+            .try_into()?;
 
         Ok(Self(parts))
     }
@@ -151,7 +150,7 @@ fn req3(example: &[Base26]) -> bool {
 
 fn parse_input(input: &str) -> Password {
     let Ok(password) = Password::from_str(input) else {
-        panic!("Infallible")
+        panic!("Input has the wring length!")
     };
     password
 }
