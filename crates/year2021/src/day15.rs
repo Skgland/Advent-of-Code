@@ -1,4 +1,3 @@
-use std::cmp::Reverse;
 use std::collections::{HashMap, HashSet};
 
 fn parse_input(input: &str) -> Vec<Vec<u8>> {
