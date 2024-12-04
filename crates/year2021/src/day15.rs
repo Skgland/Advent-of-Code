@@ -25,12 +25,6 @@ pub fn get_neighbours(pos: (usize, usize), dim: usize) -> impl Iterator<Item = (
         })
 }
 
-#[derive(Ord, PartialOrd, Eq, PartialEq)]
-struct HeapEntry {
-    cost: Reverse<u32>,
-    pos: (usize, usize),
-}
-
 #[allow(clippy::ptr_arg)]
 pub fn traverse(map: &Vec<Vec<u8>>, multiplier: usize) -> u32 {
     let mut candidates = HashMap::from([((0, 0), 0)]);
