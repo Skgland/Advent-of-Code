@@ -6,6 +6,7 @@ on:
     paths-ignore:
       - "crates/year*/**"
       - "inputs/*/year*/**"
+      - "inputs/personal"
       - "!crates/year2024/**"
       - "!inputs/*/year2024/**"
   pull_request:
