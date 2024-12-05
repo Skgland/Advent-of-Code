@@ -71,9 +71,7 @@ pub fn part2(input: &str) -> u32 {
         .iter_mut()
         .filter(|update| !is_valid(update, &input.rules))
         .map(|update| {
-            dbg!(&update);
             fixup(update, &input.rules);
-            dbg!(&update);
             assert!(is_valid(update, &input.rules));
             u32::from(*get_middle(&update))
         })

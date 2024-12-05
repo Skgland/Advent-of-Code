@@ -79,7 +79,7 @@ impl CubeMap {
                 if tiles.contains_key(&pos) {
                     let x_range = (x - 1) * side_length + 1..=pos.column;
                     let y_range = (y - 1) * side_length + 1..=pos.row;
-                    dbg!((x, y), &x_range, &y_range);
+
                     let tile = Rc::new(CubeSide {
                         x: x_range,
                         y: y_range,
@@ -107,8 +107,6 @@ impl CubeMap {
             .collect::<Vec<_>>()
             .try_into()
             .unwrap();
-
-        dbg!(&sides);
 
         // fold cube
         loop {
@@ -155,7 +153,6 @@ impl CubeMap {
             }
 
             if !missing {
-                dbg!(&sides);
                 break CubeMap {
                     size: side_length,
                     sides,

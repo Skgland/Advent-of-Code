@@ -116,7 +116,7 @@ pub fn part1(input: &str) -> usize {
         .map(
             |(idx, [left, right])| {
                 if left <= right {
-                    dbg!(idx + 1)
+                    idx + 1
                 } else {
                     0
                 }

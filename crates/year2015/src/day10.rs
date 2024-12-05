@@ -12,7 +12,6 @@ fn look_and_say(input: impl Iterator<Item = u8>) -> impl Iterator<Item = u8> {
         .map(Some)
         .chain(std::iter::once(None))
         .scan(None, |state, cur| {
-            // dbg!(&state, cur);
             let res = match (state.as_mut(), cur) {
                 (Some((counting, count)), Some(next)) if *counting == next => {
                     *count += 1;
@@ -33,7 +32,6 @@ fn look_and_say(input: impl Iterator<Item = u8>) -> impl Iterator<Item = u8> {
                 }
                 (None, None) => None,
             };
-            // dbg!(res)
             res
         })
         .flatten()
