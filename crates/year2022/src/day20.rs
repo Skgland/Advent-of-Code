@@ -55,7 +55,7 @@ pub fn part1(input: &str) -> isize {
     let numbers = parse(input);
     let result = mix(&numbers, 1);
     let (x, y, z) = extract_coordinates(&result);
-    dbg!(x, y, z);
+
     x + y + z
 }
 
@@ -64,7 +64,7 @@ pub fn part2(input: &str) -> isize {
     let decrypted: Vec<_> = numbers.iter().map(|elem| elem * 811589153).collect();
     let result = mix(&decrypted, 10);
     let (x, y, z) = extract_coordinates(&result);
-    dbg!(x, y, z);
+
     x + y + z
 }
 

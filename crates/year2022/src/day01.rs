@@ -16,7 +16,7 @@ fn both(input: &str, top: usize) -> u32 {
     elfs.sort();
     elfs.reverse();
 
-    dbg!(&elfs[..top]).iter().sum()
+    (&elfs[..top]).iter().sum()
 }
 
 pub fn part1(input: &str) -> u32 {

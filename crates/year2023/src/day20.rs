@@ -236,7 +236,7 @@ pub fn part2(input: &str) -> u64 {
         }
     }
 
-    dbg!(counter)
+    counter
         .into_iter()
         .fold(1, |acc, (_, cur)| helper::lcm(acc, cur))
 }

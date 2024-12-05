@@ -279,7 +279,6 @@ pub fn part2(input: &str) -> usize {
 
     let p3 = dijkstra(&boards, DijkstraDirection::Forward);
 
-    dbg!(p1, p2, p3);
     p1 + p2 + p3
 }
 

@@ -84,12 +84,8 @@ struct Cycle {
 
 impl Cycle {
     fn merge(&self, other: &Cycle) -> Cycle {
-        dbg!("Merge");
-
         let common_start = self.start.max(other.start);
         let common_len = helper::lcm(self.len, other.len);
-
-        dbg!(common_start, common_len);
 
         let a: BTreeSet<_> = (0..)
             .flat_map(|offset| {

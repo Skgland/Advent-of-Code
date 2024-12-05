@@ -225,7 +225,6 @@ fn xyz_collision(head: &Hail, other: &Hail) -> Option<[i64; 3]> {
             other.pos[2] as f64 + (other.vel[2] as i128 * t2_num as i128) as f64 / t2_den as f64;
 
         if z != oz {
-            // dbg!(x, y, z, oz);
             return None;
         }
 

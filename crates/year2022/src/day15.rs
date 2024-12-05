@@ -92,7 +92,6 @@ fn p2(input: &str, max: isize) -> usize {
             if let Some(range) = blocked_ranges.iter().find(|range| range.contains(&x)) {
                 x = range.end() + 1;
             } else {
-                dbg!(x, y);
                 return (x * 4000000 + y) as usize;
             }
         }
