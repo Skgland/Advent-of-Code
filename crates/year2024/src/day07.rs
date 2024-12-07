@@ -35,17 +35,24 @@ fn parse_input(input: &str) -> impl Iterator<Item = Test> + '_ {
 }
 
 pub fn part1(input: &str) -> u64 {
-    parse_input(input)
-        .filter(|test| test.is_possible(|acc, arg| [acc + arg, acc * arg]))
-        .map(|test| test.result)
-        .sum()
+    both(input, part1_ops)
+}
+
+fn part1_ops(acc: u64, arg: u64) -> [u64; 2] {
+    [acc + arg, acc * arg]
 }
 
 pub fn part2(input: &str) -> u64 {
+    both(input, part2_ops)
+}
+
+fn part2_ops(acc: u64, arg: u64) -> [u64; 3] {
+    [acc + arg, acc * arg, acc * arg.next_power_of_ten() + arg]
+}
+
+fn both<const N: usize>(input: &str, ops: impl Fn(u64, u64) -> [u64; N] + Copy) -> u64 {
     parse_input(input)
-        .filter(|test| {
-            test.is_possible(|acc, arg| [acc + arg, acc * arg, acc * arg.next_power_of_ten() + arg])
-        })
+        .filter(|test| test.is_possible(ops))
         .map(|test| test.result)
         .sum()
 }
