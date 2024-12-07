@@ -4,6 +4,7 @@ struct Test {
     result: u64,
     arguments: Vec<u64>,
 }
+
 impl Test {
     fn is_possible<const N: usize>(&self, ops: impl Fn(u64, u64) -> [u64; N]) -> bool {
         self.arguments
@@ -42,15 +43,20 @@ pub fn part2(input: &str) -> u64 {
     parse_input(input)
         .filter(|test| {
             test.is_possible(|acc, arg| {
-                [
-                    acc + arg,
-                    acc * arg,
-                    acc * 10u64.pow(arg.ilog10() + 1) + arg,
-                ]
+                [acc + arg, acc * arg, acc * next_multiple_of_ten(arg) + arg]
             })
         })
         .map(|test| test.result)
         .sum()
+}
+
+fn next_multiple_of_ten(arg: u64) -> u64 {
+    match arg {
+        0..10 => 10,
+        10..100 => 100,
+        100..1000 => 1000,
+        _ => unreachable!("input only contains numbers up to three digits"),
+    }
 }
 
 #[test]
