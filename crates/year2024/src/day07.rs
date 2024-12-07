@@ -9,10 +9,10 @@ struct Test {
 
 impl Test {
     fn is_possible<const N: usize>(&self, ops: impl Fn(u64, u64) -> [u64; N]) -> bool {
-        self.arguments
+        self.arguments[1..]
             .iter()
             .copied()
-            .fold(HashSet::from([0]), |accs, arg| {
+            .fold(HashSet::from([self.arguments[0]]), |accs, arg| {
                 accs.iter()
                     .copied()
                     .flat_map(|acc| ops(acc, arg))
