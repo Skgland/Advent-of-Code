@@ -54,6 +54,55 @@ macro_rules! impl_zero {
 
 impl_zero!(u8, u16, u32, u64, u128, usize);
 
+pub trait IntegerExtension {
+    fn next_power_of_ten(&self) -> Self;
+    fn length_base10(&self) -> u32;
+}
+
+impl IntegerExtension for u64 {
+    fn next_power_of_ten(&self) -> Self {
+        match self {
+            1..10 => 10,
+            10..100 => 100,
+            100..1000 => 1000,
+            1000..10_000 => 10_000,
+            _ => 10u64.pow(self.length_base10()),
+        }
+    }
+
+    fn length_base10(&self) -> u32 {
+        match self {
+            1..10 => 1,
+            10..100 => 2,
+            100..1000 => 3,
+            1000..10_000 => 4,
+            _ => self.ilog10() + 1,
+        }
+    }
+}
+
+impl IntegerExtension for usize {
+    fn next_power_of_ten(&self) -> Self {
+        match self {
+            1..10 => 10,
+            10..100 => 100,
+            100..1000 => 1000,
+            1000..10_000 => 10_000,
+            _ => 10usize.pow(self.ilog10() + 1),
+        }
+    }
+
+    fn length_base10(&self) -> u32 {
+        match self {
+            1..10 => 1,
+            10..100 => 2,
+            100..1000 => 3,
+            1000..10_000 => 4,
+            _ => self.ilog10() + 1,
+        }
+    }
+}
+
 pub fn lcm<T>(a: T, b: T) -> T
 where
     T: Copy + Ord + Rem<Output = T> + Div<Output = T> + Zero + Mul<Output = T>,
