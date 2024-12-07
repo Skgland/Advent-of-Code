@@ -1,5 +1,7 @@
 use std::collections::HashSet;
 
+use helper::IntegerExtension;
+
 struct Test {
     result: u64,
     arguments: Vec<u64>,
@@ -42,21 +44,10 @@ pub fn part1(input: &str) -> u64 {
 pub fn part2(input: &str) -> u64 {
     parse_input(input)
         .filter(|test| {
-            test.is_possible(|acc, arg| {
-                [acc + arg, acc * arg, acc * next_multiple_of_ten(arg) + arg]
-            })
+            test.is_possible(|acc, arg| [acc + arg, acc * arg, acc * arg.next_power_of_ten() + arg])
         })
         .map(|test| test.result)
         .sum()
-}
-
-fn next_multiple_of_ten(arg: u64) -> u64 {
-    match arg {
-        0..10 => 10,
-        10..100 => 100,
-        100..1000 => 1000,
-        _ => unreachable!("input only contains numbers up to three digits"),
-    }
 }
 
 #[test]

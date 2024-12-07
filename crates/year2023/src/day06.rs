@@ -1,3 +1,5 @@
+use helper::IntegerExtension;
+
 #[derive(Debug)]
 struct Race {
     time: u64,
@@ -50,8 +52,8 @@ pub fn part2(input: &str) -> usize {
             highscore: 0,
         },
         |acc, cur| Race {
-            time: acc.time * 10u64.pow(cur.time.ilog10() + 1) + cur.time,
-            highscore: acc.highscore * 10u64.pow(cur.highscore.ilog10() + 1) + cur.highscore,
+            time: acc.time * cur.time.next_power_of_ten() + cur.time,
+            highscore: acc.highscore * cur.highscore.next_power_of_ten() + cur.highscore,
         },
     );
     race.winning_holdings()

@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use helper::IntegerExtension;
+
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 struct Position {
     x: isize,
@@ -9,7 +11,7 @@ impl Position {
     fn neighbors(&self, number: usize) -> impl Iterator<Item = Position> {
         let x = self.x;
         let y = self.y;
-        let length = number.ilog10() + 1;
+        let length = number.length_base10();
         (-1..=length as isize)
             .flat_map(move |offset| {
                 [
