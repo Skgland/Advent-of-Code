@@ -10,7 +10,11 @@ impl Test {
             .iter()
             .copied()
             .fold(HashSet::from([0]), |accs, arg| {
-                accs.iter().copied().flat_map(|acc| ops(acc, arg)).collect()
+                accs.iter()
+                    .copied()
+                    .flat_map(|acc| ops(acc, arg))
+                    .filter(|&val| val <= self.result)
+                    .collect()
             })
             .contains(&self.result)
     }
