@@ -58,6 +58,16 @@ fn both<const N: usize>(input: &str, ops: impl Fn(u64, u64) -> [u64; N] + Copy) 
 }
 
 #[test]
+fn edge_case() {
+    let test = Test {
+        result: 5,
+        arguments: vec![2, 5],
+    };
+    assert!(!test.is_possible(part1_ops));
+    assert!(!test.is_possible(part2_ops));
+}
+
+#[test]
 fn part1_example() {
     let input = include_str!(concat!(
         env!("CARGO_MANIFEST_DIR"),
