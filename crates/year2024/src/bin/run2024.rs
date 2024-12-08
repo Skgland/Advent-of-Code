@@ -10,6 +10,7 @@ pub fn main() {
         for year2022 do
         match (day, part) => {
             | day01
+            | day08
             => default
         }
     }
