@@ -26,10 +26,13 @@ fn parse_input(input: &str) -> Map {
                 }
             })
         })
-        .fold(HashMap::<char, Vec<Position>>::new(), |mut acc, (name, pos)| {
-            acc.entry(name).or_default().push(pos);
-            acc
-        });
+        .fold(
+            HashMap::<char, Vec<Position>>::new(),
+            |mut acc, (name, pos)| {
+                acc.entry(name).or_default().push(pos);
+                acc
+            },
+        );
 
     Map {
         nodes,
@@ -40,44 +43,51 @@ fn parse_input(input: &str) -> Map {
 
 pub fn part1(input: &str) -> usize {
     let map = parse_input(input);
-    let anti_nodes = map.nodes.values().flat_map(|poss| {
-        let mut rem = poss.as_slice();
-        let mut anti_nodes = HashSet::with_capacity(poss.len());
-        while let [head, tail @ ..] = rem {
-            rem = tail;
-            for other in tail {
-                let dx = head.0 - other.0;
-                let dy = head.1 - other.1;
-                anti_nodes.insert((head.0 + dx, head.1 + dy));
-                anti_nodes.insert((other.0 - dx, other.1 - dy));
+    let anti_nodes = map
+        .nodes
+        .values()
+        .flat_map(|poss| {
+            let mut rem = poss.as_slice();
+            let mut anti_nodes = HashSet::with_capacity(poss.len());
+            while let [head, tail @ ..] = rem {
+                rem = tail;
+                for other in tail {
+                    let dx = head.0 - other.0;
+                    let dy = head.1 - other.1;
+                    anti_nodes.insert((head.0 + dx, head.1 + dy));
+                    anti_nodes.insert((other.0 - dx, other.1 - dy));
+                }
             }
-        }
-        anti_nodes
-    }).filter(|&(x, y)| x >= 0 && y >= 0 && x < map.width && y < map.height)
-    .collect::<HashSet<_>>();
+            anti_nodes
+        })
+        .filter(|&(x, y)| x >= 0 && y >= 0 && x < map.width && y < map.height)
+        .collect::<HashSet<_>>();
     anti_nodes.len()
 }
 
 pub fn part2(input: &str) -> usize {
     let map = parse_input(input);
-    let anti_nodes = map.nodes.values().flat_map(|poss| {
-        let mut rem = poss.as_slice();
-        let mut anti_nodes = HashSet::with_capacity(poss.len());
-        let max_dim = map.width.max(map.height);
-        while let [head, tail @ ..] = rem {
-            rem = tail;
-            for other in tail {
-                let dx = head.0 - other.0;
-                let dy = head.1 - other.1;
-                for t in -max_dim ..= max_dim {
-
-                    anti_nodes.insert((head.0 + t * dx, head.1 + t * dy));
+    let anti_nodes = map
+        .nodes
+        .values()
+        .flat_map(|poss| {
+            let mut rem = poss.as_slice();
+            let mut anti_nodes = HashSet::with_capacity(poss.len());
+            let max_dim = map.width.max(map.height);
+            while let [head, tail @ ..] = rem {
+                rem = tail;
+                for other in tail {
+                    let dx = head.0 - other.0;
+                    let dy = head.1 - other.1;
+                    for t in -max_dim..=max_dim {
+                        anti_nodes.insert((head.0 + t * dx, head.1 + t * dy));
+                    }
                 }
             }
-        }
-        anti_nodes
-    }).filter(|&(x, y)| x >= 0 && y >= 0 && x < map.width && y < map.height)
-    .collect::<HashSet<_>>();
+            anti_nodes
+        })
+        .filter(|&(x, y)| x >= 0 && y >= 0 && x < map.width && y < map.height)
+        .collect::<HashSet<_>>();
     anti_nodes.len()
 }
 
