@@ -22,11 +22,6 @@ pub fn part1(input: &str) -> u32 {
     todo!("part1 WIP: {graph:?}")
 }
 
-pub fn part2(input: &str) -> u32 {
-    let mut graph = parse_input(input);
-    todo!("part2 WIP: {graph:?}")
-}
-
 #[test]
 #[ignore = "NYI"]
 fn part1_example() {
@@ -44,25 +39,5 @@ fn part1_full() {
         env!("CARGO_MANIFEST_DIR"),
         "/../../inputs/personal/year2023/day25.txt"
     ));
-    assert_eq!(part1(input), 1292);
-}
-
-#[test]
-#[ignore = "NYI"]
-fn part2_example() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/example/year2023/day25.example.txt"
-    ));
-    assert_eq!(part2(input), 5);
-}
-
-#[test]
-#[ignore = "NYI"]
-fn part2_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2023/day25.txt"
-    ));
-    assert_eq!(part2(input), 1262);
+    assert_eq!(part1(input), 0);
 }
