@@ -41,7 +41,7 @@ fn generate(day: u8, year: u16) {
         .write(true)
         .create_new(true)
         .open(format!(
-            "inputs/example/year{year}/day{:02}.example.txt",
+            "inputs/example/year{year}/day{:02}.example1.txt",
             day
         ))
         .unwrap();
