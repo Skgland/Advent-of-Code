@@ -14,10 +14,10 @@ pub fn part2(input: &str) -> u32 {
 }
 
 #[test]
-fn part1_example() {
+fn part1_example1() {
     let input = include_str!(concat!(
         env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/example/yearXXXX/dayX.example.txt"
+        "/../../inputs/example/yearXXXX/dayX.example1.txt"
     ));
     assert_eq!(part1(input), 7);
 }
@@ -32,10 +32,10 @@ fn part1_full() {
 }
 
 #[test]
-fn part2_example() {
+fn part2_example1() {
     let input = include_str!(concat!(
         env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/example/yearXXXX/dayX.example.txt"
+        "/../../inputs/example/yearXXXX/dayX.example1.txt"
     ));
     assert_eq!(part2(input), 5);
 }
