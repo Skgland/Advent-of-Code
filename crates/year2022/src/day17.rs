@@ -32,7 +32,7 @@ impl Cave {
     fn contains(&self, (x_pos, y_pos): Position) -> bool {
         self.0
             .get(&y_pos)
-            .map_or(false, |row| (row & (1 << x_pos)) != 0)
+            .is_some_and(|row| (row & (1 << x_pos)) != 0)
     }
 
     fn insert(&mut self, (x, y): Position) {
@@ -183,9 +183,9 @@ fn print_cave(cave: &Cave, max: u64, rock_pos: Option<(Rock, Position)>) {
         for x in 0..7 {
             let symbol = if cave.contains((x, y)) {
                 '#'
-            } else if rock_pos.map_or(false, |(rock, pos)| {
-                rock.occupies(pos).any(|pos| pos == (x, y))
-            }) {
+            } else if rock_pos
+                .is_some_and(|(rock, pos)| rock.occupies(pos).any(|pos| pos == (x, y)))
+            {
                 '@'
             } else {
                 '.'
