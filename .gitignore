@@ -1,3 +1,5 @@
 target/
 *.elkt
 trees.txt
+flamegraph.svg
+cargo-flamegraph.stacks

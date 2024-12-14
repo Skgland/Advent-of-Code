@@ -17,3 +17,6 @@ linkme = "0.3.31"
 log = "0.4.22"
 md-5 = "0.10.6"
 serde_json = "1.0.133"
+
+[profile.release]
+debug = true
