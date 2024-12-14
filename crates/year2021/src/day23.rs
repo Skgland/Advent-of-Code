@@ -394,13 +394,17 @@ pub fn simulate<const N: usize>(state: &State<N>, state_cost: usize, minimum: &m
 
         let current_cost = move_cost + state_cost;
 
-        if minimum.map_or(false, |min| min < current_cost) {
+        if minimum.is_some_and(|min| min < current_cost) {
             continue;
         }
 
         if new_state.is_final() {
-            let min = minimum.take();
-            *minimum = Some(min.map_or(current_cost, |cur| cur.min(current_cost)));
+            *minimum = Some(
+                minimum
+                    .as_ref()
+                    .copied()
+                    .map_or(current_cost, |cur| cur.min(current_cost)),
+            );
             // no other moves can be more efficient than getting to the final state
             break;
         } else {

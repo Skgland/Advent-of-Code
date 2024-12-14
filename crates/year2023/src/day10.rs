@@ -197,7 +197,7 @@ impl Maze {
             .into_iter()
             .find(|elem| {
                 self.get(&pos.go(elem))
-                    .map_or(false, |tile| tile.connects(&elem.inverse()))
+                    .is_some_and(|tile| tile.connects(&elem.inverse()))
             })
             .unwrap()
     }
