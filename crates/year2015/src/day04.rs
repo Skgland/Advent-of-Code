@@ -1,3 +1,5 @@
+use std::collections::VecDeque;
+
 use helper::{Task, TASKS};
 use linkme::distributed_slice;
 use md5::digest::Digest;
@@ -25,13 +27,31 @@ static PART2: Task = Task {
 fn find_md5_prefix(input: &str, prefix: &str) -> u32 {
     let input = input.trim();
     let md5_prefix = md5::Md5::new_with_prefix(input.as_bytes());
-    (1..)
-        .find(|suf| {
-            let digest = md5_prefix.clone().chain_update(format!("{suf}")).finalize();
-            let hash = format!("{:x}", digest);
-            hash.starts_with(prefix)
-        })
-        .unwrap()
+
+    let mut todo = VecDeque::new();
+
+    for digit in 1..=9 {
+        let md5 = md5_prefix.clone().chain_update([digit as u8 + b'0']);
+
+        if format!("{:x}", md5.clone().finalize()).starts_with(prefix) {
+            return digit;
+        } else {
+            todo.push_back((digit, md5));
+        }
+    }
+
+    while let Some((val, md5_prefix)) = todo.pop_front() {
+        for digit in 0..=9 {
+            let md5 = md5_prefix.clone().chain_update([digit as u8 + b'0']);
+
+            if format!("{:x}", md5.clone().finalize()).starts_with(prefix) {
+                return val * 10 + digit;
+            } else {
+                todo.push_back((val * 10 + digit, md5));
+            }
+        }
+    }
+    panic!("No suffix found that produces the desired prefix");
 }
 
 pub fn part1(input: &str) -> u32 {
