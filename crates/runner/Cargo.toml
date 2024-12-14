@@ -1,0 +1,13 @@
+[package]
+name = "runner"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+aoc2015 = { workspace = true }
+aoc2021 = { workspace = true }
+aoc2022 = { workspace = true }
+aoc2023 = { workspace = true }
+aoc2024 = { workspace = true }
+helper = { workspace = true }
+linkme = { workspace = true }

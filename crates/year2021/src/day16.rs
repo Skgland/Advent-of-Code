@@ -1,3 +1,25 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2021/day16.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2021", "16", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2021", "16", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
+
 fn parse_input(input: &str) -> impl Iterator<Item = bool> + '_ {
     input.chars().flat_map(|c| {
         let bits = match c as u8 {
@@ -19,7 +41,6 @@ pub fn parse_literal(bit_stream: &mut impl Iterator<Item = bool>) -> usize {
     let mut bit_list = Vec::new();
     loop {
         let bits = bit_stream.take(5).collect::<Vec<_>>();
-        #[allow(clippy::match_ref_pats)]
         if !match bits.as_slice() {
             &[c, b1, b2, b3, b4] => {
                 bit_list.push([b1, b2, b3, b4]);
@@ -259,11 +280,7 @@ fn part1_example4() {
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2021/day16.txt"
-    ));
-    assert_eq!(part1(input), 986);
+    assert_eq!(part1(INPUT), 986);
 }
 
 #[test]
@@ -311,16 +328,11 @@ fn part2_example4() {
 #[test]
 fn part2_example5() {
     let input = "9C0141080250320F1802104A08";
-    #[allow(clippy::eq_op)]
     let result = (1 + 3 == 2 * 2) as usize;
     assert_eq!(part2(input), result);
 }
 
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2021/day16.txt"
-    ));
-    assert_eq!(part2(input), 18234816469452);
+    assert_eq!(part2(INPUT), 18234816469452);
 }

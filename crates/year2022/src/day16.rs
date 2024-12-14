@@ -1,4 +1,25 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
 use std::collections::HashMap;
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2022/day16.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2022", "16", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2022", "16", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
 
 #[derive(Clone, Debug)]
 struct Valve<'input> {
@@ -62,13 +83,11 @@ pub fn part1(input: &str) -> usize {
 
     let mut current = HashMap::from([((0, "AA"), 0)]);
 
-    let time = 0;
-
     for step in 0..30 {
         let mut next = HashMap::new();
         for ((valves_open, pos), relieve) in current {
             let new_relieve = relieve + flow(valves_open, &interesting_valves);
-            if let Some((idx, valve)) = interesting_valves_by_name.get(pos) {
+            if let Some((idx, _valve)) = interesting_valves_by_name.get(pos) {
                 if !is_open(valves_open, *idx) {
                     next.entry((valves_open | (1 << idx), pos))
                         .and_modify(|old| *old = new_relieve.max(*old))
@@ -120,8 +139,6 @@ pub fn part2(input: &str) -> usize {
     assert!(interesting_count <= u32::BITS as _);
 
     let mut current = HashMap::from([((0, "AA", "AA"), 0)]);
-
-    let time = 0;
 
     for step in 0..26 {
         let mut next = HashMap::new();
@@ -218,11 +235,7 @@ fn part1_example() {
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2022/day16.txt"
-    ));
-    assert_eq!(part1(input), 1488);
+    assert_eq!(part1(INPUT), 1488);
 }
 
 #[test]
@@ -236,9 +249,5 @@ fn part2_example() {
 
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2022/day16.txt"
-    ));
-    assert_eq!(part2(input), 2111);
+    assert_eq!(part2(INPUT), 2111);
 }

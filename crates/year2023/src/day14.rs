@@ -1,4 +1,25 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
 use std::collections::{BTreeSet, HashMap, HashSet};
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2023/day14.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2023", "14", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2023", "14", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone)]
 struct Rock {

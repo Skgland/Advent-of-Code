@@ -1,4 +1,25 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
 use std::collections::VecDeque;
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2024/day09.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2024", "9", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2024", "9", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
 
 #[derive(Debug)]
 struct FileSystemChunk {
@@ -29,7 +50,7 @@ fn parse_input(input: &str) -> VecDeque<FileSystemChunk> {
                     kind: FileSystemChunkKind::File { id },
                 });
                 id += 1;
-                start += file_length as usize;
+                start += file_length;
 
                 let space_length = (*space as char).to_digit(10).unwrap() as usize;
                 if space_length != 0 {
@@ -38,7 +59,7 @@ fn parse_input(input: &str) -> VecDeque<FileSystemChunk> {
                         length: space_length,
                         kind: FileSystemChunkKind::Empty,
                     });
-                    start += space_length as usize;
+                    start += space_length;
                 }
             }
             [file] => {
@@ -49,7 +70,7 @@ fn parse_input(input: &str) -> VecDeque<FileSystemChunk> {
                     kind: FileSystemChunkKind::File { id },
                 });
                 id += 1;
-                start += file_length as usize;
+                start += file_length;
             }
             _ => unreachable!("chunk should be of length 1 or 2 "),
         }
@@ -92,13 +113,12 @@ fn compact(
             continue;
         }
         match chunk.kind {
-            FileSystemChunkKind::File { id } => {
+            FileSystemChunkKind::File { id: _ } => {
                 new.push(chunk);
             }
             FileSystemChunkKind::Empty => {
-                let mut others = todo.iter_mut().rev();
-                while let Some(other) = others.next() {
-                    let FileSystemChunkKind::File { id } = other.kind else {
+                for other in todo.iter_mut().rev() {
+                    let FileSystemChunkKind::File { id: _ } = other.kind else {
                         continue;
                     };
                     if other.length == 0 {
@@ -133,11 +153,7 @@ fn part1_example() {
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2024/day09.txt"
-    ));
-    assert_eq!(part1(input), 6399153661894);
+    assert_eq!(part1(INPUT), 6399153661894);
 }
 
 #[test]
@@ -151,9 +167,5 @@ fn part2_example() {
 
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2024/day09.txt"
-    ));
-    assert_eq!(part2(input), 6421724645083);
+    assert_eq!(part2(INPUT), 6421724645083);
 }

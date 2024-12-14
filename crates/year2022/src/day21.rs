@@ -1,5 +1,25 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
 use std::{collections::HashMap, rc::Rc};
 
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2022/day21.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2022", "21", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2022", "21", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
 type Variable = str;
 pub enum Expression<'a> {
     Constant(i64),
@@ -191,8 +211,8 @@ pub fn part2(input: &str) -> i64 {
         while let Some(name) = todo.pop() {
             stack.push(name);
             match monkeys.get(name).unwrap() {
-                Expression::Constant(val) => {}
-                Expression::BinOp(l, r, op) => {
+                Expression::Constant(_val) => {}
+                Expression::BinOp(l, r, _op) => {
                     todo.push(l);
                     todo.push(r);
                 }
@@ -206,7 +226,7 @@ pub fn part2(input: &str) -> i64 {
     while let Some(name) = stack.pop() {
         match monkeys.get(name).unwrap() {
             Expression::BinOp(l, r, op) => {
-                if state.get(name).is_none() {
+                if !state.contains_key(name) {
                     let l = state.get(l).unwrap().clone();
                     let r = state.get(r).unwrap().clone();
                     if name == "root" {
@@ -255,11 +275,7 @@ fn part1_example() {
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2022/day21.txt"
-    ));
-    assert_eq!(part1(input), 54703080378102);
+    assert_eq!(part1(INPUT), 54703080378102);
 }
 
 #[test]
@@ -273,9 +289,5 @@ fn part2_example() {
 
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2022/day21.txt"
-    ));
-    assert_eq!(part2(input), 3952673930912);
+    assert_eq!(part2(INPUT), 3952673930912);
 }

@@ -1,6 +1,58 @@
+use linkme::distributed_slice;
 use std::ops::{Div, Mul, Rem};
 
 pub mod iter;
+
+pub struct Task {
+    pub path: &'static [&'static str],
+    pub run: fn(),
+    pub include_in_all: bool,
+}
+
+#[distributed_slice]
+pub static TASKS: [Task];
+
+pub fn list_with_prefix<S: AsRef<str>>(prefix: &[S]) {
+    if prefix.is_empty() {
+        println!("Available tasks: ");
+    } else {
+        println!(
+            "All tasks begining with: {}",
+            prefix
+                .iter()
+                .map(|s| s.as_ref())
+                .collect::<Vec<_>>()
+                .join(" ")
+        )
+    }
+    for task in tasks_filtered_by_prefix(prefix) {
+        println!("\t{}", task.path.join(" "));
+    }
+}
+
+pub fn tasks_filtered_by_prefix<S: AsRef<str>>(
+    prefix: &[S],
+) -> impl Iterator<Item = &'static Task> + '_ {
+    TASKS.iter().filter(move |task| {
+        prefix.len() <= task.path.len()
+            && task
+                .path
+                .iter()
+                .zip(prefix)
+                .all(|(task, prefix)| *task == prefix.as_ref())
+    })
+}
+
+pub fn run_all_prefix<S: AsRef<str>>(prefix: &[S]) {
+    for task in tasks_filtered_by_prefix(prefix) {
+        if task.include_in_all {
+            println!("Running {}", task.path.join(" "));
+            (task.run)()
+        } else {
+            println!("Skipping {}", task.path.join(" "))
+        }
+    }
+}
 
 #[macro_export]
 macro_rules! run_inner {
@@ -22,17 +74,17 @@ macro_rules! run {
     ( for $year:ident do match ($day:ident, $part:ident) => {  $(pat $pat:pat => $expr:block),* $(,)? | $($id:ident)|* => default  }) => {
         match ($day.as_deref(), $part.as_deref()) {
             $($pat => $expr)*
-            $((Some(stringify!($id)), Some("1")) => {
+            $((Some(stringify!($id)), Some("part1")) => {
                 $crate::run_inner!($year, $id, part1);
             }
-            (Some(stringify!($id)), Some("2")) => {
+            (Some(stringify!($id)), Some("part2")) => {
                 $crate::run_inner!($year, $id, part2);
             })*
             (Some(day), Some(part)) => {
                 eprintln!("Unknown Day Part combination: Day {} Part {}", day, part);
             },
             _ => {
-                eprintln!("Expected two arguments: dayXX and part# e.g. day22 2");
+                eprintln!("Expected two arguments: dayXX and part# e.g. day22 part2");
             }
         }
     };

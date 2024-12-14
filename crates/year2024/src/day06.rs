@@ -1,7 +1,28 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
 use std::{
     cell::Cell,
     collections::{HashMap, HashSet},
     ops::ControlFlow,
+};
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2024/day06.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2024", "6", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2024", "6", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
 };
 
 enum Tile {
@@ -28,13 +49,15 @@ impl Direction {
     }
 }
 
+type Pos = (isize, isize);
 struct Map {
-    tiles: HashMap<(isize, isize), Tile>,
-    pos: (isize, isize),
+    tiles: HashMap<Pos, Tile>,
+    pos: Pos,
     dir: Direction,
 }
+
 impl Map {
-    fn run(&mut self) -> ControlFlow<HashMap<(isize, isize), ((isize, isize), Direction)>> {
+    fn run(&mut self) -> ControlFlow<HashMap<Pos, (Pos, Direction)>> {
         // which tiles did we visit while facing which direction
         let mut visited = HashSet::new();
 
@@ -56,18 +79,16 @@ impl Map {
     }
 
     fn step(&mut self) -> bool {
-        loop {
-            let next = self.next();
-            match self.tiles.get(&next) {
-                None => return false,
-                Some(Tile::Empty | Tile::Guard) => {
-                    self.pos = next;
-                    return true;
-                }
-                Some(Tile::Obstacle) => {
-                    self.dir.turn_right();
-                    return true;
-                }
+        let next = self.next();
+        match self.tiles.get(&next) {
+            None => false,
+            Some(Tile::Empty | Tile::Guard) => {
+                self.pos = next;
+                true
+            }
+            Some(Tile::Obstacle) => {
+                self.dir.turn_right();
+                true
             }
         }
     }
@@ -153,11 +174,7 @@ fn part1_example() {
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2024/day06.txt"
-    ));
-    assert_eq!(part1(input), 4515);
+    assert_eq!(part1(INPUT), 4515);
 }
 
 #[test]
@@ -171,9 +188,5 @@ fn part2_example() {
 
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2024/day06.txt"
-    ));
-    assert_eq!(part2(input), 1309);
+    assert_eq!(part2(INPUT), 1309);
 }

@@ -1,23 +1,44 @@
 use helper::iter::search_grid;
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2024/day04.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2024", "4", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2024", "4", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum XMAS {
+enum Xmas {
     X,
     M,
     A,
     S,
 }
 
-fn parse_input(input: &str) -> Vec<Vec<XMAS>> {
+fn parse_input(input: &str) -> Vec<Vec<Xmas>> {
     input
         .lines()
         .map(|line| {
             line.chars()
                 .map(|c| match c {
-                    'X' => XMAS::X,
-                    'M' => XMAS::M,
-                    'A' => XMAS::A,
-                    'S' => XMAS::S,
+                    'X' => Xmas::X,
+                    'M' => Xmas::M,
+                    'A' => Xmas::A,
+                    'S' => Xmas::S,
                     _ => unreachable!(),
                 })
                 .collect()
@@ -26,14 +47,14 @@ fn parse_input(input: &str) -> Vec<Vec<XMAS>> {
 }
 
 pub fn part1(input: &str) -> usize {
-    use XMAS::*;
+    use Xmas::*;
     search_grid(&parse_input(input), &|c| {
         matches!(c, [X, M, A, S] | [S, A, M, X])
     })
 }
 
 pub fn part2(input: &str) -> usize {
-    use XMAS::*;
+    use Xmas::*;
     let grid = parse_input(input);
 
     let mut count = 0;
@@ -54,10 +75,11 @@ pub fn part2(input: &str) -> usize {
     count
 }
 
+#[allow(unstable_name_collisions)]
 #[test]
 fn part1_example_sanity() {
     use helper::iter::{diag_bl_tr_iter, vertical_iter, IteratorExtension as _};
-    use XMAS::*;
+    use Xmas::*;
     let input = include_str!(concat!(
         env!("CARGO_MANIFEST_DIR"),
         "/../../inputs/example/year2024/day04.example.txt"
@@ -118,11 +140,7 @@ fn part1_example() {
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2024/day04.txt"
-    ));
-    assert_eq!(part1(input), 2534);
+    assert_eq!(part1(INPUT), 2534);
 }
 
 #[test]
@@ -136,9 +154,5 @@ fn part2_example() {
 
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2024/day04.txt"
-    ));
-    assert_eq!(part2(input), 1866);
+    assert_eq!(part2(INPUT), 1866);
 }

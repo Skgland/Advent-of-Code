@@ -1,6 +1,26 @@
+use helper::IntegerExtension;
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
 use std::collections::HashMap;
 
-use helper::IntegerExtension;
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2024/day11.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2024", "11", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2024", "11", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
 
 fn parse_input(input: &str) -> Vec<u64> {
     input
@@ -19,7 +39,7 @@ pub fn part2(input: &str) -> usize {
 
 fn process_stones(stones: &[u64], iterations: u8, cache: &mut HashMap<(u64, u8), usize>) -> usize {
     stones
-        .into_iter()
+        .iter()
         .map(|&stone| count_stones(stone, iterations, cache))
         .sum()
 }
@@ -109,18 +129,10 @@ fn part1_example2() {
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2024/day11.txt"
-    ));
-    assert_eq!(part1(input), 186424);
+    assert_eq!(part1(INPUT), 186424);
 }
 
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2024/day11.txt"
-    ));
-    assert_eq!(part2(input), 219838428124832);
+    assert_eq!(part2(INPUT), 219838428124832);
 }

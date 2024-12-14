@@ -1,6 +1,20 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
 use std::{
     collections::{BTreeMap, BTreeSet, HashSet},
     vec,
+};
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2023/day25.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2023", "25", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
 };
 
 #[derive(Debug, Hash, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
@@ -75,8 +89,7 @@ pub fn part1(input: &str) -> usize {
     let (mut graph, edges) = parse_input(input);
 
     println!("{}: ", edges.len());
-    for i1 in 0..edges.len() {
-        let e1 = edges[i1];
+    for e1 in edges {
         graph.remove_edge(e1);
         // find a shortest path between the nodes we just cut the edge between,
         // the other two cuts need to be on that path to partition the graph
@@ -103,9 +116,7 @@ pub fn part1(input: &str) -> usize {
 }
 
 fn bi_components(graph: &Graph<'_>, [e1, e2, e3]: [Edge<'_>; 3]) -> Option<usize> {
-    let Some(c1) = collect_component(&graph, e1.0[0], e1.0[1]) else {
-        return None;
-    };
+    let c1 = collect_component(graph, e1.0[0], e1.0[1])?;
 
     if c1.contains(e2.0[0]) == c1.contains(e2.0[1]) || c1.contains(e3.0[0]) == c1.contains(e3.0[1])
     {
@@ -113,7 +124,7 @@ fn bi_components(graph: &Graph<'_>, [e1, e2, e3]: [Edge<'_>; 3]) -> Option<usize
         return None;
     }
 
-    let c2 = collect_component(&graph, e1.0[1], e1.0[0]).unwrap();
+    let c2 = collect_component(graph, e1.0[1], e1.0[0]).unwrap();
 
     if c1.len() + c2.len() == graph.nodes.len() {
         return Some(c1.len() * c2.len());

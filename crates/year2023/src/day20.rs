@@ -1,4 +1,32 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
 use std::collections::{BTreeMap, HashSet, VecDeque};
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2023/day20.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2023", "20", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2023", "20", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static GRAPH: Task = Task {
+    path: &["2023", "20", "graph"],
+    run: || print_graph(INPUT),
+    include_in_all: true,
+};
 
 #[derive(Debug, Clone, Copy)]
 enum Pulse {
@@ -277,13 +305,10 @@ fn part2_full() {
     assert_eq!(part2(input), 232605773145467);
 }
 
-pub fn print_graph() {
+pub fn print_graph(input: &str) {
     use std::fmt::Write;
 
-    let input = parse_input(include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2023/day20.txt"
-    )));
+    let state = parse_input(input);
     let mut nodes_out = String::new();
     let mut edges_out = String::new();
 
@@ -292,7 +317,7 @@ pub fn print_graph() {
     let mut todo = VecDeque::from(["broadcaster"]);
 
     while let Some(elem) = todo.pop_front() {
-        match input.modules.get(elem) {
+        match state.modules.get(elem) {
             Some(Module { dest, kind }) => {
                 match kind {
                     ModuleKind::FlipFlop { .. } => {

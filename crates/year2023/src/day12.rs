@@ -1,4 +1,25 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
 use std::{collections::HashMap, str::FromStr};
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2023/day12.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2023", "12", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2023", "12", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 enum SpringCondition {
@@ -166,13 +187,13 @@ impl FromStr for Row {
 
     fn from_str(line: &str) -> Result<Self, Self::Err> {
         let (list, cont) = line.split_once(' ').ok_or(())?;
-        #[allow(clippy::wildcard_in_or_patterns)]
         let list = list
             .chars()
             .map(|c| match c {
                 '#' => SpringCondition::Bad,
                 '.' => SpringCondition::Good,
-                '?' | _ => SpringCondition::Unknown,
+                '?' => SpringCondition::Unknown,
+                _ => panic!("Unexpected characer input"),
             })
             .collect();
 

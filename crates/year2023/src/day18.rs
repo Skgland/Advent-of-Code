@@ -1,4 +1,25 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
 use std::collections::BTreeMap;
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2023/day18.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2023", "18", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2023", "18", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 enum Direction {
@@ -76,7 +97,7 @@ fn parse_input(input: &str) -> impl Iterator<Item = Instruction> + '_ {
             "R" => Direction::Right,
             _ => panic!(),
         };
-        let dist = u32::from_str_radix(dist, 10).unwrap();
+        let dist = dist.parse().unwrap();
         let color = color.trim_start_matches("(#").trim_end_matches(')');
         let (alt_dist, alt_dir) = calc_alt(color);
         Instruction {

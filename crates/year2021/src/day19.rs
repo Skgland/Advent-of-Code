@@ -1,4 +1,25 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
 use std::collections::HashSet;
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2021/day19.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2021", "19", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: false,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2021", "19", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: false,
+};
 
 type Matrix<const N: usize, const M: usize> = [[isize; M]; N];
 type Vector<const N: usize> = [isize; N];
@@ -261,11 +282,7 @@ fn part1_example() {
 #[ignore = "takes too long"]
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2021/day19.txt"
-    ));
-    assert_eq!(part1(input), 362);
+    assert_eq!(part1(INPUT), 362);
 }
 
 #[test]
@@ -280,9 +297,5 @@ fn part2_example() {
 #[ignore = "takes too long"]
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2021/day19.txt"
-    ));
-    assert_eq!(part2(input), 12204);
+    assert_eq!(part2(INPUT), 12204);
 }

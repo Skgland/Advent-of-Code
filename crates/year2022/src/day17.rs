@@ -1,4 +1,25 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
 use std::{collections::HashMap, ops::ControlFlow};
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2022/day17.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2022", "17", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2022", "17", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
 
 type Position = (u8, u64);
 struct Cave(HashMap<u64, u8>);
@@ -98,7 +119,7 @@ impl Rock {
 
     fn has_collision(&self, pos: Position, cave: &Cave) -> bool {
         self.occupies(pos)
-            .any(|pos @ (x_pos, y_pos)| x_pos > 6 || cave.contains(pos))
+            .any(|pos @ (x_pos, _y_pos)| x_pos > 6 || cave.contains(pos))
     }
 
     fn simulate(
@@ -146,7 +167,12 @@ fn parse(input: &str) -> Vec<Direction> {
 #[allow(dead_code)]
 fn print_cave(cave: &Cave, max: u64, rock_pos: Option<(Rock, Position)>) {
     let max = if let Some((rock, pos)) = rock_pos {
-        max.max(rock.occupies(pos).map(|(x, y)| y).max().unwrap_or_default())
+        max.max(
+            rock.occupies(pos)
+                .map(|(_x, y)| y)
+                .max()
+                .unwrap_or_default(),
+        )
     } else {
         max
     };
@@ -173,8 +199,6 @@ fn print_cave(cave: &Cave, max: u64, rock_pos: Option<(Rock, Position)>) {
 fn both(input: &str, iterations: usize) -> u64 {
     let mut current_max = 0;
     let streams = parse(input);
-
-    let min_cycle_len = streams.len() * Rock::SEQUENCE.len();
 
     let mut streams = streams.into_iter().enumerate().cycle().peekable();
     let mut cave = Cave::new();
@@ -261,11 +285,7 @@ fn part1_example() {
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2022/day17.txt"
-    ));
-    assert_eq!(part1(input), 3085);
+    assert_eq!(part1(INPUT), 3085);
 }
 
 #[test]
@@ -279,9 +299,5 @@ fn part2_example() {
 
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2022/day17.txt"
-    ));
-    assert_eq!(part2(input), 1535483870924);
+    assert_eq!(part2(INPUT), 1535483870924);
 }

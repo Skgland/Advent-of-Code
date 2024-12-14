@@ -1,4 +1,25 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
 use serde_json::Value;
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2015/day12.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2015", "12", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2015", "12", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
 
 fn parse_input(input: &str) -> Value {
     serde_json::from_str(input).unwrap()
@@ -92,18 +113,10 @@ fn part1_example8() {
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2015/day12.txt"
-    ));
-    assert_eq!(part1(input), 191164);
+    assert_eq!(part1(INPUT), 191164);
 }
 
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2015/day12.txt"
-    ));
-    assert_eq!(part2(input), 87842);
+    assert_eq!(part2(INPUT), 87842);
 }

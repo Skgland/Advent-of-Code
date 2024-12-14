@@ -70,7 +70,7 @@ where
 }
 
 pub fn search_grid<const N: usize, T>(
-    grid: &Vec<Vec<T>>,
+    grid: &[Vec<T>],
     is_needle: &impl Fn(&[&T; N]) -> bool,
 ) -> usize {
     fn count_matches<'a, const N: usize, T: 'a>(
@@ -91,9 +91,7 @@ pub fn search_grid<const N: usize, T>(
         + count_matches(diag_tl_br_iter(grid), is_needle)
 }
 
-pub fn diag_tl_br_iter<'a, T>(
-    grid: &'a Vec<Vec<T>>,
-) -> impl Iterator<Item = impl Iterator<Item = &'a T>> {
+pub fn diag_tl_br_iter<T>(grid: &[Vec<T>]) -> impl Iterator<Item = impl Iterator<Item = &T>> {
     (0..grid.len())
         .map(|row| (row, 0))
         .chain((1..grid[0].len()).map(|column| (0, column)))
@@ -103,9 +101,7 @@ pub fn diag_tl_br_iter<'a, T>(
         })
 }
 
-pub fn diag_bl_tr_iter<'a, T>(
-    grid: &'a Vec<Vec<T>>,
-) -> impl Iterator<Item = impl Iterator<Item = &'a T>> {
+pub fn diag_bl_tr_iter<T>(grid: &[Vec<T>]) -> impl Iterator<Item = impl Iterator<Item = &T>> {
     (0..grid.len())
         .map(|row| (row, 0))
         .chain((1..grid[0].len()).map(|column| (grid.len() - 1, column)))
@@ -115,14 +111,10 @@ pub fn diag_bl_tr_iter<'a, T>(
         })
 }
 
-pub fn vertical_iter<'a, T>(
-    grid: &'a Vec<Vec<T>>,
-) -> impl Iterator<Item = impl Iterator<Item = &'a T>> {
+pub fn vertical_iter<T>(grid: &[Vec<T>]) -> impl Iterator<Item = impl Iterator<Item = &T>> {
     (0..grid.len()).map(move |column| (0..grid.len()).map(move |row| &grid[row][column]))
 }
 
-pub fn horizontal_iter<'a, T>(
-    grid: &'a Vec<Vec<T>>,
-) -> impl Iterator<Item = impl Iterator<Item = &'a T>> {
+pub fn horizontal_iter<T>(grid: &[Vec<T>]) -> impl Iterator<Item = impl Iterator<Item = &T>> {
     grid.iter().map(|line| line.iter())
 }

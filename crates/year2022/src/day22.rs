@@ -1,8 +1,29 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
 use std::{
     cell::RefCell,
     collections::HashMap,
     ops::RangeInclusive,
     rc::{Rc, Weak},
+};
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2022/day22.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2022", "22", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2022", "22", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
 };
 
 #[derive(Debug)]
@@ -48,8 +69,6 @@ impl CubeSide {
 }
 
 struct CubeMap {
-    #[allow(dead_code)]
-    size: usize,
     sides: [Rc<CubeSide>; 6],
 }
 
@@ -153,10 +172,7 @@ impl CubeMap {
             }
 
             if !missing {
-                break CubeMap {
-                    size: side_length,
-                    sides,
-                };
+                break CubeMap { sides };
             } else if !progress {
                 panic!("Failed to fold cube!")
             }
@@ -486,18 +502,6 @@ fn assemble_tiles(
     mode: WrapMode,
 ) -> HashMap<Position, Rc<Tile>> {
     let mut tile_map = HashMap::new();
-    let max_row = map
-        .keys()
-        .max_by_key(|Position { row, column: _ }| row)
-        .unwrap()
-        .row;
-    let max_column = map
-        .keys()
-        .max_by_key(|Position { row: _, column }| column)
-        .unwrap()
-        .column;
-
-    let side_length = (max_row + max_column) / 7;
 
     for (&our_pos, tile_kind) in map {
         if let TileKind::Tile = tile_kind {
@@ -665,11 +669,7 @@ fn part1_example() {
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2022/day22.txt"
-    ));
-    assert_eq!(part1(input), 1428);
+    assert_eq!(part1(INPUT), 1428);
 }
 
 #[test]
@@ -683,9 +683,5 @@ fn part2_example() {
 
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2022/day22.txt"
-    ));
-    assert_eq!(part2(input), 142380);
+    assert_eq!(part2(INPUT), 142380);
 }

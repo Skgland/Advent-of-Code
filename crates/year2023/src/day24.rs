@@ -1,3 +1,25 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2023/day01.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2023", "24", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2023", "24", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
+
 #[derive(Debug)]
 struct Hail {
     pos: [i64; 3],
@@ -91,7 +113,7 @@ fn check_velocity(delta: [i64; 3], hail: &[Hail]) -> Option<i64> {
             }
         }
 
-        return Some(pos.into_iter().map(|c| c as i64).sum());
+        return Some(pos.into_iter().sum());
     }
     None
 }
@@ -101,6 +123,10 @@ fn passes_trough(pos: [i64; 3], hail: &Hail) -> bool {
         return true;
     }
 
+    #[allow(
+        clippy::needless_range_loop,
+        reason = "we index into multiple slices simultaneously"
+    )]
     for i in 0..=2 {
         if hail.vel[i] == 0 && hail.pos[i] != pos[i] {
             return false;
@@ -150,6 +176,7 @@ fn xyz_collision(head: &Hail, other: &Hail) -> Option<[i64; 3]> {
     }
 
     for i in 0..=2 {
+        #[allow(clippy::collapsible_if)]
         if head.vel[i] == 0 && other.vel[i] != 0 {
             // hpi = opi + t * ovi | - opi
             // hpi - opi = t * ovi | / ovi

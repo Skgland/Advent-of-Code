@@ -1,4 +1,25 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
 use std::collections::HashMap;
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2022/day07.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2022", "7", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2022", "7", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
 
 enum DirOrFile<'a> {
     Dir(Dir<'a>),
@@ -49,10 +70,10 @@ impl<'a> Dir<'a> {
 
     fn walk_dirs(&self, walk_dir: &mut impl FnMut(&Dir<'a>)) {
         walk_dir(self);
-        for (name, entry) in &self.content {
+        for entry in self.content.values() {
             match entry {
                 DirOrFile::Dir(dir) => dir.walk_dirs(walk_dir),
-                DirOrFile::File(size) => {}
+                DirOrFile::File(_size) => {}
             }
         }
     }
@@ -77,7 +98,7 @@ fn parse(input: &str) -> Dir {
             }
             [b'$', b' ', b'l', b's'] => {}
             [b'd', b'i', b'r', b' ', path @ ..] => fs.mkdir(&cwd, path),
-            file => {
+            _file => {
                 let (size, name) = line.split_once(' ').unwrap();
                 fs.touch(&cwd, name.as_bytes(), size.parse().unwrap())
             }
@@ -128,11 +149,7 @@ fn part1_example() {
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2022/day07.txt"
-    ));
-    assert_eq!(part1(input), 2104783);
+    assert_eq!(part1(INPUT), 2104783);
 }
 
 #[test]
@@ -146,9 +163,5 @@ fn part2_example() {
 
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2022/day07.txt"
-    ));
-    assert_eq!(part2(input), 5883165);
+    assert_eq!(part2(INPUT), 5883165);
 }

@@ -1,4 +1,25 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
 use std::{collections::HashSet, ops::RangeInclusive};
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2022/day15.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2022", "15", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2022", "15", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
 
 struct Sensor {
     x: isize,
@@ -119,11 +140,7 @@ fn part1_example() {
 #[ignore = "slow"]
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2022/day15.txt"
-    ));
-    assert_eq!(part1(input), 5394423);
+    assert_eq!(part1(INPUT), 5394423);
 }
 
 #[test]
@@ -138,9 +155,5 @@ fn part2_example() {
 #[ignore = "slow"]
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2022/day15.txt"
-    ));
-    assert_eq!(part2(input), 11840879211051);
+    assert_eq!(part2(INPUT), 11840879211051);
 }
