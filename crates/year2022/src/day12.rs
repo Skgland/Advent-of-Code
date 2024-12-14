@@ -47,12 +47,12 @@ fn parse(input: &str) -> Input {
                 let height = match height {
                     b'S' => {
                         start_ref.set(pos);
-                        println!("Found start at {:?}", start_ref.get());
+                        log::debug!("Found start at {:?}", start_ref.get());
                         0
                     }
                     b'E' => {
                         end_ref.set(pos);
-                        println!("Found end at {:?}", end_ref.get());
+                        log::debug!("Found end at {:?}", end_ref.get());
                         25
                     }
                     b'a'..=b'z' => height - b'a',

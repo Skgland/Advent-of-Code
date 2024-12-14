@@ -21,7 +21,7 @@ static PART1: Task = Task {
 static PART2: Task = Task {
     path: &["2023", "8", "part2"],
     run: || println!("{}", part2(INPUT)),
-    include_in_all: true,
+    include_in_all: false,
 };
 
 #[derive(Debug)]

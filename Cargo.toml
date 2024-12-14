@@ -14,5 +14,6 @@ aoc2023 = { path = "./crates/year2023" }
 aoc2024 = { path = "./crates/year2024" }
 helper = { path = "./crates/helper" }
 linkme = "0.3.31"
+log = "0.4.22"
 md-5 = "0.10.6"
 serde_json = "1.0.133"

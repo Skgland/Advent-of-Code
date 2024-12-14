@@ -183,10 +183,10 @@ fn both(blueprints: &[Blueprint], minutes: u8) -> Vec<usize> {
                 state.step(blueprint, &mut next);
             }
 
-            println!("{}, {}", idx, next.len());
+            log::debug!("{}, {}", idx, next.len());
 
             if idx > 15 {
-                println!("{}, {}", idx, next.len());
+                log::debug!("{}, {}", idx, next.len());
                 let min = next
                     .iter()
                     .map(|state| state.material[Kind::Geod as usize])
@@ -211,7 +211,7 @@ fn both(blueprints: &[Blueprint], minutes: u8) -> Vec<usize> {
                 .unwrap(),
         );
     }
-    println!("{:?}", result);
+    log::debug!("{:?}", result);
     result
 }
 

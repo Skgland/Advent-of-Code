@@ -272,7 +272,7 @@ fn parse_element(input: &str) -> Option<(SnailElement, &str)> {
             Some((SnailElement::Literal(val), &input[chars..]))
         }
         [c, ..] => {
-            println!("Unexpected {}", *c as char);
+            log::warn!("Unexpected {}", *c as char);
             None
         }
         _ => None,

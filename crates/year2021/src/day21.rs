@@ -74,12 +74,12 @@ pub fn part1(input: &str) -> u32 {
             let roll = (&mut dice).take(3).sum();
             rolls += 3;
             player.advance_by(roll);
-            /*
-            println!(
+            log::trace!(
                 "Player {} rolled {} and now has {} points!",
-                player.name, roll, player.points
+                player.name,
+                roll,
+                player.points
             );
-            */
             if player.points >= 1000 {
                 break 'game;
             }

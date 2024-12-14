@@ -81,7 +81,7 @@ impl State {
                     _ => break,
                 },
                 State::Eq(l, r) => {
-                    println!("({:?}) == ({:?})", l, r);
+                    log::debug!("({:?}) == ({:?})", l, r);
                     match (l.as_ref(), r.as_ref()) {
                         (State::Constant(val), State::BinOp(l, r, op))
                         | (State::BinOp(l, r, op), State::Constant(val)) => {

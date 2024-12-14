@@ -77,7 +77,7 @@ pub fn part1(input: &str) -> usize {
         .collect::<HashMap<_, _>>();
 
     let interesting_count = interesting_valves.len();
-    println!("Non-Brocken Valves: {}", interesting_count);
+    log::debug!("Non-Brocken Valves: {}", interesting_count);
 
     assert!(interesting_count <= u32::BITS as _);
 
@@ -101,7 +101,7 @@ pub fn part1(input: &str) -> usize {
             }
         }
 
-        println!("Step {:2} size: {:6}", step, next.len());
+        log::debug!("Step {:2} size: {:6}", step, next.len());
         current = next;
     }
 
@@ -134,7 +134,7 @@ pub fn part2(input: &str) -> usize {
         .collect::<HashMap<_, _>>();
 
     let interesting_count = interesting_valves.len();
-    println!("Non-Brocken Valves: {}", interesting_count);
+    log::debug!("Non-Brocken Valves: {}", interesting_count);
 
     assert!(interesting_count <= u32::BITS as _);
 
@@ -204,7 +204,7 @@ pub fn part2(input: &str) -> usize {
                 }
             }
         }
-        println!("Step {:2} pre-pruning size: {:6}", step, next.len());
+        log::debug!("Step {:2} pre-pruning size: {:6}", step, next.len());
         if next.len() < 50_000 {
             current = next;
         } else {

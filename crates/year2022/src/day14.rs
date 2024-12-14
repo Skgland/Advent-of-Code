@@ -79,7 +79,7 @@ fn simulate(input: &mut Input, arg: (isize, usize), floor: bool) -> ControlFlow<
             Continue(right) => right,
             Break(right) => return Break(down + left + right),
         };
-        println!("Sand came to rest at {:?}", arg);
+        log::debug!("Sand came to rest at {:?}", arg);
         input.rock.insert(arg);
         Continue(1 + left + right + down)
     }

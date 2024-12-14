@@ -62,7 +62,6 @@ fn parse(input: &str) -> Vec<Monkey> {
                     .1
                     .split_once(' ')
                     .unwrap();
-                println!("'{}'", num);
                 let op = match op {
                     "*" => num.parse().map_or(Operation::Sq, Operation::Mul),
                     "+" => Operation::Add(num.parse().unwrap()),
@@ -128,12 +127,14 @@ fn both(monkeys: Vec<Monkey>, iteration: usize, reduction: impl Fn(usize) -> usi
 
     monkeys.sort_by_key(|elem| elem.borrow().1);
 
-    let counts = monkeys
-        .iter()
-        .map(|elem| elem.borrow().1)
-        .collect::<Vec<_>>();
+    if log::log_enabled!(log::Level::Debug) {
+        let counts = monkeys
+            .iter()
+            .map(|elem| elem.borrow().1)
+            .collect::<Vec<_>>();
 
-    println!("{:?}", counts);
+        log::debug!("{:?}", counts);
+    }
 
     monkeys
         .into_iter()
@@ -144,11 +145,13 @@ fn both(monkeys: Vec<Monkey>, iteration: usize, reduction: impl Fn(usize) -> usi
 }
 
 fn print_state(round: usize, monkeys: &[RefCell<(Monkey, u64)>]) {
-    println!("Round {}", round);
-    for (idx, monkey) in monkeys.iter().enumerate() {
-        println!("Monkey {}: {:?}", idx, monkey.borrow().0.items)
+    if log::log_enabled!(log::Level::Debug) {
+        log::debug!("Round {}", round);
+        for (idx, monkey) in monkeys.iter().enumerate() {
+            log::debug!("Monkey {}: {:?}", idx, monkey.borrow().0.items)
+        }
+        log::debug!("")
     }
-    println!()
 }
 
 pub fn part1(input: &str) -> u64 {

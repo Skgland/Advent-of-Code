@@ -41,7 +41,7 @@ fn parse_input(input: &str) -> Map {
                     '.' => None,
                     c @ ('a'..='z' | 'A'..='Z' | '0'..='9') => Some((c, pos)),
                     _ => {
-                        eprintln!("unexpected input char: {tile:?}");
+                        log::warn!("unexpected input char: {tile:?}");
                         None
                     }
                 }

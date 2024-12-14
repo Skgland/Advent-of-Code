@@ -379,7 +379,6 @@ pub fn part1(_: &str) -> isize {
 
                             let result = digits.into_iter().fold(0, |acc, next| acc * 10 + next);
 
-                            // println!("{:?}", digits);
                             assert_eq!(tmp, part1_fn(digits));
                             assert_eq!(tmp, part1_fn2(digits));
 
@@ -636,7 +635,6 @@ pub fn part2(_: &str) -> isize {
 
                             let result = digits.into_iter().fold(0, |acc, next| acc * 10 + next);
 
-                            // println!("{:?}", digits);
                             assert_eq!(tmp, part1_fn(digits));
                             assert_eq!(tmp, part1_fn2(digits));
 

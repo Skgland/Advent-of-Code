@@ -130,7 +130,9 @@ impl Rock {
     ) -> u8 {
         let mut pos = (2, *max + 3);
         loop {
-            // print_cave(&cave, max, Some((rock, pos)));
+            if log::log_enabled!(log::Level::Debug) {
+                print_cave(&cave, *max, Some((self, pos)));
+            }
 
             pos = self.push(pos, &*cave, streams.next().unwrap().1);
             pos = match self.fall(pos, &*cave) {
@@ -164,7 +166,6 @@ fn parse(input: &str) -> Vec<Direction> {
         .collect()
 }
 
-#[allow(dead_code)]
 fn print_cave(cave: &Cave, max: u64, rock_pos: Option<(Rock, Position)>) {
     let max = if let Some((rock, pos)) = rock_pos {
         max.max(
@@ -221,7 +222,7 @@ fn both(input: &str, iterations: usize) -> u64 {
             state
                 .entry(state_key)
                 .and_modify(|old| {
-                    // println!("Updating entry {:?} to include {:?}", state_key, val);
+                    log::debug!("Updating entry {:?} to include {:?}", state_key, val);
 
                     for &(old_idx, entry_max) in &*old {
                         let diff = current_max - entry_max;
@@ -255,7 +256,7 @@ fn both(input: &str, iterations: usize) -> u64 {
                     old.push(val);
                 })
                 .or_insert_with(|| {
-                    // println!("Adding entry {:?} with {:?}", state_key, val);
+                    log::debug!("Adding entry {:?} with {:?}", state_key, val);
                     vec![val]
                 });
         }

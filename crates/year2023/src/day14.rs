@@ -196,7 +196,7 @@ pub fn part2(input: &str) -> usize {
         if let Some(&first_occurrence) = formation_cache.get(&platform.round_rocks) {
             // found cycle
             let end_in = (CYCLE_COUNT - first_occurrence) % (cycle - first_occurrence);
-            println!("Found cycle from {first_occurrence} to {cycle}, next cycle identical to cycle {CYCLE_COUNT} in {end_in} cycles!");
+            log::info!("Found cycle from {first_occurrence} to {cycle}, next cycle identical to cycle {CYCLE_COUNT} in {end_in} cycles!");
             for _ in 0..end_in {
                 platform.cycle();
             }

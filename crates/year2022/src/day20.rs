@@ -37,7 +37,7 @@ fn mix(numbers: &[isize], iterations: usize) -> Vec<isize> {
     let mut track_idx: Vec<_> = (0..numbers.len()).collect();
 
     for mix in 0..iterations {
-        println!("Mix {}", mix + 1);
+        log::debug!("Mix {}", mix + 1);
         for (idx, &number) in numbers.iter().enumerate() {
             let old = track_idx[idx];
             let new = wrapping_add(old, number, numbers.len() - 1);

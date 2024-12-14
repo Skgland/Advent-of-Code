@@ -1,4 +1,4 @@
-use helper::{Task, TASKS};
+use helper::{lcm, Task, TASKS};
 use linkme::distributed_slice;
 use std::{
     collections::HashMap,
@@ -123,8 +123,8 @@ impl Board {
 
         let last = result.pop().unwrap();
         if result[0] != last {
-            println!("Got:\n{last}");
-            println!("Expected:\n{}", result[0]);
+            log::error!("Got:\n{last}");
+            log::error!("Expected:\n{}", result[0]);
             panic!("Boards didn't repeat after {cycle_length} cycles!");
         }
         result
@@ -169,24 +169,6 @@ impl Display for Board {
         }
         Ok(())
     }
-}
-
-fn lcm(width: usize, height: usize) -> usize {
-    let result = width / gcd(width, height) * height;
-    println!("lcm of {width} and {height} is {result}");
-    result
-}
-
-fn gcd(width: usize, height: usize) -> usize {
-    let mut a = width;
-    let mut b = height;
-    if b > a {
-        std::mem::swap(&mut a, &mut b);
-    }
-    while b != 0 {
-        (a, b) = (b, a % b);
-    }
-    a
 }
 
 fn parse(input: &str) -> Board {
@@ -235,7 +217,7 @@ fn dijkstra(input: &[Board], direction: DijkstraDirection) -> usize {
         }
     };
 
-    println!("Finding Path from {start:?} to {end:?}");
+    log::debug!("Finding Path from {start:?} to {end:?}");
 
     let mut visited = HashMap::new();
 
@@ -272,7 +254,7 @@ fn dijkstra(input: &[Board], direction: DijkstraDirection) -> usize {
                     .and_modify(|old_value| *old_value = new_distance.min(*old_value))
                     .or_insert(new_distance);
             } else if new_distance == 600 {
-                println!("Skipping {next_key:?} as is blocked {blocked} or visited {visited}");
+                log::debug!("Skipping {next_key:?} as is blocked {blocked} or visited {visited}");
             }
         }
     }
