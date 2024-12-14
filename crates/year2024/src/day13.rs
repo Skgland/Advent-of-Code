@@ -1,3 +1,25 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2024/day13.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2024", "13", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2024", "13", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
+
 #[derive(Debug)]
 struct Game {
     delta_a: (isize, isize),
@@ -109,11 +131,7 @@ fn part1_example1() {
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2024/day13.txt"
-    ));
-    assert_eq!(part1(input), 26299);
+    assert_eq!(part1(INPUT), 26299);
 }
 
 #[test]
@@ -130,12 +148,7 @@ fn part1_compare_example1() {
 
 #[test]
 fn part1_compare_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2024/day13.txt"
-    ));
-
-    for game in parse_input(input) {
+    for game in parse_input(INPUT) {
         assert_eq!(optimal_game(&game), optimal_game_simple(&game))
     }
 }
@@ -167,10 +180,6 @@ fn part2_example1() {
 
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2024/day13.txt"
-    ));
-    let result = part2(input);
+    let result = part2(INPUT);
     assert_eq!(result, 107824497933339);
 }

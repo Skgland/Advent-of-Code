@@ -1,3 +1,25 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2022/day05.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2022", "5", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2022", "5", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
+
 #[derive(PartialEq, Eq, Debug)]
 struct PuzzleInput {
     stacks: Vec<Vec<char>>,
@@ -137,11 +159,7 @@ fn part1_example() {
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2022/day05.txt"
-    ));
-    assert_eq!(part1(input).as_str(), "NTWZZWHFV");
+    assert_eq!(part1(INPUT).as_str(), "NTWZZWHFV");
 }
 
 #[test]
@@ -155,9 +173,5 @@ fn part2_example() {
 
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2022/day05.txt"
-    ));
-    assert_eq!(part2(input).as_str(), "BRZGFVBTJ");
+    assert_eq!(part2(INPUT).as_str(), "BRZGFVBTJ");
 }

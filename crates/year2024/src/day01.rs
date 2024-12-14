@@ -1,4 +1,31 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
 use std::collections::HashMap;
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2024/day01.txt"
+));
+
+#[cfg(test)]
+const INPUT_EXAMPLE1: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/example/year2024/day01.example.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2024", "1", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2024", "1", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
 
 fn parse_input(input: &str) -> (Vec<u64>, Vec<u64>) {
     input
@@ -18,10 +45,7 @@ pub fn part1(input: &str) -> u64 {
     l.sort();
     r.sort();
 
-    l.into_iter()
-        .zip(r.into_iter())
-        .map(|(l, r)| l.abs_diff(r))
-        .sum()
+    l.into_iter().zip(r).map(|(l, r)| l.abs_diff(r)).sum()
 }
 
 pub fn part2(input: &str) -> u64 {
@@ -35,36 +59,20 @@ pub fn part2(input: &str) -> u64 {
 
 #[test]
 fn part1_example() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/example/year2024/day01.example.txt"
-    ));
-    assert_eq!(part1(input), 11);
+    assert_eq!(part1(INPUT_EXAMPLE1), 11);
 }
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2024/day01.txt"
-    ));
-    assert_eq!(part1(input), 936063);
+    assert_eq!(part1(INPUT), 936063);
 }
 
 #[test]
 fn part2_example() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/example/year2024/day01.example.txt"
-    ));
-    assert_eq!(part2(input), 31);
+    assert_eq!(part2(INPUT_EXAMPLE1), 31);
 }
 
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2024/day01.txt"
-    ));
-    assert_eq!(part2(input), 23150395);
+    assert_eq!(part2(INPUT), 23150395);
 }

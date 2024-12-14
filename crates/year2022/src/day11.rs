@@ -1,5 +1,25 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
 use std::{cell::RefCell, ops::DerefMut};
 
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2022/day11.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2022", "11", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2022", "11", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
 struct Monkey {
     items: Vec<usize>,
     op: Operation,
@@ -42,7 +62,6 @@ fn parse(input: &str) -> Vec<Monkey> {
                     .1
                     .split_once(' ')
                     .unwrap();
-                println!("'{}'", num);
                 let op = match op {
                     "*" => num.parse().map_or(Operation::Sq, Operation::Mul),
                     "+" => Operation::Add(num.parse().unwrap()),
@@ -108,12 +127,14 @@ fn both(monkeys: Vec<Monkey>, iteration: usize, reduction: impl Fn(usize) -> usi
 
     monkeys.sort_by_key(|elem| elem.borrow().1);
 
-    let counts = monkeys
-        .iter()
-        .map(|elem| elem.borrow().1)
-        .collect::<Vec<_>>();
+    if log::log_enabled!(log::Level::Debug) {
+        let counts = monkeys
+            .iter()
+            .map(|elem| elem.borrow().1)
+            .collect::<Vec<_>>();
 
-    println!("{:?}", counts);
+        log::debug!("{:?}", counts);
+    }
 
     monkeys
         .into_iter()
@@ -124,11 +145,13 @@ fn both(monkeys: Vec<Monkey>, iteration: usize, reduction: impl Fn(usize) -> usi
 }
 
 fn print_state(round: usize, monkeys: &[RefCell<(Monkey, u64)>]) {
-    println!("Round {}", round);
-    for (idx, monkey) in monkeys.iter().enumerate() {
-        println!("Monkey {}: {:?}", idx, monkey.borrow().0.items)
+    if log::log_enabled!(log::Level::Debug) {
+        log::debug!("Round {}", round);
+        for (idx, monkey) in monkeys.iter().enumerate() {
+            log::debug!("Monkey {}: {:?}", idx, monkey.borrow().0.items)
+        }
+        log::debug!("")
     }
-    println!()
 }
 
 pub fn part1(input: &str) -> u64 {
@@ -153,11 +176,7 @@ fn part1_example() {
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2022/day11.txt"
-    ));
-    assert_eq!(part1(input), 98280);
+    assert_eq!(part1(INPUT), 98280);
 }
 
 #[test]
@@ -171,9 +190,5 @@ fn part2_example() {
 
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2022/day11.txt"
-    ));
-    assert_eq!(part2(input), 17673687232);
+    assert_eq!(part2(INPUT), 17673687232);
 }

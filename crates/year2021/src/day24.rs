@@ -1,9 +1,37 @@
 use crate::day24::Arg2::Literal;
 use crate::day24::Operation::{Add, Div, Eq, Inp, Mod, Mul};
 use crate::day24::Register::*;
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
 use std::fmt::{Display, Formatter};
 use std::rc::{Rc, Weak};
 use RegisterState::{Input, Value};
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2021/day24.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2021", "24", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2021", "24", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static CODE: Task = Task {
+    path: &["2021", "24", "code"],
+    run: || println!("{}", part1_instructions_to_code(INPUT)),
+    include_in_all: true,
+};
 
 #[derive(Clone)]
 pub enum Register {
@@ -351,7 +379,6 @@ pub fn part1(_: &str) -> isize {
 
                             let result = digits.into_iter().fold(0, |acc, next| acc * 10 + next);
 
-                            // println!("{:?}", digits);
                             assert_eq!(tmp, part1_fn(digits));
                             assert_eq!(tmp, part1_fn2(digits));
 
@@ -369,6 +396,7 @@ pub fn part1(_: &str) -> isize {
 
 #[allow(clippy::let_and_return)]
 pub const fn part1_fn(input: [isize; 14]) -> isize {
+    // the output of part1_instructions_to_code on the input with some extra line breaks
     let s0 = input[0] + 12;
 
     let s1 = s0 % 26;
@@ -379,7 +407,7 @@ pub const fn part1_fn(input: [isize; 14]) -> isize {
     let s6 = s5 + 1;
     let s7 = s0 * s6;
     let s8 = input[1] + 7;
-    let s9 = s8 * s4;
+    let s9: isize = s8 * s4;
     let s10 = s7 + s9;
 
     let s11 = s10 % 26;
@@ -526,12 +554,10 @@ pub const fn part1_fn(input: [isize; 14]) -> isize {
 const LOOKUP1: [isize; 14] = [12, 7, 1, 2, 4, 15, 11, 5, 3, 9, 2, 3, 3, 11];
 const LOOKUP2: [isize; 14] = [0, 15, 12, 11, -5, 14, 15, -13, -16, -8, 15, -8, 0, -4];
 
-#[allow(clippy::let_and_return)]
 const fn process_no_div<const IDX: usize>(input: isize, in_0: isize) -> isize {
     in_0 * 26 + input + LOOKUP1[IDX]
 }
 
-#[allow(clippy::let_and_return)]
 const fn process_with_div<const IDX: usize>(input: isize, in_0: isize) -> isize {
     if in_0 % 26 + LOOKUP2[IDX] != input {
         (in_0 / 26) * 26 + input + LOOKUP1[IDX]
@@ -609,7 +635,6 @@ pub fn part2(_: &str) -> isize {
 
                             let result = digits.into_iter().fold(0, |acc, next| acc * 10 + next);
 
-                            // println!("{:?}", digits);
                             assert_eq!(tmp, part1_fn(digits));
                             assert_eq!(tmp, part1_fn2(digits));
 

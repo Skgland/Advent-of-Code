@@ -1,3 +1,25 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2015/day05.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2015", "5", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2015", "5", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
+
 fn parse_input(input: &str) -> impl Iterator<Item = &str> + '_ {
     input.lines()
 }
@@ -72,11 +94,7 @@ fn part1_example5() {
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2015/day05.txt"
-    ));
-    assert_eq!(part1(input), 258);
+    assert_eq!(part1(INPUT), 258);
 }
 
 #[test]
@@ -105,9 +123,5 @@ fn part2_example4() {
 
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2015/day05.txt"
-    ));
-    assert_eq!(part2(input), 53);
+    assert_eq!(part2(INPUT), 53);
 }

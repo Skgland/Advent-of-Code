@@ -1,5 +1,3 @@
-#![allow(clippy::from_str_radix_10)]
-
 pub mod day01;
 pub mod day02;
 pub mod day03;

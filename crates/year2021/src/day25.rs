@@ -1,4 +1,18 @@
 use crate::day25::Spot::{Down, Empty, Right};
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2021/day25.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2021", "25", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
 
 enum Spot {
     Down,
@@ -99,11 +113,6 @@ pub fn part1(input: &str) -> u32 {
     iterations
 }
 
-pub fn part2(_input: &str) -> u32 {
-    println!("There is no part 2!");
-    0
-}
-
 #[test]
 fn part1_example() {
     let input = include_str!(concat!(
@@ -115,9 +124,5 @@ fn part1_example() {
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2021/day25.txt"
-    ));
-    assert_eq!(part1(input), 509);
+    assert_eq!(part1(INPUT), 509);
 }

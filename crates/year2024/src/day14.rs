@@ -1,6 +1,26 @@
+use helper::lcm;
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
 use std::{collections::BTreeSet, io::BufWriter};
 
-use helper::lcm;
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2024/day14.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2024", "14", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2024", "14", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
 
 #[derive(Debug)]
 struct Robot {
@@ -28,6 +48,10 @@ fn move_robots<'a, I: Iterator<Item = Robot> + 'a>(
     steps: isize,
 ) -> impl Iterator<Item = Robot> + 'a {
     robots.map(move |mut robot| {
+        #[allow(
+            clippy::needless_range_loop,
+            reason = "we index into multiple slices simultaneously"
+        )]
         for idx in 0..=1 {
             robot.pos[idx] += robot.vel[idx] * steps;
             robot.pos[idx] = robot.pos[idx].rem_euclid(dim[idx]);
@@ -113,9 +137,5 @@ fn part1_example1() {
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2024/day14.txt"
-    ));
-    assert_eq!(part1(input), 224438715);
+    assert_eq!(part1(INPUT), 224438715);
 }

@@ -1,4 +1,25 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
 use std::collections::HashMap;
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2021/day21.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2021", "21", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2021", "21", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
 
 #[derive(Hash, Eq, PartialEq, Clone)]
 pub struct Player {
@@ -19,12 +40,10 @@ fn parse_input(input: &str) -> (Player, Player) {
 
     let player1 = lines.next().unwrap().splitn(5, ' ').collect::<Vec<_>>();
     let player2 = lines.next().unwrap().splitn(5, ' ').collect::<Vec<_>>();
-    #[allow(clippy::match_ref_pats)]
     let (p1_idx, s1_idx) = match player1.as_slice() {
         &[_, p_idx, _, _, s_idx] => (p_idx, s_idx),
         _ => panic!(),
     };
-    #[allow(clippy::match_ref_pats)]
     let (p2_idx, s2_idx) = match player2.as_slice() {
         &[_, p_idx, _, _, s_idx] => (p_idx, s_idx),
         _ => panic!(),
@@ -55,12 +74,12 @@ pub fn part1(input: &str) -> u32 {
             let roll = (&mut dice).take(3).sum();
             rolls += 3;
             player.advance_by(roll);
-            /*
-            println!(
+            log::trace!(
                 "Player {} rolled {} and now has {} points!",
-                player.name, roll, player.points
+                player.name,
+                roll,
+                player.points
             );
-            */
             if player.points >= 1000 {
                 break 'game;
             }
@@ -120,11 +139,7 @@ fn part1_example() {
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2021/day21.txt"
-    ));
-    assert_eq!(part1(input), 734820);
+    assert_eq!(part1(INPUT), 734820);
 }
 
 #[test]
@@ -138,9 +153,5 @@ fn part2_example() {
 
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2021/day21.txt"
-    ));
-    assert_eq!(part2(input), 193170338541590);
+    assert_eq!(part2(INPUT), 193170338541590);
 }

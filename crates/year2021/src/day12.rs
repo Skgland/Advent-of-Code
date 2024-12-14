@@ -1,4 +1,25 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
 use std::collections::HashMap;
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2021/day12.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2021", "12", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2021", "12", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
 
 pub struct Graph<'a> {
     edges: HashMap<&'a str, Vec<&'a str>>,
@@ -120,11 +141,7 @@ fn part1_example3() {
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2021/day12.txt"
-    ));
-    assert_eq!(part1(input), 4720);
+    assert_eq!(part1(INPUT), 4720);
 }
 
 #[test]
@@ -156,9 +173,5 @@ fn part2_example3() {
 
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2021/day12.txt"
-    ));
-    assert_eq!(part2(input), 147848);
+    assert_eq!(part2(INPUT), 147848);
 }

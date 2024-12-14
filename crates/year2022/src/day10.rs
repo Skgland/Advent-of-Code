@@ -1,3 +1,25 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2022/day10.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2022", "10", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2022", "10", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
+
 enum Instruction {
     Noop,
     Add(isize),
@@ -21,7 +43,7 @@ impl Instruction {
 fn parse(input: &str) -> impl Iterator<Item = Instruction> + '_ {
     input.lines().map(|elem| match elem.as_bytes() {
         b"noop" => Instruction::Noop,
-        [b'a', b'd', b'd', b'x', b' ', number @ ..] => {
+        [b'a', b'd', b'd', b'x', b' ', _number @ ..] => {
             Instruction::Add(elem.split_once(' ').unwrap().1.parse().unwrap())
         }
         _ => panic!("{}", elem),
@@ -80,11 +102,7 @@ fn part1_example() {
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2022/day10.txt"
-    ));
-    assert_eq!(part1(input), 15360);
+    assert_eq!(part1(INPUT), 15360);
 }
 
 #[test]
@@ -109,12 +127,8 @@ fn part2_example() {
 
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2022/day10.txt"
-    ));
     assert_eq!(
-        part2(input),
+        part2(INPUT),
         "\
 ###..#..#.#....#..#...##..##..####..##..
 #..#.#..#.#....#..#....#.#..#....#.#..#.

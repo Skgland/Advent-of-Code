@@ -1,4 +1,25 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
 use std::collections::{HashMap, HashSet};
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2021/day15.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2021", "15", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2021", "15", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
 
 fn parse_input(input: &str) -> Vec<Vec<u8>> {
     input
@@ -24,8 +45,7 @@ pub fn get_neighbours(pos: (usize, usize), dim: usize) -> impl Iterator<Item = (
         })
 }
 
-#[allow(clippy::ptr_arg)]
-pub fn traverse(map: &Vec<Vec<u8>>, multiplier: usize) -> u32 {
+pub fn traverse(map: &[Vec<u8>], multiplier: usize) -> u32 {
     let mut candidates = HashMap::from([((0, 0), 0)]);
     let mut done = HashSet::new();
     let dim = map.len();
@@ -78,11 +98,7 @@ fn part1_example() {
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2021/day15.txt"
-    ));
-    assert_eq!(part1(input), 562);
+    assert_eq!(part1(INPUT), 562);
 }
 
 #[test]
@@ -96,9 +112,5 @@ fn part2_example() {
 
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2021/day15.txt"
-    ));
-    assert_eq!(part2(input), 2874);
+    assert_eq!(part2(INPUT), 2874);
 }

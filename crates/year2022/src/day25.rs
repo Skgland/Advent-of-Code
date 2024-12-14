@@ -1,6 +1,20 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
 use std::{
     fmt::{Display, Write},
     str::FromStr,
+};
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2022/day25.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2022", "25", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
 };
 
 #[derive(Debug, PartialEq, Eq)]
@@ -120,10 +134,6 @@ pub fn part1(input: &str) -> SnafuNumber {
     numbers.into_iter().map(i64::from).sum::<i64>().into()
 }
 
-pub fn part2(input: &str) -> u32 {
-    panic!("There is no part two for day25")
-}
-
 #[test]
 fn snafu_to_decimal_conversion() {
     let examples = [
@@ -197,9 +207,5 @@ fn part1_example() {
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2022/day25.txt"
-    ));
-    assert_eq!(part1(input).to_string().as_str(), "20-=0=02=-21=00-02=2");
+    assert_eq!(part1(INPUT).to_string().as_str(), "20-=0=02=-21=00-02=2");
 }

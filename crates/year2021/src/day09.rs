@@ -1,4 +1,24 @@
-#![allow(clippy::ptr_arg)]
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2021/day09.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2021", "9", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2021", "9", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
 
 use std::collections::{HashSet, VecDeque};
 
@@ -12,7 +32,7 @@ fn parse_input(input: &str) -> Vec<Vec<u8>> {
 pub fn neighbours<T: Copy>(
     x: usize,
     y: usize,
-    map: &Vec<Vec<T>>,
+    map: &[Vec<T>],
 ) -> impl Iterator<Item = (usize, usize, T)> {
     let a = x.checked_sub(1).and_then(|x| {
         map.get(x)
@@ -35,7 +55,7 @@ pub fn neighbours<T: Copy>(
     [a, b, c, d].into_iter().flatten()
 }
 
-pub fn positions<T: Copy>(map: &Vec<Vec<T>>) -> impl Iterator<Item = (usize, usize, T)> + '_ {
+pub fn positions<T: Copy>(map: &[Vec<T>]) -> impl Iterator<Item = (usize, usize, T)> + '_ {
     map.iter().enumerate().flat_map(|(x_idx, row)| {
         row.iter()
             .copied()
@@ -44,11 +64,11 @@ pub fn positions<T: Copy>(map: &Vec<Vec<T>>) -> impl Iterator<Item = (usize, usi
     })
 }
 
-pub fn low(map: &Vec<Vec<u8>>) -> impl Iterator<Item = (usize, usize, u8)> + '_ {
+pub fn low(map: &[Vec<u8>]) -> impl Iterator<Item = (usize, usize, u8)> + '_ {
     positions(map).filter(|&(x, y, value)| neighbours(x, y, map).all(|(_, _, n)| n > value))
 }
 
-pub fn basin_size(x: usize, y: usize, depth: u8, map: &Vec<Vec<u8>>) -> usize {
+pub fn basin_size(x: usize, y: usize, depth: u8, map: &[Vec<u8>]) -> usize {
     let mut todo = VecDeque::from([(x, y, depth)]);
     let mut processed = HashSet::new();
     while let Some(pos) = todo.pop_front() {
@@ -86,11 +106,7 @@ fn part1_example() {
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2021/day09.txt"
-    ));
-    assert_eq!(part1(input), 480);
+    assert_eq!(part1(INPUT), 480);
 }
 
 #[test]
@@ -104,9 +120,5 @@ fn part2_example() {
 
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2021/day09.txt"
-    ));
-    assert_eq!(part2(input), 1045660);
+    assert_eq!(part2(INPUT), 1045660);
 }

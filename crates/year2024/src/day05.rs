@@ -1,5 +1,25 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
 use std::collections::{HashMap, HashSet};
 
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2024/day05.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2024", "5", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2024", "5", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
 struct Input {
     rules: HashMap<u8, HashSet<u8>>,
     updates: Vec<Vec<u8>>,
@@ -36,7 +56,7 @@ pub fn part1(input: &str) -> u32 {
         .updates
         .iter()
         .filter(|update| is_valid(update, &input.rules))
-        .map(|update| u32::from(*get_middle(&update)))
+        .map(|update| u32::from(*get_middle(update)))
         .sum()
 }
 
@@ -73,7 +93,7 @@ pub fn part2(input: &str) -> u32 {
         .map(|update| {
             fixup(update, &input.rules);
             assert!(is_valid(update, &input.rules));
-            u32::from(*get_middle(&update))
+            u32::from(*get_middle(update))
         })
         .sum()
 }
@@ -104,11 +124,7 @@ fn part1_example() {
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2024/day05.txt"
-    ));
-    assert_eq!(part1(input), 6267);
+    assert_eq!(part1(INPUT), 6267);
 }
 
 #[test]
@@ -122,9 +138,5 @@ fn part2_example() {
 
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2024/day05.txt"
-    ));
-    assert_eq!(part2(input), 5184);
+    assert_eq!(part2(INPUT), 5184);
 }

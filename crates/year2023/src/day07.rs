@@ -1,4 +1,25 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
 use std::{collections::BTreeMap, str::FromStr};
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2023/day07.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2023", "7", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2023", "7", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
 enum Card {
@@ -300,7 +321,6 @@ pub fn part2(input: &str) -> usize {
 }
 
 #[test]
-#[allow(clippy::identity_op)]
 fn part1_example() {
     let input = include_str!(concat!(
         env!("CARGO_MANIFEST_DIR"),

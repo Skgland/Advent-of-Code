@@ -1,4 +1,25 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
 use std::collections::{BTreeMap, BTreeSet, HashSet, VecDeque};
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2023/day23.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2023", "23", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2023", "23", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
 
 #[derive(Debug, Hash, PartialEq, Eq, Clone, PartialOrd, Ord)]
 struct Position {
@@ -142,7 +163,7 @@ struct PathEnumerator<'m> {
     path: Vec<(Position, Vec<Position>)>,
 }
 
-impl<'m> Iterator for PathEnumerator<'m> {
+impl Iterator for PathEnumerator<'_> {
     type Item = Vec<Position>;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -194,26 +215,24 @@ impl Map<BTreeMap<Position, usize>> {
     }
 
     fn print_graph<W: std::io::Write>(&self, writer: &mut W) {
-        #![allow(unused_must_use)]
-
-        writeln!(writer, "algorithm: org.eclipse.elk.stress");
-        writeln!(writer, "org.eclipse.elk.stress.desiredEdgeLength: 150");
+        let _ = writeln!(writer, "algorithm: org.eclipse.elk.stress");
+        let _ = writeln!(writer, "org.eclipse.elk.stress.desiredEdgeLength: 150");
         let mut emitted_node = HashSet::new();
 
         for (start, ends) in &self.path {
             let start_node = format!("P{}_{}", start.row, start.column);
             if !emitted_node.contains(start) {
                 emitted_node.insert(start.clone());
-                writeln!(writer, "node {start_node}");
+                let _ = writeln!(writer, "node {start_node}");
             }
 
             for (end, distance) in ends {
                 let end_node = format!("P{}_{}", end.row, end.column);
                 if !emitted_node.contains(end) {
                     emitted_node.insert(end.clone());
-                    writeln!(writer, "node {end_node}");
+                    let _ = writeln!(writer, "node {end_node}");
                 }
-                writeln!(
+                let _ = writeln!(
                     writer,
                     "edge {start_node} -> {end_node} {{ label \"{distance}\"}}"
                 );

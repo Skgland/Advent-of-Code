@@ -1,4 +1,25 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
 use std::collections::HashSet;
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2022/day19.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2022", "19", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2022", "19", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
 
 #[derive(Debug)]
 struct Blueprint {
@@ -128,7 +149,7 @@ impl State {
 fn parse(input: &str) -> Vec<Blueprint> {
     input.lines().flat_map(|line| {
         let parts : Vec<_> = line.split_whitespace().collect();
-        if let [_blueprint,nr_colon,
+        if let [_blueprint,_nr_colon,
         _each1, _ore1, _robot1, _costs1, ore_for_ore, _ore_dot1,
         _each2, _clay1, _robot2, _costs2, ore_for_clay ,_ore_dot2,
         _each3, _obsidian1, _robot3, _costs3, ore_for_obsidian ,_ore2, _and1, clay_for_obsidian, _clay2,
@@ -150,7 +171,7 @@ fn parse(input: &str) -> Vec<Blueprint> {
 
 fn both(blueprints: &[Blueprint], minutes: u8) -> Vec<usize> {
     let mut result = vec![];
-    for (idx, blueprint) in blueprints.iter().enumerate() {
+    for blueprint in blueprints {
         let mut current = HashSet::from([State {
             robots: [1, 0, 0, 0],
             material: [0; 4],
@@ -162,10 +183,10 @@ fn both(blueprints: &[Blueprint], minutes: u8) -> Vec<usize> {
                 state.step(blueprint, &mut next);
             }
 
-            println!("{}, {}", idx, next.len());
+            log::debug!("{}, {}", idx, next.len());
 
             if idx > 15 {
-                println!("{}, {}", idx, next.len());
+                log::debug!("{}, {}", idx, next.len());
                 let min = next
                     .iter()
                     .map(|state| state.material[Kind::Geod as usize])
@@ -190,7 +211,7 @@ fn both(blueprints: &[Blueprint], minutes: u8) -> Vec<usize> {
                 .unwrap(),
         );
     }
-    println!("{:?}", result);
+    log::debug!("{:?}", result);
     result
 }
 
@@ -221,11 +242,7 @@ fn part1_example() {
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2022/day19.txt"
-    ));
-    assert_eq!(part1(input), 1480);
+    assert_eq!(part1(INPUT), 1480);
 }
 
 #[test]
@@ -239,9 +256,5 @@ fn part2_example() {
 
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2022/day19.txt"
-    ));
-    assert_eq!(part2(input), 3168);
+    assert_eq!(part2(INPUT), 3168);
 }

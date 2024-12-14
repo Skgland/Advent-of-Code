@@ -1,3 +1,25 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2022/day01.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2022", "1", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2022", "1", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
+
 fn both(input: &str, top: usize) -> u32 {
     let calories = input.lines().map(|line| line.parse::<u32>());
     let mut current = 0;
@@ -16,7 +38,7 @@ fn both(input: &str, top: usize) -> u32 {
     elfs.sort();
     elfs.reverse();
 
-    (&elfs[..top]).iter().sum()
+    elfs[..top].iter().sum()
 }
 
 pub fn part1(input: &str) -> u32 {
@@ -38,11 +60,7 @@ fn part1_example() {
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2022/day01.txt"
-    ));
-    assert_eq!(part1(input), 70720);
+    assert_eq!(part1(INPUT), 70720);
 }
 
 #[test]
@@ -56,9 +74,5 @@ fn part2_example() {
 
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2022/day01.txt"
-    ));
-    assert_eq!(part2(input), 207148);
+    assert_eq!(part2(INPUT), 207148);
 }

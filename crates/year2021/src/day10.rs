@@ -1,5 +1,26 @@
 use crate::day10::Delimiter::{AngleBracket, Brace, Bracket, Parenthesis};
 use crate::day10::Side::{Close, Open};
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2021/day10.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2021", "10", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2021", "10", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
 
 #[derive(Debug)]
 enum Side {
@@ -110,11 +131,7 @@ fn part1_example() {
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2021/day10.txt"
-    ));
-    assert_eq!(part1(input), 318081);
+    assert_eq!(part1(INPUT), 318081);
 }
 
 #[test]
@@ -128,9 +145,5 @@ fn part2_example() {
 
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2021/day10.txt"
-    ));
-    assert_eq!(part2(input), 4361305341);
+    assert_eq!(part2(INPUT), 4361305341);
 }

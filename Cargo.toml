@@ -7,7 +7,13 @@ version = "0.1.0"
 edition = "2021"
 
 [workspace.dependencies]
-clap = { version = "4.5.22", features = ["derive"] }
+aoc2015 = { path = "./crates/year2015" }
+aoc2021 = { path = "./crates/year2021" }
+aoc2022 = { path = "./crates/year2022" }
+aoc2023 = { path = "./crates/year2023" }
+aoc2024 = { path = "./crates/year2024" }
 helper = { path = "./crates/helper" }
+linkme = "0.3.31"
+log = "0.4.22"
 md-5 = "0.10.6"
 serde_json = "1.0.133"

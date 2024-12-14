@@ -1,8 +1,27 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
 use std::collections::BTreeSet;
 
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2022/day03.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2022", "3", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2022", "3", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
 fn calculate_priority(item: u8) -> u8 {
-    #[allow(clippy::manual_is_ascii_check)]
-    if (b'a'..=b'z').contains(&item) {
+    if item.is_ascii_lowercase() {
         item - b'a' + 1
     } else {
         item - b'A' + 27
@@ -65,11 +84,7 @@ fn part1_example() {
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2022/day03.txt"
-    ));
-    assert_eq!(part1(input), 7785);
+    assert_eq!(part1(INPUT), 7785);
 }
 
 #[test]
@@ -83,9 +98,5 @@ fn part2_example() {
 
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2022/day03.txt"
-    ));
-    assert_eq!(part2(input), 2633);
+    assert_eq!(part2(INPUT), 2633);
 }

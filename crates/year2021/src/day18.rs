@@ -1,6 +1,27 @@
+use helper::{Task, TASKS};
+use linkme::distributed_slice;
 use std::iter::Sum;
 use std::ops::{Add, ControlFlow};
 use std::str::FromStr;
+
+const INPUT: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/personal/year2021/day18.txt"
+));
+
+#[distributed_slice(TASKS)]
+static PART1: Task = Task {
+    path: &["2021", "18", "part1"],
+    run: || println!("{}", part1(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static PART2: Task = Task {
+    path: &["2021", "18", "part2"],
+    run: || println!("{}", part2(INPUT)),
+    include_in_all: true,
+};
 
 #[derive(Eq, PartialEq, Debug, Clone)]
 struct SnailNumber {
@@ -251,7 +272,7 @@ fn parse_element(input: &str) -> Option<(SnailElement, &str)> {
             Some((SnailElement::Literal(val), &input[chars..]))
         }
         [c, ..] => {
-            println!("Unexpected {}", *c as char);
+            log::warn!("Unexpected {}", *c as char);
             None
         }
         _ => None,
@@ -491,11 +512,7 @@ fn part1_example() {
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2021/day18.txt"
-    ));
-    assert_eq!(part1(input), 4124);
+    assert_eq!(part1(INPUT), 4124);
 }
 
 #[test]
@@ -509,9 +526,5 @@ fn part2_example() {
 
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2021/day18.txt"
-    ));
-    assert_eq!(part2(input), 4673);
+    assert_eq!(part2(INPUT), 4673);
 }
