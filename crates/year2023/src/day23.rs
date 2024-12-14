@@ -4,7 +4,7 @@ use std::collections::{BTreeMap, BTreeSet, HashSet, VecDeque};
 
 const INPUT: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../inputs/personal/year2023/day01.txt"
+    "/../../inputs/personal/year2023/day23.txt"
 ));
 
 #[distributed_slice(TASKS)]
