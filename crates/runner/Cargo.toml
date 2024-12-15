@@ -9,5 +9,6 @@ aoc2021 = { workspace = true }
 aoc2022 = { workspace = true }
 aoc2023 = { workspace = true }
 aoc2024 = { workspace = true }
+env_logger = { workspace = true }
 helper = { workspace = true }
 linkme = { workspace = true }

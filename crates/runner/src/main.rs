@@ -8,6 +8,8 @@ use linkme::distributed_slice;
 use std::io::Write;
 
 fn main() {
+    env_logger::init();
+
     let args = std::env::args().skip(1).collect::<Vec<_>>();
 
     if let Some((last, prefix)) = args.split_last() {
