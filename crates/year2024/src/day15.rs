@@ -184,7 +184,7 @@ impl Input<ComplexTiles> {
                 let current_tile = self.map.get(&current).unwrap();
                 match current_tile {
                     ComplexTiles::Robot => {
-                        println!("Move: {m:?}, Robot: {:?}", self.robot);
+                        log::debug!("Move: {m:?}, Robot: {:?}", self.robot);
                         self.print();
                         unreachable!()
                     }
