@@ -12,14 +12,14 @@ const INPUT_EXAMPLE1: &str = include_str!(concat!(
     "/../../inputs/example/yearYYYY/dayDD.example1.txt"
 ));
 
-#[helper::distributed_slice(TASKS)]
+#[distributed_slice(TASKS)]
 static PART1: Task = Task {
     path: &["YYYY", "DD", "part1"],
     run: || println!("{}", part1(INPUT)),
     include_in_all: true,
 };
 
-#[helper::distributed_slice(TASKS)]
+#[distributed_slice(TASKS)]
 static PART2: Task = Task {
     path: &["YYYY", "DD", "part2"],
     run: || println!("{}", part2(INPUT)),
