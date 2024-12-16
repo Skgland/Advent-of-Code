@@ -128,11 +128,13 @@ fn dijkstra(
     let mut todo = BTreeMap::<_, BTreeMap<_, BTreeSet<_>>>::new();
 
     for (score, neighbor) in neighbors((start, Direction::East)) {
-        todo.entry(score)
-            .or_default()
-            .entry(neighbor)
-            .or_default()
-            .insert(start);
+        if map.contains(&neighbor.0) {
+            todo.entry(score)
+                .or_default()
+                .entry(neighbor)
+                .or_default()
+                .insert(start);
+        }
     }
 
     let min_path_length = loop {
@@ -142,17 +144,17 @@ fn dijkstra(
 
         let mut reached_end = false;
         for (state, paths) in todos {
-            if state.0 == end {
-                println!("Start: {start:?}, Goal: {end:?}, Paths: {paths:?}");
-                reached_end = true;
-            }
-
             if visisted.contains_key(&state) {
                 continue;
             }
 
             let mut new_paths = paths.clone();
             new_paths.insert(state.0);
+
+            if state.0 == end {
+                println!("Start: {start:?}, Goal: {end:?}, Paths: {new_paths:?}");
+                reached_end = true;
+            }
 
             visisted
                 .entry(state)
