@@ -88,11 +88,6 @@ fn parse_input(input: &str) -> Input {
     }
 }
 
-pub fn part1(input: &str) -> usize {
-    let input = parse_input(input);
-    dijkstra(input.map, input.start, input.end)
-}
-
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
 enum Direction {
     North,
@@ -124,7 +119,7 @@ impl Direction {
     }
 }
 
-fn dijkstra(map: BTreeSet<[isize; 2]>, start: [isize; 2], end: [isize; 2]) -> usize {
+fn dijkstra(map: &BTreeSet<[isize; 2]>, start: [isize; 2], end: [isize; 2]) -> usize {
     let mut visisted = BTreeSet::from([(start, Direction::East)]);
     let mut todo = BTreeMap::from([(0, vec![(start, Direction::East)])]);
 
@@ -134,9 +129,11 @@ fn dijkstra(map: BTreeSet<[isize; 2]>, start: [isize; 2], end: [isize; 2]) -> us
                 return current_score;
             }
 
-            for (neighbor_score, neighbor) in neighbors(pos, dir, current_score) {
+            for (neighbor_cost, neighbor) in neighbors((pos, dir)) {
                 if map.contains(&neighbor.0) && visisted.insert(neighbor) {
-                    todo.entry(neighbor_score).or_default().push(neighbor);
+                    todo.entry(neighbor_cost + current_score)
+                        .or_default()
+                        .push(neighbor);
                 }
             }
         }
@@ -144,16 +141,22 @@ fn dijkstra(map: BTreeSet<[isize; 2]>, start: [isize; 2], end: [isize; 2]) -> us
     panic!("No path found");
 }
 
-fn neighbors(
-    pos: [isize; 2],
-    dir: Direction,
-    current_score: usize,
-) -> [(usize, (Pos, Direction)); 3] {
+fn neighbors((pos, dir): ([isize; 2], Direction)) -> [(usize, (Pos, Direction)); 4] {
     [
-        (current_score + 1, (dir.apply_to(pos), dir)),
-        (current_score + 1000, (pos, dir.cw())),
-        (current_score + 1000, (pos, dir.ccw())),
+        // continue forward
+        (1, (dir.apply_to(pos), dir)),
+        // turn cw and move forward
+        (1000 + 1, (dir.cw().apply_to(pos), dir.cw())),
+        // turn ccw and move forward
+        (1000 + 1, (dir.ccw().apply_to(pos), dir.ccw())),
+        // turn twice and move forward
+        (2000 + 1, (dir.cw().cw().apply_to(pos), dir.cw().cw())),
     ]
+}
+
+pub fn part1(input: &str) -> usize {
+    let input = parse_input(input);
+    dijkstra(&input.map, input.start, input.end)
 }
 
 pub fn part2(input: &str) -> u32 {
