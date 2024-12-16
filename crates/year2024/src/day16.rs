@@ -119,26 +119,69 @@ impl Direction {
     }
 }
 
-fn dijkstra(map: &BTreeSet<[isize; 2]>, start: [isize; 2], end: [isize; 2]) -> usize {
-    let mut visisted = BTreeSet::from([(start, Direction::East)]);
-    let mut todo = BTreeMap::from([(0, vec![(start, Direction::East)])]);
+fn dijkstra(
+    map: &BTreeSet<[isize; 2]>,
+    start: [isize; 2],
+    end: [isize; 2],
+) -> (usize, BTreeSet<Pos>) {
+    let mut visisted = BTreeMap::from([((start, Direction::East), BTreeSet::from([start]))]);
+    let mut todo = BTreeMap::<_, BTreeMap<_, BTreeSet<_>>>::new();
 
-    while let Some((current_score, todos)) = todo.pop_first() {
-        for (pos, dir) in todos {
-            if pos == end {
-                return current_score;
+    for (score, neighbor) in neighbors((start, Direction::East)) {
+        todo.entry(score)
+            .or_default()
+            .entry(neighbor)
+            .or_default()
+            .insert(start);
+    }
+
+    let min_path_length = loop {
+        let Some((current_score, todos)) = todo.pop_first() else {
+            panic!("No path found");
+        };
+
+        let mut reached_end = false;
+        for (state, paths) in todos {
+            if state.0 == end {
+                println!("Start: {start:?}, Goal: {end:?}, Paths: {paths:?}");
+                reached_end = true;
             }
 
-            for (neighbor_cost, neighbor) in neighbors((pos, dir)) {
-                if map.contains(&neighbor.0) && visisted.insert(neighbor) {
+            if visisted.contains_key(&state) {
+                continue;
+            }
+
+            let mut new_paths = paths.clone();
+            new_paths.insert(state.0);
+
+            visisted
+                .entry(state)
+                .or_default()
+                .append(&mut new_paths.clone());
+
+            for (neighbor_cost, neighbor) in neighbors(state) {
+                if map.contains(&neighbor.0) && !visisted.contains_key(&neighbor) {
                     todo.entry(neighbor_cost + current_score)
                         .or_default()
-                        .push(neighbor);
+                        .entry(neighbor)
+                        .or_default()
+                        .append(&mut new_paths.clone());
                 }
             }
         }
-    }
-    panic!("No path found");
+        if reached_end {
+            break current_score;
+        }
+    };
+
+    (
+        min_path_length,
+        visisted
+            .into_iter()
+            .filter(|((pos, _), _)| *pos == end)
+            .flat_map(|(_, paths)| paths)
+            .collect(),
+    )
 }
 
 fn neighbors((pos, dir): ([isize; 2], Direction)) -> [(usize, (Pos, Direction)); 4] {
@@ -156,18 +199,19 @@ fn neighbors((pos, dir): ([isize; 2], Direction)) -> [(usize, (Pos, Direction));
 
 pub fn part1(input: &str) -> usize {
     let input = parse_input(input);
-    dijkstra(&input.map, input.start, input.end)
+    dijkstra(&input.map, input.start, input.end).0
 }
 
-pub fn part2(input: &str) -> u32 {
-    let mut iter = parse_input(input);
-    todo!("part2 WIP")
+pub fn part2(input: &str) -> usize {
+    let input = parse_input(input);
+    dijkstra(&input.map, input.start, input.end).1.len()
 }
 
 #[test]
 fn part1_example1() {
     assert_eq!(part1(INPUT_EXAMPLE1), 7036);
 }
+
 #[test]
 fn part1_example2() {
     assert_eq!(part1(INPUT_EXAMPLE2), 11048);
@@ -190,5 +234,5 @@ fn part2_example2() {
 
 #[test]
 fn part2_full() {
-    assert_eq!(part2(INPUT), 1262);
+    assert_eq!(part2(INPUT), 679);
 }
