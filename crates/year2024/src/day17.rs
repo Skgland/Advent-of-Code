@@ -12,7 +12,6 @@ const INPUT_EXAMPLE1: &str = include_str!(concat!(
     "/../../inputs/example/year2024/day17.example1.txt"
 ));
 
-#[cfg(test)]
 const INPUT_EXAMPLE2: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
     "/../../inputs/example/year2024/day17.example2.txt"
@@ -28,7 +27,21 @@ static PART1: Task = Task {
 #[distributed_slice(TASKS)]
 static PART2: Task = Task {
     path: &["2024", "17", "part2"],
-    run: || println!("{}", part2(INPUT)),
+    run: || println!("{}", part2_specialized(INPUT)),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static CODE: Task = Task {
+    path: &["2024", "17", "code"],
+    run: || print_code(INPUT),
+    include_in_all: true,
+};
+
+#[distributed_slice(TASKS)]
+static CODE2: Task = Task {
+    path: &["2024", "17", "code_example2"],
+    run: || print_code(INPUT_EXAMPLE2),
     include_in_all: true,
 };
 
@@ -56,6 +69,45 @@ impl OpCode {
             6 => Self::Bdv,
             7 => Self::Cdv,
             _ => panic!("Invalid Instruction"),
+        }
+    }
+
+    fn print(&self, arg: u8) {
+        fn combo_arg(arg: u8) -> &'static str {
+            match arg {
+                0 => "0",
+                1 => "1",
+                2 => "2",
+                3 => "3",
+                4 => "a",
+                5 => "b",
+                6 => "c",
+                _ => panic!(),
+            }
+        }
+        match self {
+            OpCode::Adv => {
+                println!("    a /= 2u64.pow({} as u32);", combo_arg(arg));
+            }
+            OpCode::Bxl => {
+                println!("    b ^= {arg};")
+            }
+            OpCode::Bst => println!("    b = {} % 8;", combo_arg(arg)),
+            OpCode::Jnz => {
+                println!("    if a == 0 {{ break; }};")
+            }
+            OpCode::Bxc => {
+                println!("    b ^= c;");
+            }
+            OpCode::Out => {
+                println!("    output.push(({} % 8) as u8);", combo_arg(arg))
+            }
+            OpCode::Bdv => {
+                println!("    b = a / 2u64.pow({} as u32);", combo_arg(arg));
+            }
+            OpCode::Cdv => {
+                println!("    c = a / 2u64.pow({} as u32);", combo_arg(arg));
+            }
         }
     }
 }
@@ -186,20 +238,86 @@ impl Iterator for ProgramIter<'_> {
     }
 }
 
-pub fn part2(input: &str) -> u64 {
+pub fn print_code(input: &str) {
     let input = parse_input(input);
 
     // the last instruction is a jump to the begining
     assert_eq!(input.program_data.chunks(2).last(), Some([3, 0].as_slice()));
 
     // all other instructions arn't jump instructions
-    input
+    assert!(input
         .program_data
         .chunks(2)
         .rev()
         .skip(1)
-        .all(|chunk| chunk[0] != 3);
+        .all(|chunk| chunk[0] != 3));
 
+    println!("let mut output = vec![];");
+    println!("loop {{");
+    for chunk in input.program_data.chunks(2) {
+        OpCode::parse(chunk[0]).print(chunk[1])
+    }
+    println!("}}");
+}
+
+#[allow(unused_assignments)]
+pub fn run(mut a: u64, mut b: u64, mut c: u64) -> Vec<u8> {
+    /* output from print_code */
+    let mut output = vec![];
+    loop {
+        b = a % 8;
+        b ^= 7;
+        c = a / 2u64.pow(b as u32);
+        b ^= 7;
+        b ^= c;
+        a /= 2u64.pow(3 as u32);
+        output.push((b % 8) as u8);
+        if a == 0 {
+            break;
+        };
+    }
+    output
+}
+
+pub fn run_simplified(mut a: u64) -> Vec<u8> {
+    let mut output = vec![];
+    loop {
+        // run() with basically every instance of b or c  inlined
+        output.push((((a % 8) ^ (a / 2u64.pow(((a % 8) ^ 7) as u32))) % 8) as u8);
+        a /= 2u64.pow(3 as u32);
+        if a == 0 {
+            break;
+        };
+    }
+    output
+}
+
+pub fn next_digit(a: u64) -> u8 {
+    // just the argument expression to push from run_simplified
+    (((a % 8) ^ (a / 2u64.pow(((a % 8) ^ 7) as u32))) % 8) as u8
+}
+
+pub fn part2_specialized(input: &str) -> u64 {
+    // spcefic to my input due to the use of next_digit which is manually created based on my specific input
+    let input = parse_input(input);
+
+    let (last, rest) = input.program_data.split_last().unwrap();
+    for a in 1..8 {
+        let result = next_digit(a);
+        println!("Next digi: {last}, i: {a}, temp_a: {a}, Result: {result}");
+        if &result == last {
+            if let Some(a) = find_a(rest, a) {
+                assert_eq!(run(a, 0, 0), input.program_data);
+                return a;
+            }
+        }
+    }
+    panic!("No solution found");
+}
+
+#[cfg(test)]
+fn part2_slow(input: &str) -> u64 {
+    let input = parse_input(input);
     for a in 0.. {
         let runtime = ProgramIter {
             state: ProgramState {
@@ -210,11 +328,28 @@ pub fn part2(input: &str) -> u64 {
             },
             program: &input.program_data,
         };
-        if runtime.eq(input.program_data.iter().copied()) {
+        if (runtime).eq(input.program_data.iter().copied()) {
             return a;
         }
     }
-    panic!("No solution found")
+    panic!("No solutuion found")
+}
+
+pub fn find_a(remaining: &[u8], a: u64) -> Option<u64> {
+    match remaining {
+        [] => Some(a),
+        [rest @ .., last] => {
+            for i in 0..8 {
+                let a = (a << 3) | i;
+                if &next_digit(a) == last {
+                    if let Some(a) = find_a(rest, a) {
+                        return Some(a);
+                    }
+                }
+            }
+            None
+        }
+    }
 }
 
 #[test]
@@ -228,11 +363,38 @@ fn part1_full() {
 }
 
 #[test]
-fn part2_example1() {
-    assert_eq!(part2(INPUT_EXAMPLE2), 117440);
+fn part2_example2() {
+    assert_eq!(part2_slow(INPUT_EXAMPLE2), 117440);
+}
+
+#[test]
+fn part2_simplify() {
+    for a in 0..200_000 {
+        assert_eq!(run_simplified(a), run(a, 0, 0))
+    }
+}
+
+#[test]
+fn part2_exec() {
+    let input = parse_input(INPUT);
+    for a in 0..200_000 {
+        assert_eq!(
+            ProgramIter {
+                state: ProgramState {
+                    register_a: a,
+                    register_b: 0,
+                    register_c: 0,
+                    inst_pointer: 0
+                },
+                program: &input.program_data
+            }
+            .collect::<Vec<_>>(),
+            run_simplified(a)
+        )
+    }
 }
 
 #[test]
 fn part2_full() {
-    assert_eq!(part2(INPUT), 0);
+    assert_eq!(part2_specialized(INPUT), 0);
 }
