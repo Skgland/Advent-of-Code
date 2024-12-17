@@ -75,7 +75,6 @@ impl ProgramState {
 
     fn apply(&mut self, op: u8, arg: u8) -> Option<u8> {
         let op = OpCode::parse(op);
-        println!("Op: {op:?}, Arg: {arg:?}, State: {self:?}");
         let mut result = None;
         match op {
             OpCode::Adv => self.register_a /= 2u64.pow(self.combo_arg(arg).try_into().unwrap()),
@@ -177,7 +176,6 @@ impl Iterator for ProgramIter<'_> {
                 return Some(out);
             }
         }
-        dbg!(&self.state);
         None
     }
 }
