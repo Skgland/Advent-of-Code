@@ -9,6 +9,36 @@ pub struct Task {
     pub include_in_all: bool,
 }
 
+pub struct Position<T, const DIM: usize> {
+    pub coords: [T; DIM],
+}
+
+impl Position<isize, 2> {
+    pub fn apply(dir: Direction) {
+        match dir {
+            Direction::North => todo!(),
+            Direction::East => todo!(),
+            Direction::South => todo!(),
+            Direction::West => todo!(),
+        }
+    }
+}
+
+pub enum Direction {
+    North,
+    East,
+    South,
+    West,
+}
+
+#[allow(non_upper_case_globals)]
+impl Direction {
+    pub const Up: Self = Self::North;
+    pub const Right: Self = Self::East;
+    pub const Down: Self = Self::South;
+    pub const Left: Self = Self::West;
+}
+
 #[distributed_slice]
 pub static TASKS: [Task];
 
@@ -52,42 +82,6 @@ pub fn run_all_prefix<S: AsRef<str>>(prefix: &[S]) {
             println!("Skipping {}", task.path.join(" "))
         }
     }
-}
-
-#[macro_export]
-macro_rules! run_inner {
-    ($year:ident, $day:ident, $part:ident) => {
-        let result = $day::$part(include_str!(concat!(
-            env!("CARGO_MANIFEST_DIR"),
-            "/../../inputs/personal/",
-            stringify!($year),
-            "/",
-            stringify!($day),
-            ".txt"
-        )));
-        println!("{}", result)
-    };
-}
-
-#[macro_export]
-macro_rules! run {
-    ( for $year:ident do match ($day:ident, $part:ident) => {  $(pat $pat:pat => $expr:block),* $(,)? | $($id:ident)|* => default  }) => {
-        match ($day.as_deref(), $part.as_deref()) {
-            $($pat => $expr)*
-            $((Some(stringify!($id)), Some("part1")) => {
-                $crate::run_inner!($year, $id, part1);
-            }
-            (Some(stringify!($id)), Some("part2")) => {
-                $crate::run_inner!($year, $id, part2);
-            })*
-            (Some(day), Some(part)) => {
-                eprintln!("Unknown Day Part combination: Day {} Part {}", day, part);
-            },
-            _ => {
-                eprintln!("Expected two arguments: dayXX and part# e.g. day22 part2");
-            }
-        }
-    };
 }
 
 pub trait Zero {
