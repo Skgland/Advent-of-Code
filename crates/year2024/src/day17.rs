@@ -27,7 +27,7 @@ static PART1: Task = Task {
 #[distributed_slice(TASKS)]
 static PART2: Task = Task {
     path: &["2024", "17", "part2"],
-    run: || println!("{}", part2_specialized(INPUT)),
+    run: || println!("{}", part2(INPUT)),
     include_in_all: true,
 };
 
@@ -110,6 +110,36 @@ impl OpCode {
             }
         }
     }
+
+    fn reads_b(op: u8, arg: u8) -> bool {
+        match OpCode::parse(op) {
+            OpCode::Jnz => false,
+            OpCode::Bxl | OpCode::Bxc => true,
+            _ => arg == 5,
+        }
+    }
+
+    fn reads_c(op: u8, arg: u8) -> bool {
+        match OpCode::parse(op) {
+            OpCode::Bxl | OpCode::Jnz => false,
+            OpCode::Bxc => true,
+            _ => arg == 6,
+        }
+    }
+
+    fn writes_b(op: u8) -> bool {
+        match OpCode::parse(op) {
+            OpCode::Bxl | OpCode::Bst | OpCode::Bxc | OpCode::Bdv => true,
+            _ => false,
+        }
+    }
+
+    fn writes_c(op: u8) -> bool {
+        match OpCode::parse(op) {
+            OpCode::Cdv => true,
+            _ => false,
+        }
+    }
 }
 
 #[derive(Debug)]
@@ -161,7 +191,7 @@ impl ProgramState {
 }
 
 struct Input {
-    program_data: Vec<u8>,
+    program: Vec<u8>,
     init_state: ProgramState,
 }
 
@@ -201,7 +231,7 @@ fn parse_input(input: &str) -> Input {
         .map(|elem| elem.parse::<u8>().unwrap())
         .collect();
     Input {
-        program_data,
+        program: program_data,
         init_state: state,
     }
 }
@@ -210,7 +240,7 @@ pub fn part1(input: &str) -> String {
     let input = parse_input(input);
     ProgramIter {
         state: input.init_state,
-        program: &input.program_data,
+        program: &input.program,
     }
     .map(|i| i.to_string())
     .collect::<Vec<_>>()
@@ -241,73 +271,123 @@ impl Iterator for ProgramIter<'_> {
 pub fn print_code(input: &str) {
     let input = parse_input(input);
 
-    // the last instruction is a jump to the begining
-    assert_eq!(input.program_data.chunks(2).last(), Some([3, 0].as_slice()));
-
-    // all other instructions arn't jump instructions
-    assert!(input
-        .program_data
-        .chunks(2)
-        .rev()
-        .skip(1)
-        .all(|chunk| chunk[0] != 3));
+    assert_part2_assumptions(&input);
 
     println!("let mut output = vec![];");
     println!("loop {{");
-    for chunk in input.program_data.chunks(2) {
+    for chunk in input.program.chunks(2) {
         OpCode::parse(chunk[0]).print(chunk[1])
     }
     println!("}}");
 }
 
-#[allow(unused_assignments)]
-pub fn run(mut a: u64, mut b: u64, mut c: u64) -> Vec<u8> {
-    /* output from print_code */
-    let mut output = vec![];
-    loop {
-        b = a % 8;
-        b ^= 7;
-        c = a / 2u64.pow(b as u32);
-        b ^= 7;
-        b ^= c;
-        a /= 2u64.pow(3 as u32);
-        output.push((b % 8) as u8);
-        if a == 0 {
-            break;
-        };
+fn assert_part2_assumptions(input: &Input) {
+    // the last instruction is a jump to the begining
+    assert_eq!(input.program.chunks(2).last(), Some([3, 0].as_slice()));
+
+    // all other instructions arn't jump instructions
+    assert!(input
+        .program
+        .chunks(2)
+        .rev()
+        .skip(1)
+        .all(|chunk| chunk[0] != 3));
+
+    // there is an instruction for deviding a by 2^3
+    assert!(input
+        .program
+        .chunks(2)
+        .any(|chunk| chunk == &[0 /* Adv */, 3]));
+
+    // there is only one instruction changing a
+    assert!(
+        input
+            .program
+            .chunks(2)
+            .filter(|chunk| chunk[0] == 0 /* adv */) // adv is the only instruction that writes a
+            .count()
+            == 1
+    );
+
+    // if b is read than it is written first
+    if let Some((b_read_idx, _)) = input
+        .program
+        .chunks(2)
+        .enumerate()
+        .find(|(_, chunk)| OpCode::reads_b(chunk[0], chunk[1]))
+    {
+        assert!(input
+            .program
+            .chunks(2)
+            .enumerate()
+            .find(|(_, chunk)| OpCode::writes_b(chunk[0]))
+            .is_some_and(|(b_write_idx, _)| b_write_idx < b_read_idx))
     }
-    output
-}
 
-pub fn run_simplified(mut a: u64) -> Vec<u8> {
-    let mut output = vec![];
-    loop {
-        // run() with basically every instance of b or c  inlined
-        output.push((((a % 8) ^ (a / 2u64.pow(((a % 8) ^ 7) as u32))) % 8) as u8);
-        a /= 2u64.pow(3 as u32);
-        if a == 0 {
-            break;
-        };
+    // if c is read than it is written first
+    if let Some((c_read_idx, _)) = input
+        .program
+        .chunks(2)
+        .enumerate()
+        .find(|(_, chunk)| OpCode::reads_c(chunk[0], chunk[1]))
+    {
+        assert!(input
+            .program
+            .chunks(2)
+            .enumerate()
+            .find(|(_, chunk)| OpCode::writes_c(chunk[0]))
+            .is_some_and(|(c_write_idx, _)| c_write_idx < c_read_idx))
     }
-    output
+
+    // - we know a is consumed 3 bit per loop iteration (only instruction changing a is a single adv 3)
+    // - we know the value of b and c at the beginning of each loop doesn't matter as they are written to before being read
+    // - jnz 0 the loop exit condition is a == 0 its the only jump and at the end of the program jumping to the beginning,
+    //   no instructions befor or after the loop
+    //
+    // with this we can constuct a from the expected output by working backwards
+    // by successively finding the three binary digit number i (0-7) so that (a << 3) | i
+    // makes the next output of the program be the next digit from the end of the progam
 }
 
-pub fn next_digit(a: u64) -> u8 {
-    // just the argument expression to push from run_simplified
-    (((a % 8) ^ (a / 2u64.pow(((a % 8) ^ 7) as u32))) % 8) as u8
+pub fn next_digit(a: u64, program: &[u8]) -> u8 {
+    ProgramIter {
+        state: ProgramState {
+            register_a: a,
+            register_b: 0,
+            register_c: 0,
+            inst_pointer: 0,
+        },
+        program,
+    }
+    .next()
+    .unwrap()
 }
 
-pub fn part2_specialized(input: &str) -> u64 {
-    // spcefic to my input due to the use of next_digit which is manually created based on my specific input
+pub fn part2(input: &str) -> u64 {
     let input = parse_input(input);
 
-    let (last, rest) = input.program_data.split_last().unwrap();
+    assert_part2_assumptions(&input);
+
+    let (last, rest) = input.program.split_last().unwrap();
+
+    // the first part can't be 0 as that is the loop exit condition
+    // and we would stop an iteration short, so we handle it outside of find_a
     for a in 1..8 {
-        let result = next_digit(a);
-        println!("Next digi: {last}, i: {a}, temp_a: {a}, Result: {result}");
-        if &result == last {
-            if let Some(a) = find_a(rest, a) {
-                assert_eq!(run(a, 0, 0), input.program_data);
+        if &next_digit(a, &input.program) == last {
+            if let Some(a) = find_a(rest, a, &input.program) {
+                assert_eq!(
+                    ProgramIter {
+                        state: ProgramState {
+                            register_a: a,
+                            register_b: input.init_state.register_b,
+                            register_c: input.init_state.register_c,
+                            inst_pointer: 0
+                        },
+                        program: &input.program
+                    }
+                    .collect::<Vec<_>>(),
+                    input.program
+                );
                 return a;
             }
         }
@@ -315,34 +395,14 @@ pub fn part2_specialized(input: &str) -> u64 {
     panic!("No solution found");
 }
 
-#[cfg(test)]
-fn part2_slow(input: &str) -> u64 {
-    let input = parse_input(input);
-    for a in 0.. {
-        let runtime = ProgramIter {
-            state: ProgramState {
-                register_a: a,
-                register_b: input.init_state.register_b,
-                register_c: input.init_state.register_c,
-                inst_pointer: 0,
-            },
-            program: &input.program_data,
-        };
-        if (runtime).eq(input.program_data.iter().copied()) {
-            return a;
-        }
-    }
-    panic!("No solutuion found")
-}
-
-pub fn find_a(remaining: &[u8], a: u64) -> Option<u64> {
+pub fn find_a(remaining: &[u8], a: u64, program: &[u8]) -> Option<u64> {
     match remaining {
         [] => Some(a),
         [rest @ .., last] => {
             for i in 0..8 {
                 let a = (a << 3) | i;
-                if &next_digit(a) == last {
-                    if let Some(a) = find_a(rest, a) {
+                if &next_digit(a, program) == last {
+                    if let Some(a) = find_a(rest, a, program) {
                         return Some(a);
                     }
                 }
@@ -364,37 +424,10 @@ fn part1_full() {
 
 #[test]
 fn part2_example2() {
-    assert_eq!(part2_slow(INPUT_EXAMPLE2), 117440);
-}
-
-#[test]
-fn part2_simplify() {
-    for a in 0..200_000 {
-        assert_eq!(run_simplified(a), run(a, 0, 0))
-    }
-}
-
-#[test]
-fn part2_exec() {
-    let input = parse_input(INPUT);
-    for a in 0..200_000 {
-        assert_eq!(
-            ProgramIter {
-                state: ProgramState {
-                    register_a: a,
-                    register_b: 0,
-                    register_c: 0,
-                    inst_pointer: 0
-                },
-                program: &input.program_data
-            }
-            .collect::<Vec<_>>(),
-            run_simplified(a)
-        )
-    }
+    assert_eq!(part2(INPUT_EXAMPLE2), 117440);
 }
 
 #[test]
 fn part2_full() {
-    assert_eq!(part2_specialized(INPUT), 0);
+    assert_eq!(part2(INPUT), 265061364597659);
 }
