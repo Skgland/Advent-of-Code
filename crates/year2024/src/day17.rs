@@ -12,6 +12,12 @@ const INPUT_EXAMPLE1: &str = include_str!(concat!(
     "/../../inputs/example/year2024/day17.example1.txt"
 ));
 
+#[cfg(test)]
+const INPUT_EXAMPLE2: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../inputs/example/year2024/day17.example2.txt"
+));
+
 #[distributed_slice(TASKS)]
 static PART1: Task = Task {
     path: &["2024", "17", "part1"],
@@ -182,6 +188,18 @@ impl Iterator for ProgramIter<'_> {
 
 pub fn part2(input: &str) -> u64 {
     let input = parse_input(input);
+
+    // the last instruction is a jump to the begining
+    assert_eq!(input.program_data.chunks(2).last(), Some([3, 0].as_slice()));
+
+    // all other instructions arn't jump instructions
+    input
+        .program_data
+        .chunks(2)
+        .rev()
+        .skip(1)
+        .all(|chunk| chunk[0] != 3);
+
     for a in 0.. {
         let runtime = ProgramIter {
             state: ProgramState {
@@ -211,7 +229,7 @@ fn part1_full() {
 
 #[test]
 fn part2_example1() {
-    assert_eq!(part2(INPUT_EXAMPLE1), 117440);
+    assert_eq!(part2(INPUT_EXAMPLE2), 117440);
 }
 
 #[test]
