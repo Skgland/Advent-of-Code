@@ -138,33 +138,28 @@ fn neighbors(current: Pos) -> [Pos; 4] {
     ]
 }
 
-fn find_cheats(input: &Input, cheat_length: isize) -> BTreeMap<(Pos, Pos), isize> {
+fn manhattan(a: Pos, b: Pos) -> usize {
+    a.into_iter().zip(b).map(|(a, b)| a.abs_diff(b)).sum()
+}
+
+fn find_cheats(input: &Input, cheat_length: usize) -> BTreeMap<(Pos, Pos), isize> {
     let path = dijkstra(input.start, input.end, &input.map).unwrap();
 
     let mut cheats = BTreeMap::new();
-    for (start_idx, &start) in path.iter().enumerate() {
-        for dx in -cheat_length..=cheat_length {
-            let rem = cheat_length - dx.abs();
-            for dy in -rem..=rem {
-                let end = [start[0] + dx, start[1] + dy];
-                if end != start
-                    && input
-                        .map
-                        .get(&end)
-                        .is_some_and(|tile| !matches!(tile, Tile::Wall))
-                {
-                    let end_idx = path
-                        .iter()
-                        .enumerate()
-                        .find(|(_, val)| **val == end)
-                        .unwrap()
-                        .0;
-                    let saving = start_idx as isize - end_idx as isize - dx.abs() - dy.abs();
-                    cheats.insert((start, end), saving);
-                }
+    for start_idx in 0..path.len() - 1 {
+        let (&[.., start], ends) = path.split_at(start_idx + 1) else {
+            unreachable!()
+        };
+
+        for (end_idx, &end) in ends.iter().enumerate() {
+            let distance = manhattan(start, end);
+            if distance <= cheat_length {
+                let saving = end_idx as isize - distance as isize + 1;
+                cheats.insert((start, end), saving);
             }
         }
     }
+
     cheats
 }
 
@@ -253,7 +248,6 @@ fn part2_example1() {
 }
 
 #[test]
-#[ignore = "slow"]
 fn part2_full() {
     assert_eq!(part2(INPUT), 1011325);
 }
