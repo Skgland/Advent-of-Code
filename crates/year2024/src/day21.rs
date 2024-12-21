@@ -1,5 +1,6 @@
 use std::{
     collections::{BTreeMap, BTreeSet},
+    fmt::Debug,
     vec,
 };
 
@@ -79,148 +80,128 @@ enum Move {
     A,
 }
 
-trait Neighbors {
-    fn neighbors(&self) -> Vec<Self>
+trait Robot {
+    fn neighbors(&self, end: &Self) -> Vec<(Self, Move)>
     where
         Self: Sized;
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
-struct State {
-    door_robot: Digit,
-    move_robots: Vec<Move>,
-}
-
-impl State {
-    fn new(move_robot_count: usize) -> Self {
-        State {
-            door_robot: Digit::A,
-            move_robots: vec![Move::A; move_robot_count],
-        }
-    }
-
-    fn ready_for(self: &State, end: &Digit) -> bool {
-        self.door_robot == *end && self.move_robots.iter().all(|robot| *robot == Move::A)
-    }
-}
-
-trait Robot {
-    fn apply(&mut self, action: Move, chain: &mut [&mut dyn Robot]) -> Option<()>;
-}
-
 impl Robot for Move {
-    fn apply(&mut self, action: Move, chain: &mut [&mut dyn Robot]) -> Option<()> {
-        *self = match (self.clone(), action) {
-            (current, Move::A) => {
-                let (next, others) = chain.split_first_mut().unwrap();
-                return next.apply(current.clone(), others);
+    fn neighbors(&self, end: &Self) -> Vec<(Self, Move)>
+    where
+        Self: Sized,
+    {
+        if self != end {
+            match self {
+                Move::Up => vec![(Self::Down, Move::Down), (Self::A, Move::Right)],
+                Move::Down => vec![
+                    (Self::Up, Move::Up),
+                    (Self::Left, Move::Left),
+                    (Self::Right, Move::Right),
+                ],
+                Move::Left => vec![(Self::Down, Move::Right)],
+                Move::Right => vec![(Self::Down, Move::Left), (Self::A, Move::Up)],
+                Move::A => vec![(Self::Right, Move::Down), (Self::Up, Move::Left)],
             }
-            (Move::Up, Move::Down) => Some(Self::Down),
-            (Move::Up, Move::Right) => Some(Self::A),
-            (Move::Down, Move::Up) => Some(Self::Up),
-            (Move::Down, Move::Left) => Some(Self::Left),
-            (Move::Down, Move::Right) => Some(Self::Right),
-            (Move::Left, Move::Right) => Some(Self::Down),
-            (Move::Right, Move::Up) => Some(Self::A),
-            (Move::Right, Move::Left) => Some(Self::Down),
-            (Move::A, Move::Down) => Some(Self::Right),
-            (Move::A, Move::Left) => Some(Self::Up),
-            _ => None,
-        }?;
-        Some(())
+        } else {
+            vec![(self.clone(), Move::A)]
+        }
     }
 }
 
 impl Robot for Digit {
-    fn apply(&mut self, action: Move, _chain: &mut [&mut dyn Robot]) -> Option<()> {
-        *self = match (self.clone(), action) {
-            (old, Move::A) => Some(old),
-            (Digit::Zero, Move::Up) => Some(Self::Two),
-            (Digit::Zero, Move::Right) => Some(Self::A),
-            (Digit::One, Move::Up) => Some(Self::Four),
-            (Digit::One, Move::Right) => Some(Self::Two),
-            (Digit::Two, Move::Up) => Some(Self::Five),
-            (Digit::Two, Move::Down) => Some(Self::Zero),
-            (Digit::Two, Move::Left) => Some(Self::One),
-            (Digit::Two, Move::Right) => Some(Self::Three),
-            (Digit::Three, Move::Up) => Some(Self::Six),
-            (Digit::Three, Move::Down) => Some(Self::A),
-            (Digit::Three, Move::Left) => Some(Self::Two),
-            (Digit::Four, Move::Up) => Some(Self::Seven),
-            (Digit::Four, Move::Down) => Some(Self::One),
-            (Digit::Four, Move::Right) => Some(Self::Five),
-            (Digit::Five, Move::Up) => Some(Self::Eight),
-            (Digit::Five, Move::Down) => Some(Self::Two),
-            (Digit::Five, Move::Left) => Some(Self::Four),
-            (Digit::Five, Move::Right) => Some(Self::Six),
-            (Digit::Six, Move::Up) => Some(Self::Nine),
-            (Digit::Six, Move::Down) => Some(Self::Three),
-            (Digit::Six, Move::Left) => Some(Self::Five),
-            (Digit::Seven, Move::Down) => Some(Self::Four),
-            (Digit::Seven, Move::Right) => Some(Self::Eight),
-            (Digit::Eight, Move::Down) => Some(Self::Five),
-            (Digit::Eight, Move::Left) => Some(Self::Seven),
-            (Digit::Eight, Move::Right) => Some(Self::Nine),
-            (Digit::Nine, Move::Down) => Some(Self::Six),
-            (Digit::Nine, Move::Left) => Some(Self::Eight),
-            (Digit::A, Move::Up) => Some(Self::Three),
-            (Digit::A, Move::Left) => Some(Self::Zero),
-            _ => None,
-        }?;
-        Some(())
+    fn neighbors(&self, end: &Self) -> Vec<(Self, Move)>
+    where
+        Self: Sized,
+    {
+        if self != end {
+            match self {
+                Digit::Zero => vec![(Self::A, Move::Right), (Self::Two, Move::Up)],
+                Digit::One => vec![(Self::Four, Move::Up), (Self::Two, Move::Right)],
+                Digit::Two => vec![
+                    (Self::One, Move::Left),
+                    (Self::Zero, Move::Down),
+                    (Self::Three, Move::Right),
+                    (Self::Five, Move::Up),
+                ],
+                Digit::Three => vec![
+                    (Self::Two, Move::Left),
+                    (Self::A, Move::Down),
+                    (Self::Six, Move::Up),
+                ],
+                Digit::Four => vec![
+                    (Self::One, Move::Down),
+                    (Self::Five, Move::Right),
+                    (Self::Seven, Move::Up),
+                ],
+                Digit::Five => vec![
+                    (Self::Four, Move::Left),
+                    (Self::Two, Move::Down),
+                    (Self::Six, Move::Right),
+                    (Self::Eight, Move::Up),
+                ],
+                Digit::Six => vec![
+                    (Self::Five, Move::Left),
+                    (Self::Three, Move::Down),
+                    (Self::Nine, Move::Up),
+                ],
+                Digit::Seven => vec![(Self::Four, Move::Down), (Self::Eight, Move::Right)],
+                Digit::Eight => vec![
+                    (Self::Seven, Move::Left),
+                    (Self::Five, Move::Down),
+                    (Self::Nine, Move::Right),
+                ],
+                Digit::Nine => vec![(Self::Eight, Move::Left), (Self::Six, Move::Down)],
+                Digit::A => vec![(Self::Zero, Move::Left), (Self::Three, Move::Up)],
+            }
+        } else {
+            vec![(self.clone(), Move::A)]
+        }
     }
 }
 
-impl State {
-    fn neighbors(&self) -> Vec<(State, Move)> {
-        [Move::Left, Move::Right, Move::Down, Move::Up, Move::A]
-            .into_iter()
-            .flat_map(|action| {
-                self.clone()
-                    .apply(action.clone())
-                    .map(|new_state| (new_state, action))
-            })
-            .collect()
+fn dijkstra<R: Robot + Eq + Clone + Ord + Debug>(
+    current_robot: R,
+    depth: usize,
+    end: &R,
+    cache: &mut BTreeMap<(usize, Move, Move), usize>,
+) -> usize {
+    if depth == 0 {
+        return 0;
     }
 
-    fn apply(&self, action: Move) -> Option<Self> {
-        let mut new_state = self.clone();
-        let (first, others) = new_state.move_robots.split_first_mut().unwrap();
-        first.apply(
-            action,
-            others
-                .iter_mut()
-                .map(|r| r as &mut dyn Robot)
-                .chain(std::iter::once::<&mut dyn Robot>(&mut new_state.door_robot))
-                .collect::<Vec<&mut dyn Robot>>()
-                .as_mut_slice(),
-        )?;
-        Some(new_state)
-    }
-}
+    let mut visisted = BTreeSet::new();
+    let mut todo = BTreeMap::<_, _>::from([(0, vec![(current_robot, Move::A)])]);
 
-fn dijkstra(start: State, end: &Digit) -> usize {
-    let mut visisted = BTreeMap::new();
-    let mut todo = BTreeMap::<_, _>::from([(0, vec![start])]);
-
+    let target = (end.clone(), Move::A);
     loop {
         let Some((current_score, todos)) = todo.pop_first() else {
             panic!("No Path found");
         };
 
         for current in todos {
-            if visisted.contains_key(&current) {
+            if !visisted.insert(current.clone()) {
                 continue;
             }
-            visisted.insert(current.clone(), current_score);
 
-            if current.ready_for(end) {
+            if current == target {
                 return current_score;
             }
 
-            for (next, _) in current.neighbors() {
-                if !visisted.contains_key(&next) {
-                    todo.entry(current_score + 1).or_default().push(next);
+            for next in current.0.neighbors(end) {
+                if !visisted.contains(&next) {
+                    let cache_key = (depth - 1, current.1.clone(), next.1.clone());
+                    let cost = if let Some(&cost) = cache.get(&cache_key) {
+                        cost
+                    } else {
+                        let mut cost = dijkstra(current.1.clone(), depth - 1, &next.1, cache);
+                        if !matches!(next.1, Move::A) {
+                            cost += 1;
+                        }
+                        cache.insert(cache_key, cost);
+                        cost
+                    };
+                    todo.entry(current_score + cost).or_default().push(next);
                 }
             }
         }
@@ -249,31 +230,33 @@ fn parse_input(input: &str) -> impl Iterator<Item = Vec<Digit>> + '_ {
 }
 
 fn shortest_paths(code: &[Digit], move_robots: usize) -> usize {
-    let mut current = State::new(move_robots);
+    let mut current = Digit::A;
+    let mut cache = BTreeMap::new();
     code.iter()
-        .map(|next| {
-            let res = dijkstra(current.clone(), next) + 1;
-            current.door_robot = next.clone();
-            res
+        .map(move |next| {
+            dijkstra(
+                std::mem::replace(&mut current, next.clone()),
+                move_robots + 1,
+                &next,
+                &mut cache,
+            ) + 1
         })
         .sum::<usize>()
 }
 
 pub fn part1(input: &str) -> usize {
-    parse_input(input)
-        .map(|code| {
-            let prefix = Digit::prefix(&code);
-            let path_length = shortest_paths(&code, 2);
-            prefix * path_length
-        })
-        .sum()
+    both(input, 2)
 }
 
 pub fn part2(input: &str) -> usize {
+    both(input, 25)
+}
+
+fn both(input: &str, move_robots: usize) -> usize {
     parse_input(input)
         .map(|code| {
             let prefix = Digit::prefix(&code);
-            let path_length = shortest_paths(&code, 25);
+            let path_length = shortest_paths(&code, move_robots);
             prefix * path_length
         })
         .sum()
@@ -291,5 +274,5 @@ fn part1_full() {
 
 #[test]
 fn part2_full() {
-    assert_eq!(part2(INPUT), 1262);
+    assert_eq!(part2(INPUT), 159684145150108);
 }
