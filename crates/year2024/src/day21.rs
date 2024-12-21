@@ -48,7 +48,7 @@ enum Digit {
 }
 
 impl Digit {
-    fn prefix(code: &[Digit]) -> usize {
+    fn prefix(code: &[Digit]) -> u128 {
         let mut current = 0;
         let mut rem = code;
         while let [next, remainder @ ..] = rem {
@@ -164,8 +164,8 @@ fn dijkstra<R: Robot + Eq + Clone + Ord + Debug>(
     current_robot: R,
     depth: usize,
     end: &R,
-    cache: &mut BTreeMap<(usize, Move, Move), usize>,
-) -> usize {
+    cache: &mut BTreeMap<(usize, Move, Move), u128>,
+) -> u128 {
     if depth == 0 {
         return 0;
     }
@@ -229,7 +229,7 @@ fn parse_input(input: &str) -> impl Iterator<Item = Vec<Digit>> + '_ {
     })
 }
 
-fn shortest_paths(code: &[Digit], move_robots: usize) -> usize {
+fn shortest_paths(code: &[Digit], move_robots: usize) -> u128 {
     let mut current = Digit::A;
     let mut cache = BTreeMap::new();
     code.iter()
@@ -241,18 +241,18 @@ fn shortest_paths(code: &[Digit], move_robots: usize) -> usize {
                 &mut cache,
             ) + 1
         })
-        .sum::<usize>()
+        .sum::<u128>()
 }
 
-pub fn part1(input: &str) -> usize {
+pub fn part1(input: &str) -> u128 {
     both(input, 2)
 }
 
-pub fn part2(input: &str) -> usize {
+pub fn part2(input: &str) -> u128 {
     both(input, 25)
 }
 
-fn both(input: &str, move_robots: usize) -> usize {
+fn both(input: &str, move_robots: usize) -> u128 {
     parse_input(input)
         .map(|code| {
             let prefix = Digit::prefix(&code);
@@ -275,4 +275,9 @@ fn part1_full() {
 #[test]
 fn part2_full() {
     assert_eq!(part2(INPUT), 159684145150108);
+}
+
+#[test]
+fn so_many_robots() {
+    assert_eq!(both(INPUT, 86), 221895079889046776830013740791852600572);
 }
