@@ -94,14 +94,10 @@ pub fn part1(input: &str) -> usize {
 }
 
 pub fn part2(input: &str) -> usize {
-    part2_impl(input, 2000).1
-}
-
-fn part2_impl(input: &str, limit: usize) -> ([isize; 4], usize) {
     parse_input(input)
         .flat_map(|secret| {
             let results = std::iter::once(secret.seed)
-                .chain(secret.into_iter().take(limit))
+                .chain(secret.into_iter().take(2000))
                 .map(|number| number % 10)
                 .collect::<Vec<_>>()
                 .windows(5)
@@ -128,6 +124,7 @@ fn part2_impl(input: &str, limit: usize) -> ([isize; 4], usize) {
         .into_iter()
         .max_by_key(|(_, elem)| *elem)
         .unwrap()
+        .1
 }
 
 #[test]
@@ -152,10 +149,8 @@ fn part1_full() {
 
 #[test]
 fn part2_example2() {
-    assert_eq!(
-        part2_impl(INPUT_EXAMPLE2, 2000),
-        ([-2, 1, -1, 3], 7 + 7 + 0 + 9)
-    );
+    // sequence = [-2, 1, -1, 3]
+    assert_eq!(part2(INPUT_EXAMPLE2), 7 + 7 + 0 + 9);
 }
 
 #[test]
