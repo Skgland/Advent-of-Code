@@ -1,19 +1,18 @@
 name: Rust
 
 on:
-  workflow_call:
-    secrets:
-      CHECKOUT_PAT:
-        required: true
-    inputs:
-      year:
-        required: true
-        type: number
+  pull_request:
+    branches: [ master, main ]
+  push:
+    branches: [ master, main ]
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
   build:
+    strategy: 
+        matrix:
+            year: [2015, 2021, 2022, 2023, 2024]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -25,8 +24,8 @@ jobs:
       with:
         components: rustfmt, clippy
     - name: Check Rustfmt
-      run: cargo fmt --manifest-path crates/year${{inputs.year}}/Cargo.toml -- --check
+      run: cargo fmt --manifest-path crates/year${{matrix.year}}/Cargo.toml -- --check
     - name: Build
-      run: cargo build --manifest-path crates/year${{inputs.year}}/Cargo.toml --verbose
+      run: cargo build --manifest-path crates/year${{matrix.year}}/Cargo.toml --verbose
     - name: Run tests
-      run: cargo test --manifest-path crates/year${{inputs.year}}/Cargo.toml --verbose
+      run: cargo test --manifest-path crates/year${{matrix.year}}/Cargo.toml --verbose
