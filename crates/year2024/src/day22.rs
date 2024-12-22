@@ -46,17 +46,13 @@ impl SecretNumber {
     }
 
     fn prng(mut seed: usize) -> usize {
-        fn mix(seed: usize, b: usize) -> usize {
-            seed ^ b
-        }
-
-        fn prune(seed: usize) -> usize {
-            seed % 16777216
-        }
-
-        seed = prune(mix(seed, seed * 64));
-        seed = prune(mix(seed, seed / 32));
-        prune(mix(seed, seed * 2048))
+        seed ^= seed * 64;
+        seed %= 16777216;
+        seed ^= seed / 32;
+        seed %= 16777216;
+        seed ^= seed * 2048;
+        seed %= 16777216;
+        seed
     }
 }
 

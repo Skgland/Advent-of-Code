@@ -79,7 +79,6 @@ fn part1_full() {
     assert_eq!(part1(INPUT), 282749);
 }
 
-#[ignore = "too slow"]
 #[test]
 fn part2_full() {
     assert_eq!(part2(INPUT), 9962624);
