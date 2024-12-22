@@ -40,8 +40,9 @@ struct SecretNumber {
 
 impl SecretNumber {
     fn next(&mut self) -> usize {
+        let res = self.seed;
         self.seed = Self::prng(self.seed);
-        self.seed
+        res
     }
 
     fn prng(mut seed: usize) -> usize {
@@ -89,15 +90,16 @@ fn parse_input(input: &str) -> impl Iterator<Item = SecretNumber> + '_ {
 
 pub fn part1(input: &str) -> usize {
     parse_input(input)
-        .map(|secret| secret.into_iter().skip(1999).next().unwrap())
+        .map(|secret: SecretNumber| secret.into_iter().skip(2000).next().unwrap())
         .sum()
 }
 
 pub fn part2(input: &str) -> usize {
     parse_input(input)
-        .flat_map(|secret| {
-            let results = std::iter::once(secret.seed)
-                .chain(secret.into_iter().take(2000))
+        .flat_map(|secret: SecretNumber| {
+            let results = secret
+                .into_iter()
+                .take(2001)
                 .map(|number| number % 10)
                 .collect::<Vec<_>>()
                 .windows(5)
@@ -129,7 +131,7 @@ pub fn part2(input: &str) -> usize {
 
 #[test]
 fn part1_prng_demo() {
-    assert!(SecretNumber { seed: 123 }.into_iter().take(10).eq([
+    assert!(SecretNumber { seed: 123 }.into_iter().skip(1).take(10).eq([
         15887950, 16495136, 527345, 704524, 1553684, 12683156, 11100544, 12249484, 7753432, 5908254
     ]))
 }
