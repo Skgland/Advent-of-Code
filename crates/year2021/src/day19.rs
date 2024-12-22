@@ -279,7 +279,6 @@ fn part1_example() {
     assert_eq!(part1(input), 79);
 }
 
-#[ignore = "takes too long"]
 #[test]
 fn part1_full() {
     assert_eq!(part1(INPUT), 362);
@@ -294,7 +293,6 @@ fn part2_example() {
     assert_eq!(part2(input), 3621);
 }
 
-#[ignore = "takes too long"]
 #[test]
 fn part2_full() {
     assert_eq!(part2(INPUT), 12204);

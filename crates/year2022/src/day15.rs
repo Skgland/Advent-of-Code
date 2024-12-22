@@ -137,7 +137,6 @@ fn part1_example() {
     assert_eq!(p1(input, 10), 26);
 }
 
-#[ignore = "slow"]
 #[test]
 fn part1_full() {
     assert_eq!(part1(INPUT), 5394423);
@@ -152,7 +151,6 @@ fn part2_example() {
     assert_eq!(p2(input, 20), 14 * 4000000 + 11);
 }
 
-#[ignore = "slow"]
 #[test]
 fn part2_full() {
     assert_eq!(part2(INPUT), 11840879211051);

@@ -411,7 +411,6 @@ fn part2_example() {
 }
 
 #[test]
-#[ignore = "slow"]
 fn part2_full() {
     let input = include_str!(concat!(
         env!("CARGO_MANIFEST_DIR"),
