@@ -12,6 +12,7 @@ aoc2021 = { path = "./crates/year2021" }
 aoc2022 = { path = "./crates/year2022" }
 aoc2023 = { path = "./crates/year2023" }
 aoc2024 = { path = "./crates/year2024" }
+aoc2025 = { path = "./crates/year2025" }
 env_logger = "0.11.5"
 helper = { path = "./crates/helper" }
 linkme = "0.3.31"

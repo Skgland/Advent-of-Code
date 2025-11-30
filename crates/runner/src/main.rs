@@ -3,6 +3,7 @@ use aoc2021 as _;
 use aoc2022 as _;
 use aoc2023 as _;
 use aoc2024 as _;
+use aoc2025 as _;
 use helper::{Task, TASKS};
 use linkme::distributed_slice;
 use std::io::Write;
