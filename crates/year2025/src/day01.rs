@@ -45,9 +45,8 @@ fn parse_input(input: &str) -> impl Iterator<Item = (Dir, u32)> + '_ {
 pub fn part1(input: &str) -> u32 {
     let mut pos = 50i32;
     let mut count = 0;
-    let mut iter = parse_input(input);
 
-    for (dir, distance) in iter {
+    for (dir, distance) in parse_input(input) {
         match dir {
             Dir::Left => {
                 pos = pos.strict_sub_unsigned(distance);
@@ -70,9 +69,8 @@ pub fn part1(input: &str) -> u32 {
 pub fn part2(input: &str) -> u32 {
     let mut pos = 50i32;
     let mut count = 0;
-    let mut iter = parse_input(input);
 
-    for (dir, mut distance) in iter {
+    for (dir, distance) in parse_input(input) {
         match dir {
             Dir::Left => {
                 if pos != 0 {

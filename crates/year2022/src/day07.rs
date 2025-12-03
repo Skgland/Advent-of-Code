@@ -79,7 +79,7 @@ impl<'a> Dir<'a> {
     }
 }
 
-fn parse(input: &str) -> Dir {
+fn parse(input: &str) -> Dir<'_> {
     let mut cwd = vec![];
     let mut fs = Dir {
         content: Default::default(),

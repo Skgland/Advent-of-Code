@@ -56,7 +56,7 @@ impl SnailNumber {
     }
 
     pub fn explode(mut self) -> Self {
-        self.inner_explode(None, None, 1);
+        let _ = self.inner_explode(None, None, 1);
         self
     }
 
@@ -147,7 +147,7 @@ impl SnailNumber {
     }
 
     pub fn split(mut self) -> Self {
-        self.inner_split();
+        let _ = self.inner_split();
         self
     }
 
