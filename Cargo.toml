@@ -6,6 +6,10 @@ resolver = "2"
 version = "0.1.0"
 edition = "2024"
 
+[workspace.lints.clippy]
+collapsible_if = "allow"
+
+
 [workspace.dependencies]
 aoc2015 = { path = "./crates/year2015" }
 aoc2021 = { path = "./crates/year2021" }

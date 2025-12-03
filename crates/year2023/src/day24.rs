@@ -3,7 +3,7 @@ use linkme::distributed_slice;
 
 const INPUT: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../inputs/personal/year2023/day01.txt"
+    "/../../inputs/personal/year2023/day24.txt"
 ));
 
 #[distributed_slice(TASKS)]
@@ -176,7 +176,6 @@ fn xyz_collision(head: &Hail, other: &Hail) -> Option<[i64; 3]> {
     }
 
     for i in 0..=2 {
-        #[allow(clippy::collapsible_if)]
         if head.vel[i] == 0 && other.vel[i] != 0 {
             // hpi = opi + t * ovi | - opi
             // hpi - opi = t * ovi | / ovi
@@ -433,11 +432,7 @@ fn part1_example() {
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2023/day24.txt"
-    ));
-    let result = part1(input);
+    let result = part1(INPUT);
     assert_eq!(result, 15107);
 }
 
@@ -456,16 +451,12 @@ fn part2_example2() {
         env!("CARGO_MANIFEST_DIR"),
         "/../../inputs/example/year2023/day24.example.txt"
     ));
-    let hail = parse_input(&input).collect::<Vec<_>>();
+    let hail = parse_input(input).collect::<Vec<_>>();
 
     assert!(check_velocity([-3, 1, 2], &hail).is_some())
 }
 
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2023/day24.txt"
-    ));
-    assert_eq!(part2(input), 856642398547748);
+    assert_eq!(part2(INPUT), 856642398547748);
 }

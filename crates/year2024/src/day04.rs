@@ -75,7 +75,6 @@ pub fn part2(input: &str) -> usize {
     count
 }
 
-#[allow(unstable_name_collisions)]
 #[test]
 fn part1_example_sanity() {
     use Xmas::*;

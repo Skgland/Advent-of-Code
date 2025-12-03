@@ -405,10 +405,10 @@ pub fn find_a(remaining: &[u8], a: u64, program: &[u8]) -> Option<u64> {
         [rest @ .., last] => {
             for i in 0..8 {
                 let a = (a << 3) | i;
-                if &next_digit(a, program) == last {
-                    if let Some(a) = find_a(rest, a, program) {
-                        return Some(a);
-                    }
+                if &next_digit(a, program) == last
+                    && let Some(a) = find_a(rest, a, program)
+                {
+                    return Some(a);
                 }
             }
             None

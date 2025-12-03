@@ -93,7 +93,7 @@ pub fn part1(input: &str) -> usize {
 pub fn part2(input: &str) -> usize {
     parse_input(input)
         .flat_map(|secret: SecretNumber| {
-            let results = secret
+            secret
                 .into_iter()
                 .take(2001)
                 .map(|number| number % 10)
@@ -112,8 +112,7 @@ pub fn part2(input: &str) -> usize {
                     // only the first occourence of a sequenc is relevant
                     acc.entry(seq).or_insert(profit);
                     acc
-                });
-            results
+                })
         })
         .fold(BTreeMap::<_, usize>::new(), |mut acc, (seq, price)| {
             *acc.entry(seq).or_default() += price;

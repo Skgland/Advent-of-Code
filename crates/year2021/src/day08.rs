@@ -124,12 +124,10 @@ fn parse_input(input: &str) -> impl Iterator<Item = Sequence> + '_ {
 pub fn part1(input: &str) -> usize {
     parse_input(input)
         .map(|seq| {
-            let res = seq
-                .output
+            seq.output
                 .iter()
                 .filter(|seg| matches!(seg.count_ones(), 2 | 3 | 4 | 7))
-                .count();
-            res
+                .count()
         })
         .sum()
 }
