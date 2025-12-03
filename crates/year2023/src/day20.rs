@@ -146,7 +146,7 @@ impl State<'_> {
     }
 }
 
-fn parse_input(input: &str) -> State {
+fn parse_input(input: &str) -> State<'_> {
     let mut modules: BTreeMap<_, _> = input
         .lines()
         .filter_map(|line| {
