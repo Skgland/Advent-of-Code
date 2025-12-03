@@ -1,4 +1,4 @@
-use helper::{Task, TASKS};
+use helper::{TASKS, Task};
 use linkme::distributed_slice;
 use std::collections::{HashMap, HashSet};
 
@@ -173,7 +173,7 @@ pub fn part2(input: &str) -> usize {
 
     let radius = ((STEPS - input.start.column) / input.width) as usize;
 
-    assert!(radius % 2 == 0);
+    assert!(radius.is_multiple_of(2));
 
     let distances = Input {
         start: input.start,

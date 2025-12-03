@@ -1,4 +1,4 @@
-use helper::{Task, TASKS};
+use helper::{TASKS, Task};
 use linkme::distributed_slice;
 use std::collections::HashSet;
 use std::ops::RangeInclusive;
@@ -142,17 +142,21 @@ fn sanity_example() {
     ));
     let target = parse_input(input);
     let possible = possible_vectors(target.clone());
-    assert!(possible
-        .into_iter()
-        .all(|elem| simulate(target.clone(), elem)))
+    assert!(
+        possible
+            .into_iter()
+            .all(|elem| simulate(target.clone(), elem))
+    )
 }
 #[test]
 fn sanity_full() {
     let target = parse_input(INPUT);
     let possible = possible_vectors(target.clone());
-    assert!(possible
-        .into_iter()
-        .all(|elem| simulate(target.clone(), elem)))
+    assert!(
+        possible
+            .into_iter()
+            .all(|elem| simulate(target.clone(), elem))
+    )
 }
 
 #[test]

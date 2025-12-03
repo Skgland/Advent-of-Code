@@ -1,6 +1,4 @@
-use std::path::Prefix;
-
-use helper::{Task, TASKS};
+use helper::{TASKS, Task};
 use linkme::distributed_slice;
 
 const INPUT: &str = include_str!(concat!(

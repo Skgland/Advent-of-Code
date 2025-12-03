@@ -1,4 +1,4 @@
-use helper::{Task, TASKS};
+use helper::{TASKS, Task};
 use linkme::distributed_slice;
 
 const INPUT: &str = include_str!(concat!(
@@ -33,7 +33,7 @@ pub fn neighbours<T: Copy>(
     x: usize,
     y: usize,
     map: &[Vec<T>],
-) -> impl Iterator<Item = (usize, usize, T)> {
+) -> impl Iterator<Item = (usize, usize, T)> + use<T> {
     let a = x.checked_sub(1).and_then(|x| {
         map.get(x)
             .map(|elem| (x, elem))

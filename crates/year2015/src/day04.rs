@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
 
-use helper::{Task, TASKS};
+use helper::{TASKS, Task};
 use linkme::distributed_slice;
 use md5::digest::Digest;
 

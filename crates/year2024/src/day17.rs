@@ -1,4 +1,4 @@
-use helper::{Task, TASKS};
+use helper::{TASKS, Task};
 use linkme::distributed_slice;
 
 const INPUT: &str = include_str!(concat!(
@@ -128,17 +128,14 @@ impl OpCode {
     }
 
     fn writes_b(op: u8) -> bool {
-        match OpCode::parse(op) {
-            OpCode::Bxl | OpCode::Bst | OpCode::Bxc | OpCode::Bdv => true,
-            _ => false,
-        }
+        matches!(
+            OpCode::parse(op),
+            OpCode::Bxl | OpCode::Bst | OpCode::Bxc | OpCode::Bdv
+        )
     }
 
     fn writes_c(op: u8) -> bool {
-        match OpCode::parse(op) {
-            OpCode::Cdv => true,
-            _ => false,
-        }
+        matches!(OpCode::parse(op), OpCode::Cdv)
     }
 }
 
@@ -222,8 +219,7 @@ fn parse_input(input: &str) -> Input {
         inst_pointer: 0,
     };
     let program_data = lines
-        .skip(1)
-        .next()
+        .nth(1)
         .unwrap()
         .strip_prefix("Program: ")
         .unwrap()
@@ -286,18 +282,22 @@ fn assert_part2_assumptions(input: &Input) {
     assert_eq!(input.program.chunks(2).last(), Some([3, 0].as_slice()));
 
     // all other instructions arn't jump instructions
-    assert!(input
-        .program
-        .chunks(2)
-        .rev()
-        .skip(1)
-        .all(|chunk| chunk[0] != 3));
+    assert!(
+        input
+            .program
+            .chunks(2)
+            .rev()
+            .skip(1)
+            .all(|chunk| chunk[0] != 3)
+    );
 
     // there is an instruction for deviding a by 2^3
-    assert!(input
-        .program
-        .chunks(2)
-        .any(|chunk| chunk == &[0 /* Adv */, 3]));
+    assert!(
+        input
+            .program
+            .chunks(2)
+            .any(|chunk| chunk == [0 /* Adv */, 3])
+    );
 
     // there is only one instruction changing a
     assert!(
@@ -316,12 +316,14 @@ fn assert_part2_assumptions(input: &Input) {
         .enumerate()
         .find(|(_, chunk)| OpCode::reads_b(chunk[0], chunk[1]))
     {
-        assert!(input
-            .program
-            .chunks(2)
-            .enumerate()
-            .find(|(_, chunk)| OpCode::writes_b(chunk[0]))
-            .is_some_and(|(b_write_idx, _)| b_write_idx < b_read_idx))
+        assert!(
+            input
+                .program
+                .chunks(2)
+                .enumerate()
+                .find(|(_, chunk)| OpCode::writes_b(chunk[0]))
+                .is_some_and(|(b_write_idx, _)| b_write_idx < b_read_idx)
+        )
     }
 
     // if c is read than it is written first
@@ -331,12 +333,14 @@ fn assert_part2_assumptions(input: &Input) {
         .enumerate()
         .find(|(_, chunk)| OpCode::reads_c(chunk[0], chunk[1]))
     {
-        assert!(input
-            .program
-            .chunks(2)
-            .enumerate()
-            .find(|(_, chunk)| OpCode::writes_c(chunk[0]))
-            .is_some_and(|(c_write_idx, _)| c_write_idx < c_read_idx))
+        assert!(
+            input
+                .program
+                .chunks(2)
+                .enumerate()
+                .find(|(_, chunk)| OpCode::writes_c(chunk[0]))
+                .is_some_and(|(c_write_idx, _)| c_write_idx < c_read_idx)
+        )
     }
 
     // - we know a is consumed 3 bit per loop iteration (only instruction changing a is a single adv 3)

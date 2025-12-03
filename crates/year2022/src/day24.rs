@@ -1,4 +1,4 @@
-use helper::{lcm, Task, TASKS};
+use helper::{TASKS, Task, lcm};
 use linkme::distributed_slice;
 use std::{
     collections::HashMap,

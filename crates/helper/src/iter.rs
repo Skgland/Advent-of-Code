@@ -49,7 +49,7 @@ where
     fn next(&mut self) -> Option<Self::Item> {
         if self.filled == N {
             self.filled = 0; // pre-poop
-                             // safety: all entries are init
+            // safety: all entries are init
             unsafe { self.buffer[0].assume_init_drop() };
             self.buffer.rotate_left(1);
             self.filled = N - 1; // un-poop

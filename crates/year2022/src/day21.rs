@@ -1,4 +1,4 @@
-use helper::{Task, TASKS};
+use helper::{TASKS, Task};
 use linkme::distributed_slice;
 use std::{collections::HashMap, rc::Rc};
 
@@ -118,7 +118,7 @@ impl State {
                             }
                         }
                         (State::Constant(_), State::Input) | (State::Input, State::Constant(_)) => {
-                            break
+                            break;
                         }
                         _ => panic!("Simplifications are insufficient"),
                     }

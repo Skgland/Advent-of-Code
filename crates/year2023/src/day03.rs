@@ -1,5 +1,5 @@
 use helper::IntegerExtension;
-use helper::{Task, TASKS};
+use helper::{TASKS, Task};
 use linkme::distributed_slice;
 use std::collections::HashMap;
 
@@ -28,7 +28,7 @@ struct Position {
     y: isize,
 }
 impl Position {
-    fn neighbors(&self, number: usize) -> impl Iterator<Item = Position> {
+    fn neighbors(&self, number: usize) -> impl Iterator<Item = Position> + use<> {
         let x = self.x;
         let y = self.y;
         let length = number.length_base10();

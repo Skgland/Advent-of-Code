@@ -1,6 +1,6 @@
 use crate::day10::Delimiter::{AngleBracket, Brace, Bracket, Parenthesis};
 use crate::day10::Side::{Close, Open};
-use helper::{Task, TASKS};
+use helper::{TASKS, Task};
 use linkme::distributed_slice;
 
 const INPUT: &str = include_str!(concat!(
@@ -109,11 +109,7 @@ pub fn part2(input: &str) -> usize {
                 .iter()
                 .rev()
                 .fold(0, |acc, delim| acc * 5 + delim.score2());
-            if res == 0 {
-                None
-            } else {
-                Some(res)
-            }
+            if res == 0 { None } else { Some(res) }
         })
         .collect();
     completions.sort_unstable();

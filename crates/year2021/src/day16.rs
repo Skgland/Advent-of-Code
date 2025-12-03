@@ -1,4 +1,4 @@
-use helper::{Task, TASKS};
+use helper::{TASKS, Task};
 use linkme::distributed_slice;
 
 const INPUT: &str = include_str!(concat!(
@@ -193,11 +193,7 @@ pub fn eval(packet: &Packet) -> usize {
         } => {
             let first = eval(&arguments[0]);
             let second = eval(&arguments[1]);
-            if first > second {
-                1
-            } else {
-                0
-            }
+            if first > second { 1 } else { 0 }
         }
         PacketKind::Operator {
             op: Operator::LessThan,
@@ -206,11 +202,7 @@ pub fn eval(packet: &Packet) -> usize {
         } => {
             let first = eval(&arguments[0]);
             let second = eval(&arguments[1]);
-            if first < second {
-                1
-            } else {
-                0
-            }
+            if first < second { 1 } else { 0 }
         }
         PacketKind::Operator {
             op: Operator::EqualTo,
@@ -219,11 +211,7 @@ pub fn eval(packet: &Packet) -> usize {
         } => {
             let first = eval(&arguments[0]);
             let second = eval(&arguments[1]);
-            if first == second {
-                1
-            } else {
-                0
-            }
+            if first == second { 1 } else { 0 }
         }
     }
 }

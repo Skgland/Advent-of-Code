@@ -4,7 +4,7 @@ use std::{
     vec,
 };
 
-use helper::{Task, TASKS};
+use helper::{TASKS, Task};
 use linkme::distributed_slice;
 
 const INPUT: &str = include_str!(concat!(
@@ -237,7 +237,7 @@ fn shortest_paths(code: &[Digit], move_robots: usize) -> u128 {
             dijkstra(
                 std::mem::replace(&mut current, next.clone()),
                 move_robots + 1,
-                &next,
+                next,
                 &mut cache,
             ) + 1
         })

@@ -1,4 +1,4 @@
-use helper::{Task, TASKS};
+use helper::{TASKS, Task};
 use linkme::distributed_slice;
 use std::{collections::HashMap, ops::ControlFlow};
 
@@ -131,7 +131,7 @@ impl Rock {
         let mut pos = (2, *max + 3);
         loop {
             if log::log_enabled!(log::Level::Debug) {
-                print_cave(&cave, *max, Some((self, pos)));
+                print_cave(cave, *max, Some((self, pos)));
             }
 
             pos = self.push(pos, &*cave, streams.next().unwrap().1);

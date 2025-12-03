@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use helper::{Task, TASKS};
+use helper::{TASKS, Task};
 use linkme::distributed_slice;
 
 const INPUT: &str = include_str!(concat!(
@@ -49,9 +49,7 @@ fn dijkstra(start: Pos, end: Pos, valid: impl Fn(usize, Pos) -> bool) -> Option<
     let mut predecessor = BTreeMap::new();
 
     loop {
-        let Some((current_score, todos)) = todo.pop_first() else {
-            return None;
-        };
+        let (current_score, todos) = todo.pop_first()?;
 
         let mut reached_end = false;
         for current in todos {

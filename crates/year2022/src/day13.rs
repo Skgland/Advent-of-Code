@@ -1,4 +1,4 @@
-use helper::{Task, TASKS};
+use helper::{TASKS, Task};
 use linkme::distributed_slice;
 use std::cmp::Ordering;
 
@@ -136,11 +136,7 @@ pub fn part1(input: &str) -> usize {
         .enumerate()
         .map(
             |(idx, [left, right])| {
-                if left <= right {
-                    idx + 1
-                } else {
-                    0
-                }
+                if left <= right { idx + 1 } else { 0 }
             },
         )
         .sum()

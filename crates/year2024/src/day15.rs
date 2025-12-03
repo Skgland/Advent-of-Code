@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet, VecDeque};
 
-use helper::{Task, TASKS};
+use helper::{TASKS, Task};
 use linkme::distributed_slice;
 
 const INPUT: &str = include_str!(concat!(
@@ -134,7 +134,7 @@ impl Input<SimleTiles> {
         }
     }
 
-    fn to_comples_tiles(self) -> Input<ComplexTiles> {
+    fn into_complex_tiles(self) -> Input<ComplexTiles> {
         let map = self
             .map
             .into_iter()
@@ -168,7 +168,7 @@ impl Input<SimleTiles> {
                 .find(|(_, tile)| matches!(tile, ComplexTiles::Robot))
                 .unwrap()
                 .0,
-            map: map,
+            map,
             moves: self.moves,
         }
     }
@@ -333,7 +333,7 @@ pub fn part1(input: &str) -> isize {
 }
 
 pub fn part2(input: &str) -> isize {
-    let mut input = parse_input(input).to_comples_tiles();
+    let mut input = parse_input(input).into_complex_tiles();
     input.apply_moves();
     let gps_cost = input.gps_costs();
     if log::log_enabled!(log::Level::Debug) {

@@ -1,4 +1,4 @@
-use helper::{Task, TASKS};
+use helper::{TASKS, Task};
 use linkme::distributed_slice;
 use std::collections::HashSet;
 
@@ -147,26 +147,58 @@ impl State {
 }
 
 fn parse(input: &str) -> Vec<Blueprint> {
-    input.lines().flat_map(|line| {
-        let parts : Vec<_> = line.split_whitespace().collect();
-        if let [_blueprint,_nr_colon,
-        _each1, _ore1, _robot1, _costs1, ore_for_ore, _ore_dot1,
-        _each2, _clay1, _robot2, _costs2, ore_for_clay ,_ore_dot2,
-        _each3, _obsidian1, _robot3, _costs3, ore_for_obsidian ,_ore2, _and1, clay_for_obsidian, _clay2,
-        _each4, _geod, _robot4, _costs4, ore_for_geod ,_ore3, _and, obsidian_for_geod, _obsidian2
-        ] = parts.as_slice() {
-            Some(Blueprint {
-                ore_for_ore: ore_for_ore.parse().unwrap(),
-                ore_for_clay: ore_for_clay.parse().unwrap(),
-                ore_for_obsidian: ore_for_obsidian.parse().unwrap(),
-                clay_for_obsidian: clay_for_obsidian.parse().unwrap(),
-                ore_for_geod: ore_for_geod.parse().unwrap(),
-                obsidian_for_geod: obsidian_for_geod.parse().unwrap()
-            })
-        } else {
-            None
-        }}
-    ).collect()
+    input
+        .lines()
+        .flat_map(|line| {
+            let parts: Vec<_> = line.split_whitespace().collect();
+            if let [
+                _blueprint,
+                _nr_colon,
+                _each1,
+                _ore1,
+                _robot1,
+                _costs1,
+                ore_for_ore,
+                _ore_dot1,
+                _each2,
+                _clay1,
+                _robot2,
+                _costs2,
+                ore_for_clay,
+                _ore_dot2,
+                _each3,
+                _obsidian1,
+                _robot3,
+                _costs3,
+                ore_for_obsidian,
+                _ore2,
+                _and1,
+                clay_for_obsidian,
+                _clay2,
+                _each4,
+                _geod,
+                _robot4,
+                _costs4,
+                ore_for_geod,
+                _ore3,
+                _and,
+                obsidian_for_geod,
+                _obsidian2,
+            ] = parts.as_slice()
+            {
+                Some(Blueprint {
+                    ore_for_ore: ore_for_ore.parse().unwrap(),
+                    ore_for_clay: ore_for_clay.parse().unwrap(),
+                    ore_for_obsidian: ore_for_obsidian.parse().unwrap(),
+                    clay_for_obsidian: clay_for_obsidian.parse().unwrap(),
+                    ore_for_geod: ore_for_geod.parse().unwrap(),
+                    obsidian_for_geod: obsidian_for_geod.parse().unwrap(),
+                })
+            } else {
+                None
+            }
+        })
+        .collect()
 }
 
 fn both(blueprints: &[Blueprint], minutes: u8) -> Vec<usize> {

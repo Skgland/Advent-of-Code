@@ -1,4 +1,4 @@
-use helper::{Task, TASKS};
+use helper::{TASKS, Task};
 use linkme::distributed_slice;
 use std::{collections::HashMap, str::FromStr};
 
@@ -36,14 +36,12 @@ struct Row {
 impl Row {
     fn unfold(&mut self) {
         self.list.insert(0, SpringCondition::Unknown);
-        self.list = std::iter::repeat(std::mem::take(&mut self.list))
-            .take(5)
+        self.list = std::iter::repeat_n(std::mem::take(&mut self.list), 5)
             .flatten()
             .collect();
         self.list.remove(0);
 
-        self.contiguous_bad = std::iter::repeat(std::mem::take(&mut self.contiguous_bad))
-            .take(5)
+        self.contiguous_bad = std::iter::repeat_n(std::mem::take(&mut self.contiguous_bad), 5)
             .flatten()
             .collect()
     }
@@ -123,9 +121,12 @@ impl Row {
             }
 
             match list.get(streak..) {
-                Some([SpringCondition::Good | SpringCondition::Unknown, remaining_list @ ..]) => {
-                    solve_suffix(remaining_list, remaining_streaks, cache)
-                }
+                Some(
+                    [
+                        SpringCondition::Good | SpringCondition::Unknown,
+                        remaining_list @ ..,
+                    ],
+                ) => solve_suffix(remaining_list, remaining_streaks, cache),
                 Some([SpringCondition::Bad, ..]) => {
                     // streak too long
                     0

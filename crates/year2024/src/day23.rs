@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use helper::{Task, TASKS};
+use helper::{TASKS, Task};
 use linkme::distributed_slice;
 
 const INPUT: &str = include_str!(concat!(
@@ -51,7 +51,7 @@ fn find_clique_3<'a>(input: &Input<'a>) -> BTreeSet<BTreeSet<&'a str>> {
         for &b_id in a_con {
             if a_id < b_id {
                 let b_con = &input.map[b_id];
-                for &c_id in a_con.intersection(&b_con) {
+                for &c_id in a_con.intersection(b_con) {
                     if b_id < c_id {
                         c3s.insert(BTreeSet::from([a_id, b_id, c_id]));
                     }
