@@ -82,7 +82,7 @@ enum ModuleKind<'m> {
 
 impl ModuleKind<'_> {
     fn handle(&mut self, pulse: Pulse, src: &str) -> Option<Pulse> {
-        let send = match self {
+        match self {
             ModuleKind::FlipFlop { state } => match pulse {
                 Pulse::High => None,
                 Pulse::Low => {
@@ -105,8 +105,7 @@ impl ModuleKind<'_> {
                 }
                 None
             }
-        };
-        send
+        }
     }
 }
 

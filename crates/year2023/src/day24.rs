@@ -176,7 +176,6 @@ fn xyz_collision(head: &Hail, other: &Hail) -> Option<[i64; 3]> {
     }
 
     for i in 0..=2 {
-        #[allow(clippy::collapsible_if)]
         if head.vel[i] == 0 && other.vel[i] != 0 {
             // hpi = opi + t * ovi | - opi
             // hpi - opi = t * ovi | / ovi

@@ -33,28 +33,25 @@ fn look_and_say(input: impl Iterator<Item = u8>) -> impl Iterator<Item = u8> {
     input
         .map(Some)
         .chain(std::iter::once(None))
-        .scan(None, |state, cur| {
-            let res = match (state.as_mut(), cur) {
-                (Some((counting, count)), Some(next)) if *counting == next => {
-                    *count += 1;
-                    Some(None)
-                }
-                (Some((counting, count)), next) => {
-                    let emit = Some([*count, *counting]);
-                    if let Some(next) = next {
-                        *state = Some((next, 1));
-                    } else {
-                        *state = None;
-                    }
-                    Some(emit)
-                }
-                (None, Some(next)) => {
+        .scan(None, |state, cur| match (state.as_mut(), cur) {
+            (Some((counting, count)), Some(next)) if *counting == next => {
+                *count += 1;
+                Some(None)
+            }
+            (Some((counting, count)), next) => {
+                let emit = Some([*count, *counting]);
+                if let Some(next) = next {
                     *state = Some((next, 1));
-                    Some(None)
+                } else {
+                    *state = None;
                 }
-                (None, None) => None,
-            };
-            res
+                Some(emit)
+            }
+            (None, Some(next)) => {
+                *state = Some((next, 1));
+                Some(None)
+            }
+            (None, None) => None,
         })
         .flatten()
         .flatten()
