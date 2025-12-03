@@ -55,6 +55,7 @@ fn parse_input(input: &str) -> (Vec<u32>, impl Iterator<Item = [[u32; 5]; 5]> + 
     (balls, BoardCollector(lines))
 }
 
+#[allow(clippy::needless_range_loop)]
 pub fn process_board(numbers: &[u32], board: [[u32; 5]; 5]) -> (usize, u32) {
     let mut min = usize::MAX;
 

@@ -29,6 +29,7 @@ fn is_visible(input: &[Vec<u8>], x: usize, y: usize) -> bool {
         || input[x][y + 1..].iter().all(|&elem| elem < height)
 }
 
+#[allow(clippy::needless_range_loop)]
 fn scenic_score(input: &[Vec<u8>], x: usize, y: usize) -> usize {
     let mut lxs = 0;
     let mut rxs = 0;

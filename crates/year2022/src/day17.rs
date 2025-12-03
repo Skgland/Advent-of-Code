@@ -131,7 +131,7 @@ impl Rock {
         let mut pos = (2, *max + 3);
         loop {
             if log::log_enabled!(log::Level::Debug) {
-                print_cave(&cave, *max, Some((self, pos)));
+                print_cave(cave, *max, Some((self, pos)));
             }
 
             pos = self.push(pos, &*cave, streams.next().unwrap().1);

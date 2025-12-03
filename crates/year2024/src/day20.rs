@@ -89,9 +89,7 @@ fn dijkstra(start: Pos, end: Pos, map: &BTreeMap<Pos, Tile>) -> Option<Vec<Pos>>
     let mut predecessor = BTreeMap::new();
 
     loop {
-        let Some((current_score, todos)) = todo.pop_first() else {
-            return None;
-        };
+        let (current_score, todos) = todo.pop_first()?;
 
         let mut reached_end = false;
         for current in todos {

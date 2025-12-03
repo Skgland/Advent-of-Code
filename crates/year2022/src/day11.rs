@@ -114,7 +114,7 @@ fn both(monkeys: Vec<Monkey>, iteration: usize, reduction: impl Fn(usize) -> usi
                 *inspections += 1;
                 let new = monkey.op.apply(item);
                 let new = reduction(new);
-                if new % monkey.test == 0 {
+                if new.is_multiple_of(monkey.test) {
                     success_monkey.items.push(new);
                 } else {
                     fail_monkey.items.push(new);

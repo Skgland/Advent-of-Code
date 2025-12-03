@@ -36,14 +36,12 @@ struct Row {
 impl Row {
     fn unfold(&mut self) {
         self.list.insert(0, SpringCondition::Unknown);
-        self.list = std::iter::repeat(std::mem::take(&mut self.list))
-            .take(5)
+        self.list = std::iter::repeat_n(std::mem::take(&mut self.list), 5)
             .flatten()
             .collect();
         self.list.remove(0);
 
-        self.contiguous_bad = std::iter::repeat(std::mem::take(&mut self.contiguous_bad))
-            .take(5)
+        self.contiguous_bad = std::iter::repeat_n(std::mem::take(&mut self.contiguous_bad), 5)
             .flatten()
             .collect()
     }

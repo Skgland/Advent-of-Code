@@ -86,7 +86,7 @@ fn parse_input(input: &str) -> impl Iterator<Item = SecretNumber> + '_ {
 
 pub fn part1(input: &str) -> usize {
     parse_input(input)
-        .map(|secret: SecretNumber| secret.into_iter().skip(2000).next().unwrap())
+        .map(|secret: SecretNumber| secret.into_iter().nth(2000).unwrap())
         .sum()
 }
 

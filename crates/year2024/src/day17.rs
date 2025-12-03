@@ -128,17 +128,14 @@ impl OpCode {
     }
 
     fn writes_b(op: u8) -> bool {
-        match OpCode::parse(op) {
-            OpCode::Bxl | OpCode::Bst | OpCode::Bxc | OpCode::Bdv => true,
-            _ => false,
-        }
+        matches!(
+            OpCode::parse(op),
+            OpCode::Bxl | OpCode::Bst | OpCode::Bxc | OpCode::Bdv
+        )
     }
 
     fn writes_c(op: u8) -> bool {
-        match OpCode::parse(op) {
-            OpCode::Cdv => true,
-            _ => false,
-        }
+        matches!(OpCode::parse(op), OpCode::Cdv)
     }
 }
 
@@ -222,8 +219,7 @@ fn parse_input(input: &str) -> Input {
         inst_pointer: 0,
     };
     let program_data = lines
-        .skip(1)
-        .next()
+        .nth(1)
         .unwrap()
         .strip_prefix("Program: ")
         .unwrap()
@@ -297,7 +293,7 @@ fn assert_part2_assumptions(input: &Input) {
     assert!(input
         .program
         .chunks(2)
-        .any(|chunk| chunk == &[0 /* Adv */, 3]));
+        .any(|chunk| chunk == [0 /* Adv */, 3]));
 
     // there is only one instruction changing a
     assert!(

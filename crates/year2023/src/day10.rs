@@ -236,7 +236,7 @@ fn parse_input(input: &str) -> Maze {
 pub fn part1(input: &str) -> usize {
     let maze = parse_input(input);
 
-    (maze.loop_tiles().len() + 1) / 2
+    maze.loop_tiles().len().div_ceil(2)
 }
 
 pub fn part2(input: &str) -> usize {

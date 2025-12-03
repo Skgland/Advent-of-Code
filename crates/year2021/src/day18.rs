@@ -156,7 +156,7 @@ impl SnailNumber {
             SnailElement::Literal(x) if *x >= 10 => {
                 self.left = SnailElement::Recursion(Box::new(SnailNumber {
                     left: SnailElement::Literal(*x / 2),
-                    right: SnailElement::Literal((*x + 1) / 2),
+                    right: SnailElement::Literal(x.div_ceil(2)),
                 }));
                 return ControlFlow::Break(());
             }
@@ -168,7 +168,7 @@ impl SnailNumber {
             SnailElement::Literal(x) if *x >= 10 => {
                 self.right = SnailElement::Recursion(Box::new(SnailNumber {
                     left: SnailElement::Literal(*x / 2),
-                    right: SnailElement::Literal((*x + 1) / 2),
+                    right: SnailElement::Literal(x.div_ceil(2)),
                 }));
                 ControlFlow::Break(())
             }
