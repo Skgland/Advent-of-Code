@@ -332,11 +332,7 @@ fn part1_example2() {
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2023/day10.txt"
-    ));
-    assert_eq!(part1(input), 6979);
+    assert_eq!(part1(INPUT), 6979);
 }
 
 #[test]
@@ -377,9 +373,5 @@ fn part2_example6() {
 
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2023/day10.txt"
-    ));
-    assert_eq!(part2(input), 443);
+    assert_eq!(part2(INPUT), 443);
 }

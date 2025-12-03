@@ -289,20 +289,12 @@ fn part1_example2() {
 
 #[test]
 fn part1_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2023/day20.txt"
-    ));
-    assert_eq!(part1(input), 869395600);
+    assert_eq!(part1(INPUT), 869395600);
 }
 
 #[test]
 fn part2_full() {
-    let input = include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../inputs/personal/year2023/day20.txt"
-    ));
-    assert_eq!(part2(input), 232605773145467);
+    assert_eq!(part2(INPUT), 232605773145467);
 }
 
 pub fn print_graph(input: &str) {
