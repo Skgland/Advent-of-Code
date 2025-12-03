@@ -1,4 +1,4 @@
-use helper::{Task, TASKS};
+use helper::{TASKS, Task};
 use linkme::distributed_slice;
 
 const INPUT: &str = include_str!(concat!(
@@ -65,7 +65,7 @@ fn extract_coordinates(result: &[isize]) -> (isize, isize, isize) {
     let (idx, _) = result
         .iter()
         .enumerate()
-        .find(|(_idx, &elem)| elem == 0)
+        .find(|&(ref _idx, &elem)| elem == 0)
         .unwrap();
     let x = result[(idx + 1000) % result.len()];
     let y = result[(idx + 2000) % result.len()];

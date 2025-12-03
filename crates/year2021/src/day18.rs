@@ -1,4 +1,4 @@
-use helper::{Task, TASKS};
+use helper::{TASKS, Task};
 use linkme::distributed_slice;
 use std::iter::Sum;
 use std::ops::{Add, ControlFlow};
@@ -68,7 +68,7 @@ impl SnailNumber {
     ) -> ControlFlow<(), ()> {
         if depth == 4 {
             let (left_value, right_value) = match self {
-                SnailNumber {
+                &mut SnailNumber {
                     left: SnailElement::Recursion(ref inner),
                     right: _,
                 } => {
@@ -256,13 +256,18 @@ fn parse_element(input: &str) -> Option<(SnailElement, &str)> {
             let (inner, remainder) = parse_number(input)?;
             Some((SnailElement::Recursion(Box::new(inner)), remainder))
         }
-        [c @ (b'0' | b'1' | b'2' | b'3' | b'4' | b'5' | b'6' | b'7' | b'8' | b'9'), r @ ..] => {
+        [
+            c @ (b'0' | b'1' | b'2' | b'3' | b'4' | b'5' | b'6' | b'7' | b'8' | b'9'),
+            r @ ..,
+        ] => {
             let mut val = *c - b'0';
             let mut chars = 1;
             let mut remainder = r;
 
-            while let [c @ (b'0' | b'1' | b'2' | b'3' | b'4' | b'5' | b'6' | b'7' | b'8' | b'9'), r @ ..] =
-                remainder
+            while let [
+                c @ (b'0' | b'1' | b'2' | b'3' | b'4' | b'5' | b'6' | b'7' | b'8' | b'9'),
+                r @ ..,
+            ] = remainder
             {
                 remainder = r;
                 chars += 1;

@@ -1,4 +1,4 @@
-use helper::{Task, TASKS};
+use helper::{TASKS, Task};
 use linkme::distributed_slice;
 use std::{collections::HashMap, ops::RangeInclusive};
 
@@ -117,7 +117,11 @@ struct Almanac {
 }
 
 impl Almanac {
-    fn lookup(&self, target: &str, ranges: bool) -> impl Iterator<Item = RangeInclusive<usize>> {
+    fn lookup(
+        &self,
+        target: &str,
+        ranges: bool,
+    ) -> impl Iterator<Item = RangeInclusive<usize>> + use<> {
         let mut current_name = "seed";
 
         let mut current_values: Vec<RangeInclusive<usize>> = if !ranges {

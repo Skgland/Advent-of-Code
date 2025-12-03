@@ -1,7 +1,7 @@
 use crate::day23::Crab::*;
 use crate::day23::HallwaySpot::*;
 use crate::day23::Move::{FromRoom, ToRoom};
-use helper::{Task, TASKS};
+use helper::{TASKS, Task};
 use linkme::distributed_slice;
 
 const INPUT: &str = include_str!(concat!(

@@ -1,4 +1,4 @@
-use helper::{Task, TASKS};
+use helper::{TASKS, Task};
 use linkme::distributed_slice;
 use std::{collections::HashMap, str::FromStr};
 
@@ -121,9 +121,12 @@ impl Row {
             }
 
             match list.get(streak..) {
-                Some([SpringCondition::Good | SpringCondition::Unknown, remaining_list @ ..]) => {
-                    solve_suffix(remaining_list, remaining_streaks, cache)
-                }
+                Some(
+                    [
+                        SpringCondition::Good | SpringCondition::Unknown,
+                        remaining_list @ ..,
+                    ],
+                ) => solve_suffix(remaining_list, remaining_streaks, cache),
                 Some([SpringCondition::Bad, ..]) => {
                     // streak too long
                     0

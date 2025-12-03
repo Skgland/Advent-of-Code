@@ -1,11 +1,11 @@
 use crate::day24::Arg2::Literal;
 use crate::day24::Operation::{Add, Div, Eq, Inp, Mod, Mul};
 use crate::day24::Register::*;
-use helper::{Task, TASKS};
+use RegisterState::{Input, Value};
+use helper::{TASKS, Task};
 use linkme::distributed_slice;
 use std::fmt::{Display, Formatter};
 use std::rc::{Rc, Weak};
-use RegisterState::{Input, Value};
 
 const INPUT: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),

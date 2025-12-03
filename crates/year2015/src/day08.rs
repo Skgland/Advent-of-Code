@@ -1,4 +1,4 @@
-use helper::{Task, TASKS};
+use helper::{TASKS, Task};
 use linkme::distributed_slice;
 
 const INPUT: &str = include_str!(concat!(
@@ -46,7 +46,13 @@ fn memory_length(input: &str) -> usize {
         match rem {
             [] => break len,
             [b'\\', b'"' | b'\\', new_rem @ ..]
-            | [b'\\', b'x', b'a'..=b'f' | b'A'..=b'F' | b'0'..=b'9', b'a'..=b'f' | b'A'..=b'F' | b'0'..=b'9', new_rem @ ..]
+            | [
+                b'\\',
+                b'x',
+                b'a'..=b'f' | b'A'..=b'F' | b'0'..=b'9',
+                b'a'..=b'f' | b'A'..=b'F' | b'0'..=b'9',
+                new_rem @ ..,
+            ]
             | [_, new_rem @ ..] => {
                 rem = new_rem;
                 len += 1;

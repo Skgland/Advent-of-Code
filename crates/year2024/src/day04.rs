@@ -1,5 +1,5 @@
 use helper::iter::search_grid;
-use helper::{Task, TASKS};
+use helper::{TASKS, Task};
 use linkme::distributed_slice;
 
 const INPUT: &str = include_str!(concat!(
@@ -78,55 +78,59 @@ pub fn part2(input: &str) -> usize {
 #[allow(unstable_name_collisions)]
 #[test]
 fn part1_example_sanity() {
-    use helper::iter::{diag_bl_tr_iter, vertical_iter, IteratorExtension as _};
     use Xmas::*;
+    use helper::iter::{IteratorExtension as _, diag_bl_tr_iter, vertical_iter};
     let input = include_str!(concat!(
         env!("CARGO_MANIFEST_DIR"),
         "/../../inputs/example/year2024/day04.example.txt"
     ));
     let haystack = parse_input(input);
-    assert!(vertical_iter(&haystack).eq_by(
-        [
-            [M, M, A, M, X, X, S, S, M, M].iter(),
-            [M, S, M, S, M, X, M, A, A, X].iter(),
-            [M, A, X, A, A, A, S, X, M, M].iter(),
-            [S, M, S, M, S, M, M, A, M, X].iter(),
-            [X, X, X, A, A, M, S, M, M, A].iter(),
-            [X, M, M, S, M, X, A, A, X, X].iter(),
-            [M, S, A, M, X, X, S, S, M, M].iter(),
-            [A, M, A, S, A, A, X, A, M, A].iter(),
-            [S, S, M, M, M, M, S, A, M, S].iter(),
-            [M, A, M, X, M, A, S, A, M, X].iter(),
-        ]
-        .into_iter(),
-        |l, r| l.eq(r),
-    ));
+    assert!(
+        vertical_iter(&haystack).eq_by(
+            [
+                [M, M, A, M, X, X, S, S, M, M].iter(),
+                [M, S, M, S, M, X, M, A, A, X].iter(),
+                [M, A, X, A, A, A, S, X, M, M].iter(),
+                [S, M, S, M, S, M, M, A, M, X].iter(),
+                [X, X, X, A, A, M, S, M, M, A].iter(),
+                [X, M, M, S, M, X, A, A, X, X].iter(),
+                [M, S, A, M, X, X, S, S, M, M].iter(),
+                [A, M, A, S, A, A, X, A, M, A].iter(),
+                [S, S, M, M, M, M, S, A, M, S].iter(),
+                [M, A, M, X, M, A, S, A, M, X].iter(),
+            ]
+            .into_iter(),
+            |l, r| l.eq(r),
+        )
+    );
 
-    assert!(diag_bl_tr_iter(&haystack).eq_by(
-        [
-            [M].iter(),
-            [M, M].iter(),
-            [A, S, M].iter(),
-            [M, M, A, S].iter(),
-            [X, S, X, M, X].iter(),
-            [X, M, A, S, X, X].iter(),
-            [S, X, A, M, X, M, M].iter(),
-            [S, M, A, S, A, M, S, A].iter(),
-            [M, A, S, M, A, S, A, M, S].iter(),
-            [M, A, X, M, M, M, M, A, S, M].iter(),
-            [X, M, A, S, X, X, S, M, A].iter(),
-            [M, M, M, A, X, A, M, M].iter(),
-            [X, M, A, S, A, M, X].iter(),
-            [A, X, S, X, M, M].iter(),
-            [X, M, A, S, A].iter(),
-            [M, M, A, S].iter(),
-            [A, M, A].iter(),
-            [S, M].iter(),
-            [X].iter(),
-        ]
-        .into_iter(),
-        |l, r| l.eq(r),
-    ));
+    assert!(
+        diag_bl_tr_iter(&haystack).eq_by(
+            [
+                [M].iter(),
+                [M, M].iter(),
+                [A, S, M].iter(),
+                [M, M, A, S].iter(),
+                [X, S, X, M, X].iter(),
+                [X, M, A, S, X, X].iter(),
+                [S, X, A, M, X, M, M].iter(),
+                [S, M, A, S, A, M, S, A].iter(),
+                [M, A, S, M, A, S, A, M, S].iter(),
+                [M, A, X, M, M, M, M, A, S, M].iter(),
+                [X, M, A, S, X, X, S, M, A].iter(),
+                [M, M, M, A, X, A, M, M].iter(),
+                [X, M, A, S, A, M, X].iter(),
+                [A, X, S, X, M, M].iter(),
+                [X, M, A, S, A].iter(),
+                [M, M, A, S].iter(),
+                [A, M, A].iter(),
+                [S, M].iter(),
+                [X].iter(),
+            ]
+            .into_iter(),
+            |l, r| l.eq(r),
+        )
+    );
 }
 
 #[test]

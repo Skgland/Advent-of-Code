@@ -1,4 +1,4 @@
-use helper::{Task, TASKS};
+use helper::{TASKS, Task};
 use linkme::distributed_slice;
 use std::collections::HashSet;
 
@@ -60,7 +60,7 @@ fn iterate(input: &mut [[u8; 10]; 10]) -> usize {
     let ready = input.iter().enumerate().flat_map(|(x, row)| {
         row.iter()
             .enumerate()
-            .filter(|(_, &v)| v > 9)
+            .filter(|&(_, &v)| v > 9)
             .map(move |(y, _)| (x, y))
     });
 

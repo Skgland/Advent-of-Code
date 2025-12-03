@@ -1,5 +1,5 @@
 use crate::day25::Spot::{Down, Empty, Right};
-use helper::{Task, TASKS};
+use helper::{TASKS, Task};
 use linkme::distributed_slice;
 
 const INPUT: &str = include_str!(concat!(

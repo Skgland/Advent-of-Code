@@ -1,4 +1,4 @@
-use helper::{Task, TASKS};
+use helper::{TASKS, Task};
 use linkme::distributed_slice;
 use std::collections::{BTreeSet, HashMap, HashSet};
 
@@ -196,7 +196,9 @@ pub fn part2(input: &str) -> usize {
         if let Some(&first_occurrence) = formation_cache.get(&platform.round_rocks) {
             // found cycle
             let end_in = (CYCLE_COUNT - first_occurrence) % (cycle - first_occurrence);
-            log::info!("Found cycle from {first_occurrence} to {cycle}, next cycle identical to cycle {CYCLE_COUNT} in {end_in} cycles!");
+            log::info!(
+                "Found cycle from {first_occurrence} to {cycle}, next cycle identical to cycle {CYCLE_COUNT} in {end_in} cycles!"
+            );
             for _ in 0..end_in {
                 platform.cycle();
             }

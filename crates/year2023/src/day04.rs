@@ -1,4 +1,4 @@
-use helper::{Task, TASKS};
+use helper::{TASKS, Task};
 use linkme::distributed_slice;
 use std::collections::{HashSet, VecDeque};
 
@@ -29,11 +29,7 @@ struct ScratchCard {
 impl ScratchCard {
     fn score(&self) -> u32 {
         let common = self.matches();
-        if common > 0 {
-            1 << (common - 1)
-        } else {
-            0
-        }
+        if common > 0 { 1 << (common - 1) } else { 0 }
     }
 
     fn matches(&self) -> usize {

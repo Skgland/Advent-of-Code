@@ -1,4 +1,4 @@
-use helper::{Task, TASKS};
+use helper::{TASKS, Task};
 use linkme::distributed_slice;
 use std::collections::HashMap;
 
@@ -30,7 +30,7 @@ impl Map {
     fn trails(&self) -> impl Iterator<Item = HashMap<Pos, usize>> + '_ {
         self.tiles
             .iter()
-            .filter(|(_, &height)| height == 0)
+            .filter(|&(_, &height)| height == 0)
             .map(|(&trail_head, _)| self.reachable_from(trail_head, 0))
     }
 

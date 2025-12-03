@@ -1,4 +1,4 @@
-use helper::{Task, TASKS};
+use helper::{TASKS, Task};
 use linkme::distributed_slice;
 use std::{
     cell::RefCell,
@@ -593,14 +593,15 @@ fn walk(
         match instruction {
             Instruction::Move(steps) => {
                 for _ in 0..*steps {
-                    if let Some((next_pos, next_orientation)) =
-                        current_pos.get_dir(current_orientation)
-                    {
-                        current_pos = next_pos.upgrade().unwrap();
-                        current_orientation = next_orientation;
-                    } else {
-                        // we stopped so we can skip remaining movement steps
-                        break;
+                    match current_pos.get_dir(current_orientation) {
+                        Some((next_pos, next_orientation)) => {
+                            current_pos = next_pos.upgrade().unwrap();
+                            current_orientation = next_orientation;
+                        }
+                        _ => {
+                            // we stopped so we can skip remaining movement steps
+                            break;
+                        }
                     }
                 }
             }
