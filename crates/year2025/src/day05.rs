@@ -61,9 +61,33 @@ pub fn part1(input: &str) -> usize {
         .count()
 }
 
-pub fn part2(input: &str) -> u32 {
-    let mut iter = parse_input(input);
-    todo!("part2 WIP")
+pub fn part2(input: &str) -> usize {
+
+
+    let input = parse_input(input);
+
+
+    let mut ranges = Vec::with_capacity(input.ranges.len());
+    let mut next = Vec::with_capacity(input.ranges.len());
+
+    for mut new_range in input.ranges {
+        for range in ranges.drain(..) {
+            if overlapps(&new_range, &range) {
+                new_range = ((*new_range.start()).min(*range.start()))..=((*new_range.end()).max(*range.end()));
+            } else {
+                next.push(range);
+            }
+        }
+        next.push(new_range);
+        std::mem::swap(&mut next,&mut  ranges);
+    }
+
+
+    ranges.into_iter().map(|range| range.count()).sum()
+}
+
+fn overlapps(new_range: &RangeInclusive<u64>, range: &RangeInclusive<u64>) -> bool {
+    new_range.start() <= range.end() && range.start() <= new_range.end()
 }
 
 #[test]
@@ -83,5 +107,5 @@ fn part2_example1() {
 
 #[test]
 fn part2_full() {
-    assert_eq!(part2(INPUT), 1262);
+    assert_eq!(part2(INPUT), 344813017450467);
 }
