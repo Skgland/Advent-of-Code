@@ -1,4 +1,4 @@
-use std::{collections::BTreeSet, ops::Index};
+use std::collections::BTreeSet;
 
 use helper::{TASKS, Task};
 use linkme::distributed_slice;
