@@ -28,15 +28,18 @@ static PART2: Task = Task {
     include_in_all: true,
 };
 
+#[derive(Debug)]
 enum Op {
     Add,
     Mul,
 }
 
+#[derive(Debug)]
 struct Calc {
     args: Vec<u64>,
     op: Op,
 }
+
 impl Calc {
     fn eval(&self) -> u64 {
         match self.op {
@@ -46,7 +49,7 @@ impl Calc {
     }
 }
 
-fn parse_input(input: &str) -> Vec<Calc> {
+fn parse_input1(input: &str) -> Vec<Calc> {
     let mut lines = input
         .lines()
         .map(|line| line.split(' ').filter(|val|!val.is_empty()).collect())
@@ -72,13 +75,49 @@ fn parse_input(input: &str) -> Vec<Calc> {
         .collect()
 }
 
+
+fn parse_input2(input: &str) -> Vec<Calc> {
+    let mut lines = input
+        .lines().map(|s| s.chars().collect::<VecDeque<_>>())
+        .collect::<Vec<_>>();
+
+    let (ops, argss) = lines.split_last_mut().unwrap();
+
+    ops.iter().copied().filter(|&val|val != ' ')
+        .map(|op| {
+            let op = match op {
+                '+' => Op::Add,
+                '*' => Op::Mul,
+                op => unreachable!("Invalid operator {op}"),
+            };
+
+            let mut args = vec![];
+
+            loop {
+                // auto-formatting of inputs stips trailing spaces and last column doesn't have a trailing space so fallback to space if input line doesn't have any more characters
+                let Some(arg) = argss.iter_mut().map(|line| line.pop_front().unwrap_or(' ')).fold(None, |acc, next| {
+                    match (acc, next.to_digit(10).map(|d| d as u64)) {
+                        (None, None) => None,
+                        (None, Some(x)) | (Some(x), None) => Some(x),
+                        (Some(x), Some(y)) => Some(x * 10 + y),
+                    }
+                }) else {
+                    break;
+                };
+                args.push(arg);
+            }
+
+            Calc { args, op }
+        })
+        .collect()
+}
+
 pub fn part1(input: &str) -> u64 {
-    parse_input(input).iter().map(|calc| calc.eval()).sum()
+    parse_input1(input).iter().map(|calc| calc.eval()).sum()
 }
 
 pub fn part2(input: &str) -> u64 {
-    let mut iter = parse_input(input);
-    todo!("part2 WIP")
+    dbg!(parse_input2(input)).iter().map(|calc| calc.eval()).sum()
 }
 
 #[test]
@@ -93,10 +132,10 @@ fn part1_full() {
 
 #[test]
 fn part2_example1() {
-    assert_eq!(part2(INPUT_EXAMPLE1), 5);
+    assert_eq!(part2(INPUT_EXAMPLE1), 1058 + 3253600 + 625 + 8544);
 }
 
 #[test]
 fn part2_full() {
-    assert_eq!(part2(INPUT), 1262);
+    assert_eq!(part2(INPUT), 9630000828442);
 }
