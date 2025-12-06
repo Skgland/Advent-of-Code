@@ -188,7 +188,8 @@ fn parse_example() {
     ));
     let input = parse(input);
 
-    let expected = [[
+    let expected = [
+        [
             Packet {
                 data: vec![
                     ListOrInt::Int(1),
@@ -322,7 +323,8 @@ fn parse_example() {
                     ListOrInt::Int(9),
                 ],
             },
-        ]];
+        ],
+    ];
     assert_eq!(input.len(), expected.len());
     for i in 0..input.len() {
         assert_eq!(input[i], expected[i]);

@@ -52,7 +52,7 @@ impl Calc {
 fn parse_input1(input: &str) -> Vec<Calc> {
     let mut lines = input
         .lines()
-        .map(|line| line.split(' ').filter(|val|!val.is_empty()).collect())
+        .map(|line| line.split(' ').filter(|val| !val.is_empty()).collect())
         .collect::<Vec<VecDeque<_>>>();
 
     let (ops, argss) = lines.split_last_mut().unwrap();
@@ -75,15 +75,17 @@ fn parse_input1(input: &str) -> Vec<Calc> {
         .collect()
 }
 
-
 fn parse_input2(input: &str) -> Vec<Calc> {
     let mut lines = input
-        .lines().map(|s| s.chars().collect::<VecDeque<_>>())
+        .lines()
+        .map(|s| s.chars().collect::<VecDeque<_>>())
         .collect::<Vec<_>>();
 
     let (ops, argss) = lines.split_last_mut().unwrap();
 
-    ops.iter().copied().filter(|&val|val != ' ')
+    ops.iter()
+        .copied()
+        .filter(|&val| val != ' ')
         .map(|op| {
             let op = match op {
                 '+' => Op::Add,
@@ -95,13 +97,17 @@ fn parse_input2(input: &str) -> Vec<Calc> {
 
             loop {
                 // auto-formatting of inputs stips trailing spaces and last column doesn't have a trailing space so fallback to space if input line doesn't have any more characters
-                let Some(arg) = argss.iter_mut().map(|line| line.pop_front().unwrap_or(' ')).fold(None, |acc, next| {
-                    match (acc, next.to_digit(10).map(|d| d as u64)) {
-                        (None, None) => None,
-                        (None, Some(x)) | (Some(x), None) => Some(x),
-                        (Some(x), Some(y)) => Some(x * 10 + y),
-                    }
-                }) else {
+                let Some(arg) = argss
+                    .iter_mut()
+                    .map(|line| line.pop_front().unwrap_or(' '))
+                    .fold(None, |acc, next| {
+                        match (acc, next.to_digit(10).map(|d| d as u64)) {
+                            (None, None) => None,
+                            (None, Some(x)) | (Some(x), None) => Some(x),
+                            (Some(x), Some(y)) => Some(x * 10 + y),
+                        }
+                    })
+                else {
                     break;
                 };
                 args.push(arg);
@@ -117,7 +123,10 @@ pub fn part1(input: &str) -> u64 {
 }
 
 pub fn part2(input: &str) -> u64 {
-    dbg!(parse_input2(input)).iter().map(|calc| calc.eval()).sum()
+    dbg!(parse_input2(input))
+        .iter()
+        .map(|calc| calc.eval())
+        .sum()
 }
 
 #[test]
