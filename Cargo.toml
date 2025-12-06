@@ -8,6 +8,7 @@ edition = "2024"
 
 [workspace.lints.clippy]
 collapsible_if = "allow"
+identity_op = "allow"
 
 
 [workspace.dependencies]

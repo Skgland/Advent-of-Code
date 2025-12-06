@@ -188,7 +188,7 @@ fn parse_example() {
     ));
     let input = parse(input);
 
-    let expected = vec![
+    let expected = [
         [
             Packet {
                 data: vec![
