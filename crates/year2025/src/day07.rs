@@ -94,8 +94,8 @@ pub fn part2(input: &str) -> u64 {
             match &row[beam] {
                 Symbols::Start => unreachable!("Start should only occour in the first row"),
                 Symbols::Splitter => {
-                    *beams.entry(beam-1).or_default() += mult;
-                    *beams.entry(beam+1).or_default() += mult;
+                    *beams.entry(beam - 1).or_default() += mult;
+                    *beams.entry(beam + 1).or_default() += mult;
                 }
                 Symbols::Empty => {
                     *beams.entry(beam).or_default() += mult;
