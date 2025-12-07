@@ -78,9 +78,33 @@ pub fn part1(input: &str) -> u32 {
     splits
 }
 
-pub fn part2(input: &str) -> u32 {
+pub fn part2(input: &str) -> u64 {
     let mut iter = parse_input(input);
-    todo!("part2 WIP")
+    let pos = iter
+        .next()
+        .unwrap()
+        .iter()
+        .position(|e| matches!(e, Symbols::Start))
+        .unwrap();
+
+    let mut beams = BTreeMap::from([(pos, 1)]);
+
+    for row in iter {
+        for (beam, mult) in std::mem::take(&mut beams) {
+            match &row[beam] {
+                Symbols::Start => unreachable!("Start should only occour in the first row"),
+                Symbols::Splitter => {
+                    *beams.entry(beam-1).or_default() += mult;
+                    *beams.entry(beam+1).or_default() += mult;
+                }
+                Symbols::Empty => {
+                    *beams.entry(beam).or_default() += mult;
+                }
+            }
+        }
+    }
+
+    beams.values().sum()
 }
 
 #[test]
@@ -95,10 +119,10 @@ fn part1_full() {
 
 #[test]
 fn part2_example1() {
-    assert_eq!(part2(INPUT_EXAMPLE1), 5);
+    assert_eq!(part2(INPUT_EXAMPLE1), 40);
 }
 
 #[test]
 fn part2_full() {
-    assert_eq!(part2(INPUT), 1262);
+    assert_eq!(part2(INPUT), 43560947406326);
 }
