@@ -66,8 +66,6 @@ pub fn part1(input: &str, connections: usize) -> usize {
 
     distances.sort_by_key(|&(_, _, dist)| dist);
 
-    dbg!(&distances[..connections]);
-
     for (a, b, _) in distances.iter().take(connections) {
         let min = circuits[a].min(circuits[b]);
         let max = circuits[a].max(circuits[b]);
@@ -94,8 +92,38 @@ pub fn part1(input: &str, connections: usize) -> usize {
 }
 
 pub fn part2(input: &str) -> u32 {
-    let mut iter = parse_input(input);
-    todo!("part2 WIP")
+    let junction_boxes = parse_input(input).collect::<Vec<_>>();
+
+    let mut circuits = junction_boxes
+        .iter()
+        .enumerate()
+        .map(|(idx, &pos)| (pos, idx))
+        .collect::<HashMap<_, _>>();
+
+    let mut distances = pairs(&junction_boxes)
+        .map(|(a, b)| (a, b, distance_square(a, b)))
+        .collect::<Vec<_>>();
+
+    distances.sort_by_key(|&(_, _, dist)| dist);
+
+    let mut last_pair = ([0; 3], [0; 3]);
+
+    for (a, b, _) in distances {
+        if circuits[&a] != circuits[&b] {
+            last_pair = (a, b);
+
+            let min = circuits[&a].min(circuits[&b]);
+            let max = circuits[&a].max(circuits[&b]);
+
+            for circuit in circuits.values_mut() {
+                if *circuit == max {
+                    *circuit = min;
+                }
+            }
+        }
+    }
+
+    last_pair.0[0] * last_pair.1[0]
 }
 
 #[test]
@@ -110,10 +138,10 @@ fn part1_full() {
 
 #[test]
 fn part2_example1() {
-    assert_eq!(part2(INPUT_EXAMPLE1), 5);
+    assert_eq!(part2(INPUT_EXAMPLE1), 216 * 117);
 }
 
 #[test]
 fn part2_full() {
-    assert_eq!(part2(INPUT), 1262);
+    assert_eq!(part2(INPUT), 36045012);
 }
