@@ -1,7 +1,4 @@
-use std::{
-    collections::{BTreeMap, HashMap},
-    mem::take,
-};
+use std::collections::{BTreeMap, HashMap};
 
 use helper::{TASKS, Task};
 use linkme::distributed_slice;
