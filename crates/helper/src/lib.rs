@@ -1,5 +1,8 @@
 use linkme::distributed_slice;
-use std::ops::{Div, Mul, Rem};
+use std::{
+    io::Cursor,
+    ops::{Div, Mul, Not, Rem, Sub},
+};
 
 pub mod iter;
 
@@ -171,4 +174,98 @@ where
         (a, b) = (b, a % b);
     }
     a
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum InPoligon {
+    In,
+    Out,
+    OnEdge,
+}
+
+impl InPoligon {
+    #[allow(non_upper_case_globals)]
+    const Cross: Self = InPoligon::In;
+    #[allow(non_upper_case_globals)]
+    const NoCross: Self = InPoligon::Out;
+}
+
+impl Mul for InPoligon {
+    type Output = Self;
+
+    fn mul(self, rhs: Self) -> Self::Output {
+        match (self, rhs) {
+            (InPoligon::OnEdge, _) | (_, InPoligon::OnEdge) => InPoligon::OnEdge,
+            (current, InPoligon::Cross) => !current,
+            (current, InPoligon::NoCross) => current,
+        }
+    }
+}
+
+impl Not for InPoligon {
+    type Output = Self;
+
+    fn not(self) -> Self::Output {
+        match self {
+            InPoligon::In => InPoligon::Out,
+            InPoligon::Out => InPoligon::In,
+            InPoligon::OnEdge => InPoligon::OnEdge,
+        }
+    }
+}
+
+pub fn point_in_polygon<T>(point: [T; 2], polygon: &[[T; 2]]) -> InPoligon
+where
+    T: PartialOrd + Copy + Zero + Sub<Output = T> + Mul<Output = T>,
+{
+    // based on the pseudo code from https://de.wikipedia.org/wiki/Punkt-in-Polygon-Test_nach_Jordan 2025-12-09
+
+    let mut state = InPoligon::Out;
+
+    for i in 0..polygon.len() {
+        state = state * cross_product_test(point, polygon[i], polygon[(i + 1) % polygon.len()]);
+        if state == InPoligon::OnEdge {
+            return InPoligon::OnEdge;
+        }
+    }
+
+    state
+}
+
+fn cross_product_test<T>(
+    [a_x, a_y]: [T; 2],
+    [b_x, mut b_y]: [T; 2],
+    [c_x, mut c_y]: [T; 2],
+) -> InPoligon
+where
+    T: PartialOrd + Copy + Zero + Sub<Output = T> + Mul<Output = T>,
+{
+    if a_y == b_y && b_y == c_y {
+        // horizontal line segment
+        if (b_x..=c_x).contains(&a_x) || (c_x..=b_x).contains(&a_x) {
+            // point on the line segment
+            InPoligon::OnEdge
+        } else {
+            InPoligon::NoCross
+        }
+    } else if a_y == b_y && a_x == b_x {
+        // a is b
+        InPoligon::OnEdge
+    } else {
+        if b_y > c_y {
+            std::mem::swap(&mut b_y, &mut c_y);
+        }
+
+        if a_y <= b_y || a_y > c_y {
+            InPoligon::NoCross
+        } else {
+            let delta = (b_x - a_x) * (c_y - a_y) - (b_y - a_y) * (c_x - a_x);
+
+            match delta.partial_cmp(&T::ZERO).unwrap() {
+                std::cmp::Ordering::Greater => InPoligon::Cross,
+                std::cmp::Ordering::Less => InPoligon::NoCross,
+                std::cmp::Ordering::Equal => InPoligon::OnEdge,
+            }
+        }
+    }
 }
