@@ -1,7 +1,8 @@
-use std::{num::ParseIntError, str::FromStr};
+use std::{collections::BTreeSet, num::ParseIntError, str::FromStr};
 
 use helper::{TASKS, Task};
 use linkme::distributed_slice;
+use scryer_prolog::{LeafAnswer, Term};
 
 const INPUT: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
@@ -28,11 +29,13 @@ static PART2: Task = Task {
     include_in_all: true,
 };
 
+#[derive(Debug)]
 struct Machine {
     target: u16,
     buttons: Vec<u16>,
-    joltage: Vec<u16>,
+    joltages: Vec<u16>,
 }
+
 impl Machine {
     fn min_lamp_pushes(&self) -> u32 {
         let mut min = self.buttons.len() as u32;
@@ -62,8 +65,38 @@ impl Machine {
     }
 
     fn min_counter_pushes(&self) -> u32 {
-        todo!()
+        let mut count = 0;
+        let mut states = BTreeSet::from([self.joltages.clone()]);
+        let target = vec![0; self.joltages.len()];
+
+        while !states.contains(&target) {
+            count += 1;
+            for state in std::mem::take(&mut states) {
+                for button in &self.buttons {
+                    if let Some(new_state) = apply_button_to_state(&state, button) {
+                        states.insert(new_state);
+                    }
+                }
+            }
+        }
+
+        count
     }
+}
+
+fn apply_button_to_state(state: &[u16], button: &u16) -> Option<Vec<u16>> {
+    state
+        .iter()
+        .copied()
+        .enumerate()
+        .map(|(idx, count)| {
+            if (button & (1 << idx)) != 0 {
+                count.checked_sub(1)
+            } else {
+                Some(count)
+            }
+        })
+        .collect::<Option<Vec<_>>>()
 }
 
 impl FromStr for Machine {
@@ -92,7 +125,7 @@ impl FromStr for Machine {
                         .fold(0, |acc, idx| acc | (1 << idx)))
                 })
                 .collect::<Result<Vec<_>, _>>()?,
-            joltage: joltage
+            joltages: joltage
                 .split(',')
                 .map(|part| part.parse())
                 .collect::<Result<Vec<_>, _>>()?,
@@ -116,10 +149,33 @@ pub fn part1(input: &str) -> u32 {
 pub fn part2(input: &str) -> u32 {
     let machines = parse_input(input).collect::<Vec<_>>();
 
-    machines
+    let mut machine = scryer_prolog::MachineBuilder::new().build();
+    machine.consult_module_string("day10.pl", include_str!("./day10.pl"));
+
+    let query = build_query(&machines);
+
+    let result = machine.run_query(query).next().unwrap().unwrap();
+
+    match result {
+        LeafAnswer::LeafAnswer { bindings, .. } => {
+            let res = &bindings["Res"];
+            match res {
+                scryer_prolog::Term::Integer(ibig) => ibig.try_into().unwrap(),
+                _ => unreachable!(),
+            }
+        }
+        _ => unreachable!(),
+    }
+}
+
+fn build_query(machines: &[Machine]) -> String {
+    let machines = machines
         .iter()
-        .map(|machine| machine.min_counter_pushes())
-        .sum()
+        .map(|machine| format!("machine({:?}, {:?})", machine.buttons, machine.joltages))
+        .reduce(|l, r| format!("{l},\n\t\t{r}"))
+        .unwrap();
+
+    format!("part2([\n\t\t{machines}\n\t], Res).")
 }
 
 #[test]
@@ -134,10 +190,16 @@ fn part1_full() {
 
 #[test]
 fn part2_example1() {
-    assert_eq!(part2(INPUT_EXAMPLE1), 5);
+    assert_eq!(part2(INPUT_EXAMPLE1), 10 + 12 + 11);
 }
 
 #[test]
 fn part2_full() {
-    assert_eq!(part2(INPUT), 1262);
+    let query = build_query(&parse_input(INPUT).collect::<Vec<_>>());
+    let _ = std::fs::write("./day10-part2-full.pl", format!("test(Res) :- {query}"));
+
+    let res = part2(INPUT);
+
+    assert!(8788 < res);
+    assert_eq!(res, 1262);
 }
