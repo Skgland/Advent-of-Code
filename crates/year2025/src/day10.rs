@@ -164,7 +164,9 @@ pub fn part2(input: &str) -> u32 {
                 _ => unreachable!(),
             }
         }
-        _ => unreachable!(),
+        LeafAnswer::False => panic!("Unexpected no solution"),
+        LeafAnswer::True => panic!("Unexpected no bindings"),
+        LeafAnswer::Exception(exc) => panic!("Unexpected exception: {exc:?}"),
     }
 }
 
