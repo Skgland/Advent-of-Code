@@ -1,35 +1,43 @@
+:- use_module(library(arithmetic)).
 :- use_module(library(between)).
 :- use_module(library(clpz)).
+:- use_module(library(dcgs)).
 :- use_module(library(iso_ext)).
 :- use_module(library(lambda)).
 :- use_module(library(lists)).
+:- use_module(library(simplex)).
 
-:- initialization(assertz(clpz:monotonic)).
 
-apply_button(Mask, Button, Presses, Count) :- #Flag #= popcount(Button /\ Mask), #Count #= #Presses * Flag.
+apply_button(Mask, Button, Flag) :- N is Button /\ Mask, popcount(N, Flag).
 
-constrain_joltages([], _, _, _).
-constrain_joltages([J|Js], Idx, Vars, Bs) :- 
-    Mask is 1 << Idx,
-    maplist(
-        apply_button(Mask), 
-        Bs, 
-        Vars,
-        Counts
-    ),
-    sum(Counts, #=, J),
-    Idx1 = Idx + 1 ,
-    constrain_joltages(Js, Idx1, Vars, Bs).
+constrain_joltage(J, JIdx, Buttons) -->
+    { 
+        Mask is 1 << JIdx,
+        findall(b(BIdx), (nth0(BIdx, Buttons, Button), apply_button(Mask, Button, 1)), Parts)
+    },
+    constraint(Parts = J).
 
-solve_machine(Buttons, Joltages, N) :-
-    length(Buttons, NumButtons),
-    length(Vars, NumButtons),
-    Vars ins 0..sup,
-    N in 0..sup,
-    sum(Vars, #=, #N),
-    constrain_joltages(Joltages, 0, Vars, Buttons),
-    once(labeling([min(N)],[N|Vars])),
-    write(N), nl.
+constrain_joltages([], _, _, S, S).
+constrain_joltages([J|Js], Idx, Bs) -->
+    constrain_joltage(J, Idx, Bs),
+    { Idx1 is Idx + 1 },
+    constrain_joltages(Js, Idx1, Bs).
+
+constrain_buttons([],_,S, S).
+constrain_buttons([_|Bs],Idx) -->
+    {Idx1 is Idx + 1},
+    constraint([b(Idx)] >= 0),
+	constraint(integral(b(Idx))),
+    constrain_buttons(Bs, Idx1).
+
+apply_constraints(Joltages, Buttons) -->
+    constrain_joltages(Joltages, 0, Buttons),
+    constrain_buttons(Buttons, 0),
+    { findall(b(BIdx), nth0(BIdx, Buttons, _), Variables) },
+    minimize(Variables),
+    objective.
+
+solve_machine(Buttons, Joltages, N) :- gen_state(S0), apply_constraints(Joltages, Buttons, S0, N), write(presses(N)), nl.
 
 part2(Machines, N) :- 
     maplist(
