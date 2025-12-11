@@ -161,6 +161,7 @@ pub fn part2(input: &str) -> u32 {
             let res = &bindings["Res"];
             match res {
                 scryer_prolog::Term::Integer(ibig) => ibig.try_into().unwrap(),
+                scryer_prolog::Term::Rational(rat) => rat.to_int().unwrap().try_into().unwrap(),
                 _ => unreachable!(),
             }
         }
