@@ -192,6 +192,9 @@ fn part1_full() {
 
 #[test]
 fn part2_example1() {
+    let query = build_query(&parse_input(INPUT_EXAMPLE1).collect::<Vec<_>>());
+    let _ = std::fs::write("./day10-part2-example.pl", format!("test(Res) :- {query}"));
+
     assert_eq!(part2(INPUT_EXAMPLE1), 10 + 12 + 11);
 }
 
