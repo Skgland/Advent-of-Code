@@ -1,8 +1,5 @@
 use linkme::distributed_slice;
-use std::{
-    io::Cursor,
-    ops::{Div, Mul, Not, Rem, Sub},
-};
+use std::ops::{Div, Mul, Not, Rem, Sub};
 
 pub mod iter;
 
