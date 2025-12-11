@@ -207,5 +207,5 @@ fn part2_full() {
     let res = part2(INPUT);
 
     assert!(8788 < res);
-    assert_eq!(res, 1262);
+    assert_eq!(res, 17214);
 }
