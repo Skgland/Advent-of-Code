@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use helper::{Task, TASKS};
+use helper::{TASKS, Task};
 use linkme::distributed_slice;
 
 const INPUT: &str = include_str!(concat!(
@@ -13,7 +13,6 @@ const INPUT_EXAMPLE1: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
     "/../../inputs/example/year2025/day11.example1.txt"
 ));
-
 
 #[cfg(test)]
 const INPUT_EXAMPLE2: &str = include_str!(concat!(
@@ -36,11 +35,14 @@ static PART2: Task = Task {
 };
 
 fn parse_input(input: &str) -> BTreeMap<&str, BTreeSet<&str>> {
-    input.lines().map(|line| {
-        let (from, tos) = line.split_once(": ").unwrap();
-        let tos = tos.split(' ').collect();
-        (from, tos)
-    }).collect()
+    input
+        .lines()
+        .map(|line| {
+            let (from, tos) = line.split_once(": ").unwrap();
+            let tos = tos.split(' ').collect();
+            (from, tos)
+        })
+        .collect()
 }
 
 fn count_paths(graph: &BTreeMap<&str, BTreeSet<&str>>, start: &str, target: &str) -> u64 {
@@ -68,7 +70,6 @@ pub fn part1(input: &str) -> u64 {
     count_paths(&graph, "you", "out")
 }
 
-
 pub fn part2(input: &str) -> u64 {
     let graph = parse_input(input);
 
@@ -79,22 +80,15 @@ pub fn part2(input: &str) -> u64 {
     let dac_fft = count_paths(&graph, "dac", "fft");
 
     let (first, second, mid_count) = match (fft_dac, dac_fft) {
-        (0,0) => panic!("impossible"),
-        (0, count) => {
-            ("dac", "fft", count)
-        }
+        (0, 0) => panic!("impossible"),
+        (0, count) => ("dac", "fft", count),
 
-        (count, 0) => {
-            ("fft", "dac", count)
-        }
-        (_,_) => panic!("infinit")
+        (count, 0) => ("fft", "dac", count),
+        (_, _) => panic!("infinit"),
     };
 
-
     let start_count = count_paths(&graph, "svr", first);
-    let end_count = count_paths(&graph,  second, "out");
-
-
+    let end_count = count_paths(&graph, second, "out");
 
     start_count * mid_count * end_count
 }

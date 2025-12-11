@@ -65,8 +65,6 @@ impl Machine {
     }
 }
 
-
-
 impl FromStr for Machine {
     type Err = ParseIntError;
 
