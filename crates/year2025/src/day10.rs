@@ -2,7 +2,7 @@ use std::{collections::BTreeSet, num::ParseIntError, str::FromStr};
 
 use helper::{TASKS, Task};
 use linkme::distributed_slice;
-use scryer_prolog::{LeafAnswer, Term};
+use scryer_prolog::LeafAnswer;
 
 const INPUT: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
@@ -63,41 +63,9 @@ impl Machine {
         }
         state
     }
-
-    fn min_counter_pushes(&self) -> u32 {
-        let mut count = 0;
-        let mut states = BTreeSet::from([self.joltages.clone()]);
-        let target = vec![0; self.joltages.len()];
-
-        while !states.contains(&target) {
-            count += 1;
-            for state in std::mem::take(&mut states) {
-                for button in &self.buttons {
-                    if let Some(new_state) = apply_button_to_state(&state, button) {
-                        states.insert(new_state);
-                    }
-                }
-            }
-        }
-
-        count
-    }
 }
 
-fn apply_button_to_state(state: &[u16], button: &u16) -> Option<Vec<u16>> {
-    state
-        .iter()
-        .copied()
-        .enumerate()
-        .map(|(idx, count)| {
-            if (button & (1 << idx)) != 0 {
-                count.checked_sub(1)
-            } else {
-                Some(count)
-            }
-        })
-        .collect::<Option<Vec<_>>>()
-}
+
 
 impl FromStr for Machine {
     type Err = ParseIntError;
