@@ -12,3 +12,4 @@ workspace = true
 helper = { workspace = true }
 linkme = { workspace = true }
 log = { workspace = true }
+scryer-prolog = { workspace = true }

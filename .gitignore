@@ -3,3 +3,5 @@ target/
 trees.txt
 flamegraph.svg
 cargo-flamegraph.stacks
+crates/year2025/day10-part2-full.pl
+crates/year2025/day10-part2-example.pl
