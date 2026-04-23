@@ -15,13 +15,14 @@ jobs:
             year: [2015, 2021, 2022, 2023, 2024, 2025]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         submodules: true
         token: ${{ secrets.CHECKOUT_PAT }}
     - name: Install latest stable
-      uses: dtolnay/rust-toolchain@stable
+      uses: dtolnay/rust-toolchain@3c5f7ea28cd621ae0bf5283f0e981fb97b8a7af9 # master
       with:
+        toolchain: stable
         components: rustfmt, clippy
     - name: Check Rustfmt
       run: cargo fmt --manifest-path crates/year${{matrix.year}}/Cargo.toml -- --check
