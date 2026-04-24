@@ -2,7 +2,7 @@ use std::collections::VecDeque;
 
 use helper::{TASKS, Task};
 use linkme::distributed_slice;
-use md5::digest::Digest;
+use md5::digest::{Digest, array::Array, consts::U16};
 
 const INPUT: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
@@ -33,7 +33,9 @@ fn find_md5_prefix(input: &str, prefix: &str) -> u32 {
     for digit in 1..=9 {
         let md5 = md5_prefix.clone().chain_update([digit as u8 + b'0']);
 
-        if format!("{:x}", md5.clone().finalize()).starts_with(prefix) {
+        let finalized_md5 = md5.clone().finalize();
+
+        if md5_to_string(finalized_md5).starts_with(prefix) {
             return digit;
         } else {
             todo.push_back((digit, md5));
@@ -44,7 +46,9 @@ fn find_md5_prefix(input: &str, prefix: &str) -> u32 {
         for digit in 0..=9 {
             let md5 = md5_prefix.clone().chain_update([digit as u8 + b'0']);
 
-            if format!("{:x}", md5.clone().finalize()).starts_with(prefix) {
+            let finalized_md5 = md5.clone().finalize();
+
+            if md5_to_string(finalized_md5).starts_with(prefix) {
                 return val * 10 + digit;
             } else {
                 todo.push_back((val * 10 + digit, md5));
@@ -52,6 +56,16 @@ fn find_md5_prefix(input: &str, prefix: &str) -> u32 {
         }
     }
     panic!("No suffix found that produces the desired prefix");
+}
+
+fn md5_to_string(finalized_md5: Array<u8, U16>) -> String {
+    use std::fmt::Write;
+
+    let mut buffer = String::with_capacity(32);
+    for b in finalized_md5 {
+        let _ = write!(buffer, "{b:02x}");
+    }
+    buffer
 }
 
 pub fn part1(input: &str) -> u32 {
